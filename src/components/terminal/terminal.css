@@ -1,0 +1,151 @@
+.terminal {
+    width: 90vw;
+    height: 90vh;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    border-radius: 10px;
+    overflow: hidden;
+    transform: translateY(5vh);
+}
+
+.terminal .terminal-top{
+    position: sticky;
+    height: 5%;
+    max-height: 30px;
+    width: 100%;
+    background-color: rgb(76, 76, 76);
+}
+
+.terminal .terminal-top .bar-button{
+    height: 100%;
+    width: 3%;
+    float: right;
+    text-align: center;
+    color: white;
+}
+
+.terminal .terminal-top .close:hover{
+    background-color: rgba(139, 0, 0, 0.712);
+}
+
+.terminal .terminal-top .change-size:hover{
+    background-color: rgba(219, 219, 219, 0.425);
+}
+
+.terminal .main-terminal {
+    background-color: black;
+    color: rgb(0, 164, 0);
+    text-align: left;
+    height: 100%;
+    width: 100%;
+    position: sticky;
+    font-family: Lucida Console;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+}
+
+.terminal .cmd-input {
+    background-color: black;
+    width: 60%;
+    color: rgb(0, 164, 0);
+    font-family: Lucida Console;
+    font-size: inherit;
+    border: 0;
+    height: 100%;
+}
+
+.terminal .cmd-input:focus {
+    outline: none;
+}
+
+.notMinimized {
+    animation-fill-mode: forwards;
+    animation-duration: .2s;
+    animation-name: unMinimize;
+}
+
+.minimized {
+    animation-fill-mode: forwards;
+    animation-duration: .3s;
+    animation-name: minimize;
+}
+
+.notMaximized {
+    animation-fill-mode: forwards;
+    animation-duration: .2s;
+    animation-name: unMaximize;
+}
+
+.maximized {
+    animation-fill-mode: forwards;
+    animation-duration: .2s;
+    animation-name: maximize;
+}
+
+@keyframes minimize {
+    from {
+        
+    }
+    to {
+        width: 0px;
+        height: 0px;
+        opacity: 0;
+    }
+}
+
+@keyframes unMinimize {
+    from {
+        width: 0px;
+        height: 0px;
+        opacity: 0;
+    }
+    to {
+        width: 90vw;
+        height: 90vh;
+    }
+}
+
+@keyframes maximize {
+    from {
+
+    }
+    to {
+        width: 100vw;
+        height: 100vh;
+        margin-left: 0px;
+        margin-right: 0px;
+        transform: translateY(0px);
+        border-radius: 0px;
+    }
+}
+
+@keyframes unMaximize {
+    from {
+
+    }
+    to {
+        width: 90vw;
+        height: 90vh;
+    }
+}
+
+/* 
+.terminal .folder {
+    color: lightskyblue;
+}
+
+.terminal .file {
+    color: lightcoral;
+}
+
+.terminal .command-output-error {
+    color: crimson;
+}
+
+.terminal .opening-new-site {
+    color: yellow;
+}
+
+.terminal .opened-file {
+    color: darkcyan;
+} */

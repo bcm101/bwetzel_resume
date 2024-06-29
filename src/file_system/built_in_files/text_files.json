@@ -1,0 +1,80 @@
+{
+    "~/BMW_Resume.txt": [
+        {"line": " ____  ____    __    _  _  ____  _____  _  _    ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": "(  _ \\(  _ \\  /__\\  ( \\( )(  _ \\(  _  )( \\( )   ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": " ) _ < )   / /(__)\\  )  (  )(_) ))(_)(  )  (    ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": "(____/(_)\\_)(__)(__)(_)\\_)(____/(_____)(_)\\_)   ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": " __  __    __   ____  ____  _   _  ____  _    _ ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": "(  \\/  )  /__\\ (_  _)(_  _)( )_( )( ___)( \\/\\/ )", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": " )    (  /(__)\\  )(    )(   ) _ (  )__)  )    ( ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": "(_/\\/\\_)(__)(__)(__)  (__) (_) (_)(____)(__/\\__)", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": " _    _  ____  ____  ____  ____  __             ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": "( \\/\\/ )( ___)(_  _)(_   )( ___)(  )            ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": " )    (  )__)   )(   / /_  )__)  )(__           ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": "(__/\\__)(____) (__) (____)(____)(____)          ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": " ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": "about me: ", "remove_spaces": true, "className": "opened-file", "no_render_mobile": true},
+        {"line": " ", "remove_spaces": false, "className": "opened-file", "no_render_mobile": true},
+        {"line": "Hi! I am Brandon. I am looking for a full-time position in Computer Science in the Boston Area. I graduated in 2024 with a Master's degree in Computer Science and a Minor in Mathematics from the University of Massachussets Dartmouth. I was top of my class with a GPA of 3.99 with which I received several awards and scholarships. I wrote my Master's thesis on how to improve trust in AI by storing Machine Learning models in a decentralized blockchain environment. I have worked several summers as a web developement intern at Loomis Sayles based on Boston. I also have been a teacher's assistant for two Master's level Computer Science classes, and a mentor for an undergraduate Computer Science course.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
+    ],
+    "~/Apps/README.md": [
+        {"line": " ", "remove_spaces": false, "className": "opened-file"},
+        {"line": "As described using the help command, a file can be opened using the command 'cat'", "remove_spaces": true, "className": "opened-file"},
+        {"line": "In order to open that file as a website, use and optional argument [-s] to open that file as another site", "remove_spaces":true, "className": "opened-file"},
+        {"line": "Here is an example command: 'cat maze_maker.html -s'", "remove_spaces":true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"},
+        {"line": "Why did I make these apps? Well, simply my sister and mother are both school teachers and I enjoy making things that they will find useful. These mini apps aren't meant to be anything remarkable, but they are simply supposed to serve a purpose and fulfill a niche that my specific family seems to need. Also, much like everything else on this resume, I want to create things that show off my skillset. If I can do that while also creating something useful, then I have done enough. Everything here is owned by Brandon Wetzel, but if someone else is desperately in need of a way to create a maze or word search in a browser then feel free to take some of the code.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
+    ],
+    "~/Projects/resume_site.txt": [
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"This is the site you see before you now! It was inspired by the Linux operating system; however, I am very familiar with both Windows and Linux (specifically Ubuntu). I started the resume site project in early 2024 shortly before I began the job search. I wanted to create a site to show my talents with web design and my creativity. This site uses IndexedDB for file storage, React.JS for user interfaces and interactivity, and Github Pages for hosting. ", "remove_spaces": true, "className": "opened-file"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"Github pages only allows for single-page applications, so the complexity of the project is naturally limited. Despite that, I feel this project is something I can be proud of and I hope if you are reading this you appreciate the around ~2 weeks of work that went in to this.", "remove_spaces": true, "className": "opened-file"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"site", "remove_spaces":false, "className": "opened-file", "link": "https://bcm101.github.io/resume/?no_open_resume=true"},
+        {"line":"github", "remove_spaces":false, "className": "opened-file", "link": "https://github.com/bcm101/resume"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"}
+    ],
+    "~/Projects/VR_submarine.txt": [
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"For my senior design project, 4 classmates and myself were tasked with creation of a virtual reality submarine by the Naval Undersea Warfare Center (NUWC). ", "remove_spaces": true, "className": "opened-file"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"This project is intended to be used to be used by recruits and trainers to help teach the layouts of a submarine. It was designed using Unity in combination with SteamVR, C++ for all coding, and the Oculus VR headset which was graciously gifted to our group by NUWC for testing purposes. ", "remove_spaces": true, "className": "opened-file"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"Our project was only a proof of concept to show how multiplayer, complex 3D models, and all necessary interactions is plausible to be used in this setting. ", "remove_spaces": true, "className": "opened-file"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"github", "remove_spaces": true, "className": "opened-file", "link": "https://github.com/anthonytsmith22/VRSub"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"}
+    ],
+    "~/Projects/map_of_crimes_in_Chicago.txt":[
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"This project was for a Master's level data visualization class. One collaborator and myself were assigned to create a representation of the crimes in Chicago using given data. We created a map of Chicago and several other graphs using D3.JS; all other interactability was done through simple JS and CSS.", "remove_spaces": true, "className": "opened-file"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"site", "remove_spaces": true, "className": "opened-file", "link": "https://bcm101.github.io/final_project/"},
+        {"line":"github", "remove_spaces": true, "className": "opened-file", "link": "https://github.com/bcm101/final_project"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"}
+    ],
+    "~/Projects/discord_TTS_bot.txt": [
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"This project was created by one collaborator and myself to create a Discord bot that is able to create TTS. This was done using Amazon AWS and Node.JS. Usage of this bot by a user simply requires a user to enter a command, and the bot will join the user's voice channel and say the text as speech.", "remove_spaces": true, "className": "opened-file"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"github", "remove_spaces": true, "className": "opened-file", "link": "https://github.com/KennethLi5/discord-tts-bot"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"}
+    ],
+    "~/Academia/thesis.txt": [
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"I can talk about the contents some but thats something for later", "remove_spaces": true, "className": "opened-file"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"link", "remove_spaces": true, "className": "opened-file"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"}
+    ],
+    "~/Academia/MLP.txt": [
+        {"line":" ", "remove_spaces": false, "className": "opened-file"},
+        {"line":"I was scouted by a professor, Doctor Valova at UMD, to perform classifications on images using deep learning models. I developed a Multilayer Perceptron model using the C programming language for maximum efficiency. My math minor came in handy as I was  able to derive the algorithms required using calculus to deepen my understanding and further increase efficiency with my research. This research was unfortunately cut short due to COVID.", "remove_spaces": true, "className": "opened-file"},
+        {"line":" ", "remove_spaces": false, "className": "opened-file"}
+    ],
+    "~/Apps/maze_maker.html": "maze_maker",
+    "~/Apps/word_search_maker.html": "word_search_maker"
+}
