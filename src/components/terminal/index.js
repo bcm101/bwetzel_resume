@@ -6,16 +6,16 @@ export default class Terminal extends React.Component {
 
     state = {
         closed: false,
-        minimized: false,
         fullScreen: false
     }
 
     #closeTerminal = () => {
-        this.setState({closed: true});
+        if(this.props.terminalClosedCallback) this.props.terminalClosedCallback();
     }
 
     #minimizeTerminal = () => {
-        this.setState({minimized: true, fullScreen: false});
+        this.setState({fullScreen: false});
+        if(this.props.terminalMinimizedCallback) this.props.terminalMinimizedCallback();
     }
 
     #fullScreenTerminal = () => {
@@ -23,12 +23,18 @@ export default class Terminal extends React.Component {
     }
 
     #getClassnames = () => {
-        return `terminal${this.state.minimized ? ' minimized': ' notMinimized'}${this.state.fullScreen ? ' maximized': ''}`
+        return `terminal${this.props.minimized ? ' minimized': ' notMinimized'}${this.state.fullScreen ? ' maximized': ''}`
+    }
+
+    componentDidMount(){
+        console.log('terminal mounted')
     }
 
     render() {
-        return (<div className={this.#getClassnames()} hidden={this.state.closed}>
+            
+        return (<div className={this.#getClassnames()}>
             <div className="terminal-top">
+                <div className="cmd-label"><div></div>linux&#32;terminal</div>
                 <div className="bar-button close" onClick={this.#closeTerminal}>
                     <div>x</div>
                 </div>
@@ -44,6 +50,7 @@ export default class Terminal extends React.Component {
                 
             </div>
         </div>);
+        
     }
 
 }

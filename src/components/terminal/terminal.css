@@ -14,6 +14,24 @@
     max-height: 30px;
     width: 100%;
     background-color: rgb(76, 76, 76);
+    text-align: left;
+}
+
+.terminal .terminal-top .cmd-label{
+    float: left;
+    height: 100%;
+    width: 40%;
+}
+
+.terminal .terminal-top .cmd-label div{
+    float: left;
+    height: 3vh;
+    width: 3vh;
+    background-image: url(terminal.svg);
+    background-size: cover;
+    margin-left: 10px;
+    border-radius: 5px;
+    margin-top: .25%;
 }
 
 .terminal .terminal-top .bar-button{
@@ -70,12 +88,6 @@
     animation-name: minimize;
 }
 
-.notMaximized {
-    animation-fill-mode: forwards;
-    animation-duration: .2s;
-    animation-name: unMaximize;
-}
-
 .maximized {
     animation-fill-mode: forwards;
     animation-duration: .2s;
@@ -102,6 +114,7 @@
     to {
         width: 90vw;
         height: 90vh;
+        opacity: 1;
     }
 }
 
@@ -116,16 +129,6 @@
         margin-right: 0px;
         transform: translateY(0px);
         border-radius: 0px;
-    }
-}
-
-@keyframes unMaximize {
-    from {
-
-    }
-    to {
-        width: 90vw;
-        height: 90vh;
     }
 }
 
