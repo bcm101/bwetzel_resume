@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { HashRouter as Router } from 'react-router-dom';
-import FileSystem from './file_system';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
