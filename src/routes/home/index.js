@@ -6,24 +6,39 @@ export default class Home extends Component {
 
     state = {
         terminalMinimized: false,
-        terminalOpen: true
+        terminalOpen: true,
+        firstClicked: true
     }
+
+    #mounted = false;
+    #initialCommand = 'cat BMW_Resume.txt && ls *';
 
     #openTerminal = () => {
         this.setState({terminalOpen: true, terminalMinimized: false})
     }
 
     #terminalClosed = () => {
-        this.setState({terminalOpen: false})
+        this.setState({terminalOpen: false, firstClicked: false})
     }
 
     #terminalMinimized = () => {
         this.setState({terminalMinimized: true})
     }
 
+    
+
     render(){
+
         return (<div id='home'>
-            {this.state.terminalOpen && 
+            {this.state.firstClicked && this.state.terminalOpen &&
+                <Terminal 
+                    terminalClosedCallback={this.#terminalClosed} 
+                    terminalMinimizedCallback={this.#terminalMinimized}
+                    minimized={this.state.terminalMinimized}
+                    initialCommand={this.#initialCommand}
+                />
+            }
+            {!this.state.firstClicked && this.state.terminalOpen &&
                 <Terminal 
                     terminalClosedCallback={this.#terminalClosed} 
                     terminalMinimizedCallback={this.#terminalMinimized}

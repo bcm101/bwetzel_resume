@@ -11,7 +11,8 @@ export default class Terminal extends React.Component {
         closed: false,
         fullScreen: false,
         history: [],
-        currentCommandOutput: []
+        currentCommandOutput: [],
+        initialCommand: this.props.initialCommand
     }
 
     #commands = new Commands();
@@ -41,37 +42,57 @@ export default class Terminal extends React.Component {
 
     #enterNewCommand = async (e) => {
         if(e.key === "Enter"){
-            const pipes = e.target.value.split('|');
-            const args = pipes.map(e => e.split(' '));
-            const cmd = args[0][0];
-
-            const newHistory = [...this.state.history];
-            const commandInputLine = {line: `${this.#pmpt()}${e.target.value}`, className: '', remove_spaces: true};
-            newHistory.push(commandInputLine);
-            let cmdOutput;
-
+            this.#parseAndHandleCmd(e.target.value);
             e.target.value = '';
+        }
+    }
 
+    #parseAndHandleCmd = async (str) => {
+        const trimmed = str.trim();
+        const ambersands = trimmed.split('&&');
+        const pipes = trimmed.split('|');
+        const args = pipes.map(e => e.split(' '));
+
+        const args2 = str
+            .split('&&')  // splits along the 'and' operator
+            .map(e => e.split('|') // splits along the 'pipe' operator
+                .map(i => i
+                    .split(' ') // splits along all spaces
+                    .filter(j => j !== '') // removes empty arguments
+        ))
+
+        console.log(args2)
+
+        const cmd = args[0][0];
+        
+        const newHistory = [...this.state.history];
+        const commandInputLine = {line: `${this.#pmpt()}${str}`, className: '', remove_spaces: true};
+        newHistory.push(commandInputLine);
+        
+        let cmdOutput = [];
+        if(trimmed.length > 0){
             try{
+                
                 cmdOutput = await this.#commands[cmd](args[0]);
             }catch(e){
                 cmdOutput = [
                     {line: "", className: '', remove_spaces: false},
-                    {line: "Unrecognized command; type help for a list of commands.", className: 'command-output-error', remove_spaces: true},
+                    {line: `Unrecognized command ${cmd}; type help for a list of commands.`, className: 'command-output-error', remove_spaces: true},
                     {line: "", className: '', remove_spaces: false}
                 ];
             }
-
-            this.setState({history: newHistory, currentCommandOutput: cmdOutput});
-            
         }
+
+        if(!cmdOutput) cmdOutput=[{line: "terribly sorry, but that command hasn't been implemented yet... its on the docket !", className: 'command-output-error', remove_spaces: true},]
+
+        this.setState({history: newHistory, currentCommandOutput: cmdOutput, initialCommand: false});
     }
 
     #isCurrentlyTyping = () => {
         return document.getElementsByClassName('is-typing').length > 0;
     }
 
-    #print(line, show_animation=false, speed=100) {
+    #print(line, show_animation=false, speed=100, callback=()=>{}) {
         return <Text
             key={this.#keyProps++}
             purge_multiple_spaces={line.remove_spaces}
@@ -79,6 +100,12 @@ export default class Terminal extends React.Component {
             className={line.className}
             show_animation={show_animation}
             speed={speed}
+            before_string={`${line.before_string ? line.before_string: ''}`}
+            link={line.link}
+            time_before_typing={line.time_before_typing}
+            show_cursor={line.show_cursor}
+            time_after_typing={line.time_after_typing}
+            callback={callback}
         />
     }
 
@@ -92,7 +119,10 @@ export default class Terminal extends React.Component {
                 })
             }, 200
         )
-        console.log("is this runnning 5x a second?")
+    }
+
+    #doneWithInitialCommand = () => {
+        this.#parseAndHandleCmd(this.state.initialCommand);
     }
 
     render() {
@@ -121,7 +151,15 @@ export default class Terminal extends React.Component {
                         return this.#print(line, true, 10);
                     })
                 }
-                {this.state.currentCommandOutput.length===0 && <div>{this.#pmpt()}<input className="cmd-input" autoFocus onKeyDown={this.#enterNewCommand}></input></div>}
+                {this.state.currentCommandOutput.length===0 && !this.state.initialCommand && <div>{this.#pmpt()}<input className="cmd-input" autoFocus onKeyDown={this.#enterNewCommand}></input></div>}
+                {this.state.initialCommand && this.#print({
+                    line: this.state.initialCommand,
+                    remove_spaces: true,
+                    className: '',
+                    before_string: this.#pmpt(),
+                    show_cursor: true,
+                    time_after_typing: 500
+                }, true, 100, this.#doneWithInitialCommand)}
             </div>
         </div>);
         

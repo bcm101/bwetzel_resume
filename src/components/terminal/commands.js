@@ -9,8 +9,6 @@ export default class Commands {
         const options = [];
         const paths = [];
 
-        console.log(args)
-
         for(let i = 1; i < args.length; i++){
             console.log(args[i])
             if(args[i][0] === '-')
@@ -26,7 +24,10 @@ export default class Commands {
 
     async ls(args, piped = null){
 
-        console.log(this.#getOptions(args))
+        const input = this.#getOptions(args);
+
+        
+
 
         return [{line: 'hello world', remove_spaces: true, className: ''}];
     }

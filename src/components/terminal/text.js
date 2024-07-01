@@ -11,16 +11,23 @@ export default class Text extends Component{
         toggle_cursor: false
     }
 
+    /*additional props
+        link: for when a text is a link as well
+        before_string: text to display before typed text on the same line
+        callbaack: function to callback when done typing
+    */
     data = {
-        string: this.props.string || " ",
-        show_cursor: this.props.show_cursor === "true" || this.props.show_cursor === true,
-        purge_multiple_spaces: this.props.purge_multiple_spaces === "true" || this.props.purge_multiple_spaces === true,
-        show_animation: this.props.show_animation === "true" || this.props.show_animation === true,
-        speed: Math.abs(parseInt(this.props.speed)) || 100,
-        time_before_typing: parseInt(this.props.time_before_typing) ? Math.abs(parseInt(this.props.time_before_typing)) : 0,
-        time_after_typing: parseInt(this.props.time_after_typing) ? Math.abs(parseInt(this.props.time_after_typing)) : 0,
-        className: this.props.className || ""
+        string: this.props.string || " ", // string to type
+        show_cursor: this.props.show_cursor === "true" || this.props.show_cursor === true, // show cursor during animation
+        purge_multiple_spaces: this.props.purge_multiple_spaces === "true" || this.props.purge_multiple_spaces === true, // remove spaces from inbetween multiple (could be relevant for ASCII art)
+        show_animation: this.props.show_animation === "true" || this.props.show_animation === true, // show animation of typing
+        speed: Math.abs(parseInt(this.props.speed)) || 100, // typing speed animation
+        time_before_typing: parseInt(this.props.time_before_typing) ? Math.abs(parseInt(this.props.time_before_typing)) : 0, // time before typing while showing cursor
+        time_after_typing: parseInt(this.props.time_after_typing) ? Math.abs(parseInt(this.props.time_after_typing)) : 0, // time after typing while showing cursor
+        className: this.props.className || "" // additional classnames aside from built in for 'is-typing' and 'is-not-typing'
     }
+
+    callback = typeof this.props.callback === 'function' ? this.props.callback: () => {}
 
     render() {
 
@@ -50,7 +57,9 @@ export default class Text extends Component{
             
             const className = this.state.numbers_shown === this.data.string.length || !this.data.show_animation ? `is-not-typing ${this.data.className}`: `is-typing ${this.data.className}`;
 
-        
+            if(this.state.numbers_shown === this.data.string.length && this.data.time_after_typing <= 0){
+                this.callback();
+            }
 
         return (
             <div className={className}>
