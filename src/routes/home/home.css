@@ -1,8 +1,10 @@
 /* #home{
-    background-image:url(CXWwXA01.svg);
+    background-image:url(background.svg);
     height: 100vh;
     width: 100vw;
     background-size: cover;
+    z-index: -2;
+    position: absolute;
 } */
 
 #terminal-icon {
@@ -17,3 +19,39 @@
     cursor:pointer;
 }
 
+#mouse-pointer {
+    position: absolute;
+    left: 50vw;
+    top: 50vh;
+    height: 4vh;
+    width: 4vh;
+    background-image: url(pointer.png);
+    background-size: cover;
+    animation: mouse-move-to-click;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.65, 0.50, 0.40, 1);
+}
+
+@keyframes mouse-move-to-click {
+    97% {
+        left: calc(10vw + 4vh);
+        top: 14vh;
+        background-image: url(pointer.png);
+        height: 4vh;
+        width: 4vh;
+    }
+
+    98% {
+        left: calc(10vw + 4.5vh);
+        top: 14.5vh;
+        height: 3vh;
+        width: 3vh;
+    }
+
+    100% {
+        left: calc(10vw + 4vh);
+        top: 14vh;
+    }
+
+}

@@ -6,7 +6,7 @@ export default class Home extends Component {
 
     state = {
         terminalMinimized: false,
-        terminalOpen: true,
+        terminalOpen: false,
         firstClicked: true
     }
 
@@ -24,8 +24,6 @@ export default class Home extends Component {
     #terminalMinimized = () => {
         this.setState({terminalMinimized: true})
     }
-
-    
 
     render(){
 
@@ -46,6 +44,7 @@ export default class Home extends Component {
                 />
             }
             <div id='terminal-icon' onClick={this.#openTerminal}></div>
+            <div id='mouse-pointer'></div>
         </div>);
     }
 
