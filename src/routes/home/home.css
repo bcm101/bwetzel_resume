@@ -23,8 +23,8 @@
     position: absolute;
     left: 50vw;
     top: 50vh;
-    height: 4vh;
-    width: 4vh;
+    height: 6vh;
+    width: 6vh;
     background-image: url(pointer.png);
     background-size: cover;
     animation: mouse-move-to-click;
@@ -35,23 +35,23 @@
 
 @keyframes mouse-move-to-click {
     97% {
-        left: calc(10vw + 4vh);
+        left: calc(10vw + 3vh);
         top: 14vh;
         background-image: url(pointer.png);
-        height: 4vh;
-        width: 4vh;
+        height: 6vh;
+        width: 6vh;
     }
 
     98% {
-        left: calc(10vw + 4.5vh);
-        top: 14.5vh;
-        height: 3vh;
-        width: 3vh;
+        left: calc(10vw + 3.5vh);
+        top: 13vh;
+        height: 5vh;
+        width: 5vh;
     }
 
     100% {
-        left: calc(10vw + 4vh);
-        top: 14vh;
+        left: calc(10vw + 3vh);
+        top: 13vh;
     }
 
 }

@@ -158,7 +158,8 @@ export default class Terminal extends React.Component {
                     className: '',
                     before_string: this.#pmpt(),
                     show_cursor: true,
-                    time_after_typing: 500
+                    time_after_typing: 500,
+                    time_before_typing: 500
                 }, true, 100, this.#doneWithInitialCommand)}
             </div>
         </div>);

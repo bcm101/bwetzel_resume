@@ -7,14 +7,15 @@ export default class Home extends Component {
     state = {
         terminalMinimized: false,
         terminalOpen: false,
-        firstClicked: true
+        firstClicked: true,
+        playingClickingAnimation: true
     }
 
     #mounted = false;
     #initialCommand = 'cat BMW_Resume.txt && ls *';
 
     #openTerminal = () => {
-        this.setState({terminalOpen: true, terminalMinimized: false})
+        this.setState({terminalOpen: true, terminalMinimized: false, playingClickingAnimation: false})
     }
 
     #terminalClosed = () => {
@@ -26,6 +27,11 @@ export default class Home extends Component {
     }
 
     render(){
+
+        if(this.state.playingClickingAnimation) window.setTimeout(() => {
+            if(this.state.playingClickingAnimation)
+                this.setState({playingClickingAnimation: false, terminalOpen: true})
+        }, 3000)
 
         return (<div id='home'>
             {this.state.firstClicked && this.state.terminalOpen &&
@@ -44,7 +50,7 @@ export default class Home extends Component {
                 />
             }
             <div id='terminal-icon' onClick={this.#openTerminal}></div>
-            <div id='mouse-pointer'></div>
+            {this.state.playingClickingAnimation && <div id='mouse-pointer'></div>}
         </div>);
     }
 
