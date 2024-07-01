@@ -48,12 +48,7 @@ export default class Terminal extends React.Component {
     }
 
     #parseAndHandleCmd = async (str) => {
-        const trimmed = str.trim();
-        const ambersands = trimmed.split('&&');
-        const pipes = trimmed.split('|');
-        const args = pipes.map(e => e.split(' '));
-
-        const args2 = str
+        const args = str
             .split('&&')  // splits along the 'and' operator
             .map(e => e.split('|') // splits along the 'pipe' operator
                 .map(i => i
@@ -61,23 +56,29 @@ export default class Terminal extends React.Component {
                     .filter(j => j !== '') // removes empty arguments
         ))
 
-        console.log(args2)
-
-        const cmd = args[0][0];
         
         const newHistory = [...this.state.history];
         const commandInputLine = {line: `${this.#pmpt()}${str}`, className: '', remove_spaces: true};
         newHistory.push(commandInputLine);
         
+        let cmd = args[0][0][0];
         let cmdOutput = [];
-        if(trimmed.length > 0){
+        if(str.trim().length > 0){
             try{
-                
-                cmdOutput = await this.#commands[cmd](args[0]);
+                for(let i = 0; i < args.length; i++){
+                    const pipeGroup = args[i];
+                    let out = null;
+
+                    for(let j = 0; j < pipeGroup.length; j++){
+                        out = await this.#commands[cmd](args[i][j], out)
+                    }
+
+                    cmdOutput = [...cmdOutput, ...out];
+                }
             }catch(e){
                 cmdOutput = [
                     {line: "", className: '', remove_spaces: false},
-                    {line: `Unrecognized command ${cmd}; type help for a list of commands.`, className: 'command-output-error', remove_spaces: true},
+                    {line: `Unrecognized command '${cmd}'; type help for a list of commands.`, className: 'command-output-error', remove_spaces: true},
                     {line: "", className: '', remove_spaces: false}
                 ];
             }

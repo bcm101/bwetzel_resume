@@ -70,6 +70,8 @@ export default class Commands {
     
     async cat(args){
 
+        return [{line: 'hello world', remove_spaces: true, className: ''}];
+
     }
 
     async echo(args){
