@@ -50,6 +50,7 @@ export default class Home extends Component {
                 />
             }
             <div id='terminal-icon' onClick={this.#openTerminal}></div>
+            <div id='terminal-icon-background'></div>
             {this.state.playingClickingAnimation && <div id='mouse-pointer'></div>}
         </div>);
     }
