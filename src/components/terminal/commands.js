@@ -24,7 +24,8 @@ export default class Commands {
     async ls(args, piped = null){
 
         const {options, paths} = this.#getOptions(args);
-        console.log(options,paths)        
+        
+
 
 
         return [{line: 'hello world', remove_spaces: true, className: ''}];
@@ -103,7 +104,20 @@ export default class Commands {
         }
 
         for(let i = 0; i < paths.length; i++){
-            const pathOfFile = [...currentPath, paths[i]]
+            
+            
+            const parsedPath = paths[i]
+            .split('/')
+            .filter(d => d !== '')
+
+            const pathOfFile = [...currentPath, ...parsedPath];
+
+            for(let j = pathOfFile.length -1; j >= 0; j--){
+                const d = pathOfFile[j];
+                if(d === '..'){
+                    pathOfFile.splice(j-1, 2);
+                }
+            }
 
             let output;
             try{
