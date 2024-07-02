@@ -63,13 +63,14 @@ export default class Terminal extends React.Component {
         
         let cmd = args[0][0][0];
         let cmdOutput = [];
+
         if(str.trim().length > 0){
             try{
                 for(let i = 0; i < args.length; i++){
 
                     const pipeGroup = args[i];
                     let out = null;
-                    let cmd = args[i][0][0];
+                    cmd = args[i][0][0];
 
                     for(let j = 0; j < pipeGroup.length; j++){
                         out = await this.#commands[cmd](args[i][j], out)
@@ -152,10 +153,6 @@ export default class Terminal extends React.Component {
                 })}
                 {this.state.currentCommandOutput.length > 0 &&
                     this.state.currentCommandOutput.map((line, index) => {
-                        {/* console.log(line) */}
-                        {/* const toPrint = line;
-                        toPrint.time_before_typing = 20*index; */}
-
                         const toPrint = line;
                         toPrint.time_before_typing = 50*index;
                         return this.#print(toPrint, true, 10);

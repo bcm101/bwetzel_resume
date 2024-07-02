@@ -68,6 +68,13 @@ export default class Commands {
 
     async ls(args, piped = null){
 
+        if(!args) return [
+            {line: "ls [OPTIONS] [PATHS TO DIRECTORIES]", className: 'folder', remove_spaces: true},
+            {line: "displays the contents of all listed directories", className: 'opened-file', remove_spaces: true},
+            {line: "   options:", className: 'opened-file', remove_spaces: false},
+            {line: "      R: recursively search through to find all subdirectories", className: 'opened-file', remove_spaces: false},
+        ]
+
         let {options, paths} = await this.#getOptions(args);
         
         const recursivelyListAll = options.includes('R');
@@ -95,7 +102,7 @@ export default class Commands {
                     ...output, 
                     {line: `${allPaths[i].join('/')}: `, className: 'folder', remove_spaces: false},
                     ...(content.map(f => {
-                        return {line: `${f.name}: `, className: f.type === 3 || f.type === 5 ? 'folder': 'file', remove_spaces: false}
+                        return {line: `   ${f.name}: `, className: f.type === 3 || f.type === 5 ? 'folder': 'file', remove_spaces: false}
                     })),
                     {line: " ", className: 'folder', remove_spaces: false}
                 ];
@@ -110,14 +117,46 @@ export default class Commands {
 
     async pwd(args, piped = null){
 
+        if(!args) return [
+            {line: "pwd", className: 'folder', remove_spaces: true},
+            {line: "displays the current working directory", className: 'opened-file', remove_spaces: true},
+        ]
+
+        return [{line: this.#FS.getCurrentPath().join('/'), className: 'folder', remove_spaces: false}];
     }
     
     async cd(args){
 
+        if(!args) return [
+            {line: "cd [PATH TO DIRECTORY]", className: 'folder', remove_spaces: true},
+            {line: "changes the working directory to the path given", className: 'opened-file', remove_spaces: true},
+        ]
+
+        const {_opt, paths} = await this.#getOptions(args);
+
+        const newPath = this.#parsePath(paths[0]);
+
+        try{
+            await this.#FS.changeLocation(newPath);
+            return [{line: " ", className: 'folder', remove_spaces: false}];
+        }catch(e){
+            return [{line: "Error in syntax or not a directory", className: 'command-output-error', remove_spaces: false}];
+        }
     }
 
     async mkdir(args){
 
+        if(!args) return [
+            {line: "mkdir [OPTIONS] [PATHS TO DIRECTORIES]", className: 'folder', remove_spaces: true},
+            {line: "creates a directory at the given paths", className: 'opened-file', remove_spaces: true},
+            {line: "   options:", className: 'opened-file', remove_spaces: false},
+            {line: "      [-v]: shows a message for every directory created", className: 'opened-file', remove_spaces: false},
+            {line: "      [-p]: creates a parent directory, as needed", className: 'opened-file', remove_spaces: false}
+        ]
+
+
+
+        const {_opt, paths} = await this.#getOptions(args);
     }
 
     async mv(args){
@@ -145,6 +184,15 @@ export default class Commands {
     }
     
     async cat(args, piped){
+
+        if(!args) return [
+            {line: "cat [OPTIONS] [PATHS TO FILES]", className: 'folder', remove_spaces: true},
+            {line: "Returns the contents of a particular file or set of files", className: 'opened-file', remove_spaces: true},
+            {line: "   options:", className: 'opened-file', remove_spaces: false},
+            {line: "      [-n]: display line numbers for each line", className: 'opened-file', remove_spaces: false},
+            {line: "      [-s]: do not return empty lines", className: 'opened-file', remove_spaces: false},
+            {line: "      [-b]: omit empty lines from having numbers with -n", className: 'opened-file', remove_spaces: false},
+        ]
 
         const currentPath = this.#FS.getCurrentPath();
 
@@ -240,5 +288,27 @@ export default class Commands {
 
     async nano(args){
 
+    }
+
+    async help(args){
+
+        if(!args) return [
+            {line: "help", className: 'folder', remove_spaces: true},
+            {line: "gives a description of all commands", className: 'opened-file', remove_spaces: true},
+        ]
+
+        const allCommands = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
+        allCommands.splice(allCommands.indexOf("constructor"), 1);
+        
+        let output = [];
+
+        for(let i = 0; i < allCommands.length; i++){
+            const cmd = allCommands[i];
+            const cmdDesc = await this[cmd]();
+            if(cmdDesc) output = [...output, ...cmdDesc, {line: ' ', remove_spaces: false}];
+        }
+        
+
+        return output;
     }
 }

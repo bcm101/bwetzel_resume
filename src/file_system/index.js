@@ -490,14 +490,18 @@ export default class FileSystem {
                 this.#viewObjByPathDB(path).catch(error => {
                     reject('location not found');
                 }).then(e => {
-                    if(e.folder){
+                    if(e && e.folder){
                         this.#currentPath = path;
                         resolve('moved to path');
+                    }
+                    else{
+                        reject('not folder');
                     }
                 })
             else{
                 let f = this.#viewObjByPathLocal(path);
                 if(f && f.folder) resolve('moved to path locally');
+                else reject('not folder or not found');
             }
                 
         })
