@@ -5,9 +5,9 @@ export default class Commands {
 
     #FS = getFS();
 
-    #getOptions(args){
-        const options = [];
-        const paths = [];
+    async #getOptions(args){
+        let options = [];
+        let paths = [];
 
         for(let i = 1; i < args.length; i++){
             if(args[i][0] === '-')
@@ -18,17 +18,94 @@ export default class Commands {
             }
         }
 
+        if(paths.includes('*')){
+            const currentPath = this.#FS.getCurrentPath();
+            paths.splice(paths.indexOf('*'), 1);
+            const allPaths = await this.#FS.getFolder(currentPath);
+            paths = [...paths, ...allPaths.folder.map(f => f.name)];
+        }
+
         return {options, paths};
+    }
+
+    #parsePath(pathStr){
+        const currentPath = this.#FS.getCurrentPath();
+
+        const appendPath = pathStr
+            .split('/')
+            .filter(d => d !== '')
+
+        const pathOfFile = [...currentPath, ...appendPath];
+
+        for(let j = pathOfFile.length -1; j >= 0; j--)
+            if(pathOfFile[j] === '..')
+                pathOfFile.splice(j-1, 2);
+
+        return pathOfFile;
+    }
+
+    async #findAllContained(path, recursive = true, total=[]){
+        try{
+            const allContentsAtPath = (await this.#FS.getFolder(path)).folder;
+            allContentsAtPath
+                .map(f => [...path, f.name])
+                .forEach(p => total.push(p));
+                
+            for(let i = 0; i < allContentsAtPath.length; i++){
+                const f = allContentsAtPath[i];
+                if((f.type === 5 || f.type === 3) && recursive)
+                    await this.#findAllContained([...path, f.name], true, total);
+            }
+
+        }
+        catch(e){
+            console.error(e)
+            return null;
+        }
+
+        return total;
     }
 
     async ls(args, piped = null){
 
-        const {options, paths} = this.#getOptions(args);
+        let {options, paths} = await this.#getOptions(args);
         
+        const recursivelyListAll = options.includes('R');
+        const noSpecifiedDirectories = !paths.length;
 
+        if(noSpecifiedDirectories) paths=[this.#FS.getCurrentPath()];
 
+        let allPaths = [];
 
-        return [{line: 'hello world', remove_spaces: true, className: ''}];
+        if(recursivelyListAll)
+            for(let i = 0; i < paths.length; i++){
+                const pathF = noSpecifiedDirectories ? this.#FS.getCurrentPath(): this.#parsePath(paths[i]);
+                const allSubPaths = await this.#findAllContained(pathF, recursivelyListAll);
+                allPaths = [...allPaths, pathF, ...allSubPaths];
+            }
+        else if(noSpecifiedDirectories) allPaths = paths;
+        else allPaths = paths.map(p => this.#parsePath(p));
+
+        let output = [];
+        
+        for(let i = 0; i < allPaths.length; i++){
+            try{
+                const content = (await this.#FS.getFolder(allPaths[i])).folder;
+                output = [
+                    ...output, 
+                    {line: `${allPaths[i].join('/')}: `, className: 'folder', remove_spaces: false},
+                    ...(content.map(f => {
+                        return {line: `${f.name}: `, className: f.type === 3 || f.type === 5 ? 'folder': 'file', remove_spaces: false}
+                    })),
+                    {line: " ", className: 'folder', remove_spaces: false}
+                ];
+                
+            }catch(e){
+                continue;
+            }
+        }
+
+        return output;
     }
 
     async pwd(args, piped = null){
@@ -71,15 +148,7 @@ export default class Commands {
 
         const currentPath = this.#FS.getCurrentPath();
 
-        const opt = this.#getOptions(args);
-        let options = opt.options;
-        let paths = opt.paths;
-
-        if(paths.includes('*')){
-            paths.splice(paths.indexOf('*'), 1);
-            const allPaths = await this.#FS.getFolder(currentPath);
-            paths = [...allPaths.folder.map(f => f.name)];
-        }
+        let {options, paths} = await this.#getOptions(args);
 
         const displayLineNumber = options.includes('n');
         const suppressEmptyLines = options.includes('s');
@@ -96,7 +165,7 @@ export default class Commands {
                 ret.line = `${i+1}. ${ret.line}`;
 
                 return ret;
-            })
+            });
 
             if(suppressEmptyLines) piped = piped.filter(li => li.line.trim().length > 0);
 
@@ -104,20 +173,8 @@ export default class Commands {
         }
 
         for(let i = 0; i < paths.length; i++){
-            
-            
-            const parsedPath = paths[i]
-            .split('/')
-            .filter(d => d !== '')
 
-            const pathOfFile = [...currentPath, ...parsedPath];
-
-            for(let j = pathOfFile.length -1; j >= 0; j--){
-                const d = pathOfFile[j];
-                if(d === '..'){
-                    pathOfFile.splice(j-1, 2);
-                }
-            }
+            const pathOfFile = this.#parsePath(paths[i]);
 
             let output;
             try{

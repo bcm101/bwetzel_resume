@@ -12,7 +12,7 @@ export default class Home extends Component {
     }
 
     #mounted = false;
-    #initialCommand = 'cat BMW_Resume.txt && ls *';
+    #initialCommand = 'cat BMW_Resume.txt && ls -3 *';
 
     #openTerminal = () => {
         this.setState({terminalOpen: true, terminalMinimized: false, playingClickingAnimation: false})

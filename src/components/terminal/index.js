@@ -78,6 +78,7 @@ export default class Terminal extends React.Component {
                     cmdOutput = [...cmdOutput, ...out];
                 }
             }catch(e){
+                console.error(e); //remove when done testing
                 cmdOutput = [
                     {line: "", className: '', remove_spaces: false},
                     {line: `Unrecognized command '${cmd}'; type help for a list of commands.`, className: 'command-output-error', remove_spaces: true},
