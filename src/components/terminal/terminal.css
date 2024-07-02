@@ -10,8 +10,7 @@
 
 .terminal .terminal-top{
     position: sticky;
-    height: 5%;
-    max-height: 30px;
+    height: 4.5vh;
     width: 100%;
     background-color: rgb(76, 76, 76);
     text-align: left;
@@ -23,7 +22,7 @@
     width: 40%;
 }
 
-.terminal .terminal-top .cmd-label div{
+.terminal .terminal-top .cmd-label .icon{
     float: left;
     height: 3vh;
     width: 3vh;
@@ -31,8 +30,17 @@
     background-size: cover;
     margin-left: 10px;
     border-radius: 5px;
-    margin-top: .25%;
+    margin-top: .5vh;
 }
+
+.terminal .terminal-top .cmd-label .terminal-name{
+    float: left;
+    height: 3vh;
+    margin-left: 10px;
+    border-radius: 5px;
+    margin-top: .5vh;
+}
+
 
 .terminal .terminal-top .bar-button{
     height: 100%;
@@ -54,7 +62,7 @@
     background-color: black;
     color: rgb(0, 164, 0);
     text-align: left;
-    height: 100%;
+    height: calc(100% - 4.5vh);
     width: 100%;
     position: sticky;
     font-family: Lucida Console;

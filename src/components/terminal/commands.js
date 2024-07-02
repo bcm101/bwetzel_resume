@@ -23,9 +23,8 @@ export default class Commands {
 
     async ls(args, piped = null){
 
-        const input = this.#getOptions(args);
-
-        
+        const {options, paths} = this.#getOptions(args);
+        console.log(options,paths)        
 
 
         return [{line: 'hello world', remove_spaces: true, className: ''}];
@@ -88,6 +87,21 @@ export default class Commands {
 
         let totalOutput = [];
 
+        if(piped){
+
+            if(displayLineNumber) piped = piped.map((li, i) => {
+                const ret = {...li};
+                if(omitLineNumbersFromEmpty && ret.line.trim().length === 0) return ret;
+                ret.line = `${i+1}. ${ret.line}`;
+
+                return ret;
+            })
+
+            if(suppressEmptyLines) piped = piped.filter(li => li.line.trim().length > 0);
+
+            return piped;
+        }
+
         for(let i = 0; i < paths.length; i++){
             const pathOfFile = [...currentPath, paths[i]]
 
@@ -96,22 +110,26 @@ export default class Commands {
                 
                 output = await this.#FS.getFile(pathOfFile);
 
-                if(output.file) output = output.file;
+                if(output.length) output = [...output];
+                if(output.file) output = output.file.split('\n').map(line => {return {line, className: '', remove_spaces: true}});
 
                 if(displayLineNumber) output = output.map((li, i) => {
-                    const ret = li;
-                    if(omitLineNumbersFromEmpty && ret.line === '') return ret;
+                    const ret = {...li};
+                    if(omitLineNumbersFromEmpty && ret.line.trim().length === 0) return ret;
                     ret.line = `${i+1}. ${ret.line}`;
 
                     return ret;
                 })
 
-                if(suppressEmptyLines) output = output.filter(li => li.line.length > 0);
+                if(suppressEmptyLines) output = output.filter(li => li.line.trim().length > 0);
 
-                if(multipleFilesOpening) output = [pathOfFile.join('/'), ...output, {line: '', remove_spaces:false, className: ''}];
-
+                if(multipleFilesOpening) output = [
+                    {line: '', remove_spaces:false, className: ''},
+                    {line: pathOfFile.join('/'), remove_spaces: true, className: 'folder'}
+                    , ...output
+                ];
             }catch(e){
-                output = [{line: `${pathOfFile} is not a file or is not found`, remove_spaces: true, className: ''}];
+                output = [{line: `${pathOfFile} is not a file or is not found`, remove_spaces: true, className: 'command-output-error'}];
             }
 
             totalOutput = [...totalOutput, ...output];

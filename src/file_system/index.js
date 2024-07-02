@@ -42,7 +42,7 @@ export default class FileSystem {
             {name: "maze_maker.html", type: this.#TYPES.APP},
             {name: "word_search_maker.html", type: this.#TYPES.APP},
             {name: "word_randomizer.html", type: this.#TYPES.APP},
-            {name: "README.md", type: this.#TYPES.FILE}
+            {name: "README.md", type: this.#TYPES.BUILT_IN_FILE}
         ]},
         {path: ['~', 'Academia'], data: [
             {name: "thesis_info.txt", type: this.#TYPES.BUILT_IN_FILE},

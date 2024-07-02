@@ -134,7 +134,7 @@ export default class Terminal extends React.Component {
 
         return (<div className={this.#getClassnames()}>
             <div className="terminal-top">
-                <div className="cmd-label"><div></div>linux&#32;terminal</div>
+                <div className="cmd-label"><div className="icon"></div><div className="terminal-name">linux&#32;terminal</div></div>
                 <div className="bar-button close" onClick={this.#closeTerminal}>
                     <div>x</div>
                 </div>
@@ -150,8 +150,14 @@ export default class Terminal extends React.Component {
                     return this.#print(line);
                 })}
                 {this.state.currentCommandOutput.length > 0 &&
-                    this.state.currentCommandOutput.map((line) => {
-                        return this.#print(line, true, 10);
+                    this.state.currentCommandOutput.map((line, index) => {
+                        {/* console.log(line) */}
+                        {/* const toPrint = line;
+                        toPrint.time_before_typing = 20*index; */}
+
+                        const toPrint = line;
+                        toPrint.time_before_typing = 50*index;
+                        return this.#print(toPrint, true, 10);
                     })
                 }
                 {this.state.currentCommandOutput.length===0 && !this.state.initialCommand && <div>{this.#pmpt()}<input className="cmd-input" autoFocus onKeyDown={this.#enterNewCommand}></input></div>}
