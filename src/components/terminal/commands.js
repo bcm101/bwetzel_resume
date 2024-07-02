@@ -10,7 +10,6 @@ export default class Commands {
         const paths = [];
 
         for(let i = 1; i < args.length; i++){
-            console.log(args[i])
             if(args[i][0] === '-')
                 for(let j = 1; j < args[i].length; j++)
                     options.push(args[i][j]);
@@ -68,9 +67,57 @@ export default class Commands {
 
     }
     
-    async cat(args){
+    async cat(args, piped){
 
-        return [{line: 'hello world', remove_spaces: true, className: ''}];
+        const currentPath = this.#FS.getCurrentPath();
+
+        const opt = this.#getOptions(args);
+        let options = opt.options;
+        let paths = opt.paths;
+
+        if(paths.includes('*')){
+            paths.splice(paths.indexOf('*'), 1);
+            const allPaths = await this.#FS.getFolder(currentPath);
+            paths = [...allPaths.folder.map(f => f.name)];
+        }
+
+        const displayLineNumber = options.includes('n');
+        const suppressEmptyLines = options.includes('s');
+        const omitLineNumbersFromEmpty = options.includes('b');
+        const multipleFilesOpening = paths.length > 1;
+
+        let totalOutput = [];
+
+        for(let i = 0; i < paths.length; i++){
+            const pathOfFile = [...currentPath, paths[i]]
+
+            let output;
+            try{
+                
+                output = await this.#FS.getFile(pathOfFile);
+
+                if(output.file) output = output.file;
+
+                if(displayLineNumber) output = output.map((li, i) => {
+                    const ret = li;
+                    if(omitLineNumbersFromEmpty && ret.line === '') return ret;
+                    ret.line = `${i+1}. ${ret.line}`;
+
+                    return ret;
+                })
+
+                if(suppressEmptyLines) output = output.filter(li => li.line.length > 0);
+
+                if(multipleFilesOpening) output = [pathOfFile.join('/'), ...output, {line: '', remove_spaces:false, className: ''}];
+
+            }catch(e){
+                output = [{line: `${pathOfFile} is not a file or is not found`, remove_spaces: true, className: ''}];
+            }
+
+            totalOutput = [...totalOutput, ...output];
+        }
+
+        return totalOutput;
 
     }
 

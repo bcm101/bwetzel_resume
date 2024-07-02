@@ -61,13 +61,15 @@ export default class Terminal extends React.Component {
         const commandInputLine = {line: `${this.#pmpt()}${str}`, className: '', remove_spaces: true};
         newHistory.push(commandInputLine);
         
-        let cmd = args[0][0][0];
+        let cmd;
         let cmdOutput = [];
         if(str.trim().length > 0){
             try{
                 for(let i = 0; i < args.length; i++){
+
                     const pipeGroup = args[i];
                     let out = null;
+                    let cmd = args[i][0][0];
 
                     for(let j = 0; j < pipeGroup.length; j++){
                         out = await this.#commands[cmd](args[i][j], out)

@@ -323,13 +323,13 @@ export default class FileSystem {
             if(this.#database){ // if the database exists, 
                 this.#viewObjByPathDB(path).catch(error => {
                     const f = this.#viewObjByPathLocal(path);
-                    if(f && f.file){
+                    if(f && (f.file || f.length > 0)){
                         resolve(f);
                     }else{
                         reject(`Error: ${path.join('/')} is not a file`);
                     }
                 }).then(f => {
-                    if(f && f.file)
+                    if(f && (f.file || f.length > 0))
                         resolve(f);
                     else{
                         reject(`Error: ${path.join('/')} is not a file`);
@@ -337,7 +337,7 @@ export default class FileSystem {
                 })
             }else{
                 const f = this.#viewObjByPathLocal(path);
-                if(f && f.file){
+                if(f && (f.file || f.length > 0)){
                     resolve(f);
                 }else{
                     reject(`Error: ${path.join('/')} is not a file`);
@@ -347,6 +347,7 @@ export default class FileSystem {
     }
 
     getFolder(path){
+
         return new Promise((resolve, reject) => {
             if(this.#database){ // if the database exists, 
                 this.#viewObjByPathDB(path).catch(error => {
