@@ -22,6 +22,7 @@ export default class Commands {
             const currentPath = this.#FS.getCurrentPath();
             paths.splice(paths.indexOf('*'), 1);
             const allPaths = await this.#FS.getFolder(currentPath);
+            console.log(allPaths)
             paths = [...paths, ...allPaths.folder.map(f => f.name)];
         }
 
@@ -210,6 +211,33 @@ export default class Commands {
     }
 
     async touch(args){
+        if(!args) return [
+            {line: "touch [PATHS TO FILES]", className: 'folder', remove_spaces: true},
+            {line: "creates a directory at the given paths", className: 'opened-file', remove_spaces: true}
+        ]
+
+        const {_, paths} = await this.#getOptions(args);
+
+        for(let i = 0; i < paths.length; i++){
+            const path = this.#parsePath(paths[i]);
+            const locationPath = path.slice(0, path.length-1);
+
+            try{
+                await this.#FS.getFolder(locationPath);
+                await this.#FS.addFile(path, "");
+            }catch(e){
+                console.error(e);
+                return [{line: "error: cannot create file at path specified", className: "command-output-error", remove_spaces:true}];
+            }
+
+
+
+        }
+
+
+        const output = [];
+
+        return [{line: "hello world", className: "command-output-error", remove_spaces:true}];
 
     }
 
@@ -264,7 +292,7 @@ export default class Commands {
                 output = await this.#FS.getFile(pathOfFile);
 
                 if(output.length) output = [...output];
-                if(output.file) output = output.file.split('\n').map(line => {return {line, className: '', remove_spaces: true}});
+                if(output.file || output.file === "") output = output.file.split('\n').map(line => {return {line, className: '', remove_spaces: true}});
 
                 if(displayLineNumber) output = output.map((li, i) => {
                     const ret = {...li};
@@ -282,7 +310,8 @@ export default class Commands {
                     , ...output
                 ];
             }catch(e){
-                output = [{line: `${pathOfFile} is not a file or is not found`, remove_spaces: true, className: 'command-output-error'}];
+                console.log(e)
+                output = [{line: `${pathOfFile.join('/')} is not a file or is not found`, remove_spaces: true, className: 'command-output-error'}];
             }
 
             totalOutput = [...totalOutput, ...output];

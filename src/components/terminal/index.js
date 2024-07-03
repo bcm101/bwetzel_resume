@@ -56,7 +56,6 @@ export default class Terminal extends React.Component {
                     .filter(j => j !== '') // removes empty arguments
         ))
 
-        
         const newHistory = [...this.state.history];
         const commandInputLine = {line: `${this.#pmpt()}${str}`, className: '', remove_spaces: true};
         newHistory.push(commandInputLine);

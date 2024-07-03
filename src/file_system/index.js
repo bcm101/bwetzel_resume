@@ -146,7 +146,7 @@ export default class FileSystem {
 
             const promises = Promise.all(filesToAdd.map(f => {
                 return new Promise((resolve, reject) => {
-                    if(((f.file && f.folder) || (!f.file && !f.folder)) && !f.builtIn){
+                    if((((f.file || f.file==="") && f.folder) || (!(f.file || f.file==="") && !f.folder)) && !f.builtIn){
                         reject(`error in transaction: ${f.path.join('/')} must be one of either a file or folder`);
                     }
 
@@ -162,7 +162,7 @@ export default class FileSystem {
                                 if(result && result.folder){
                                     result.folder = [...result.folder, {
                                         name: f.path[f.path.length-1], 
-                                        type: f.file ? this.#TYPES.FILE: this.#TYPES.FOLDER
+                                        type: f.file || f.file==="" ? this.#TYPES.FILE: this.#TYPES.FOLDER
                                     }];
                                     const query3 = objectStore.put(result);
         
@@ -204,7 +204,7 @@ export default class FileSystem {
 
             request.addEventListener('error', (error) => reject(error));
             request.addEventListener('success', e => {
-                if(e.target.result && e.target.result.file && e.target.result.builtIn){
+                if(e.target.result && (e.target.result.file || e.target.result.file === "") && e.target.result.builtIn){
                     resolve(built_in_files(path.join('/')));
                 }else
                     resolve(e.target.result);
@@ -249,21 +249,21 @@ export default class FileSystem {
 
     #addPathLocal(filesToAdd=[]){
         filesToAdd.forEach(f => {
-            if(((f.file && f.folder) || (!f.file && !f.folder))){
+            if((((f.file || f.file==="") && f.folder) || (!(f.file || f.file==="") && !f.folder))){
                 console.error(`error in transaction: ${f.path.join('/')} must be one of either a file or folder`)
             }
 
-            const path = f.path;
-            const pathStr = path.join('/');
+            const path = [...f.path];
             const name = path.pop();
+            const locationStr = path.join('/');
 
             let addedSuccessfully = false;
 
             for(let i = 0; i < this.#starterDB.length; i++){
-                if(this.#starterDB[i].path.join('/') === pathStr){
+                if(this.#starterDB[i].path.join('/') === locationStr){
                     this.#starterDB[i].data.push({
                         name: name, 
-                        type: (f.file) ? this.#TYPES.FILE: this.#TYPES.FOLDER,
+                        type: (f.file || f.file==="") ? this.#TYPES.FILE: this.#TYPES.FOLDER,
                         data: f.file
                     })
                     addedSuccessfully = true;
@@ -295,13 +295,24 @@ export default class FileSystem {
                             return built_in_files(path.join('/'));
                         }
                         
-                        const file = {
-                            path, 
-                            file: (currentFile.data) ? currentFile.data: false,
-                            folder: (currentFile.data) ? false: true
+                        if(currentFile.data || currentFile.data === ""){
+                            return {
+                                path, 
+                                file: currentFile.data,
+                                folder: false
+                            }
+                        }else{
+                            const pathStr = path.join('/');
+                            for(let k = 0; k < this.#starterDB.length; k++){
+                                if(this.#starterDB[k].path.join('/') === pathStr){
+                                    return {
+                                        path,
+                                        file: false,
+                                        folder: this.#starterDB[k].data
+                                    }
+                                }
+                            }
                         }
-
-                        return file;
                     }
                 }
             }
@@ -349,13 +360,13 @@ export default class FileSystem {
             if(this.#database){ // if the database exists, 
                 this.#viewObjByPathDB(path).catch(error => {
                     const f = this.#viewObjByPathLocal(path);
-                    if(f && (f.file || f.length > 0)){
+                    if(f && (f.file || f.file==="" || f.length > 0)){
                         resolve(f);
                     }else{
                         reject(`Error: ${path.join('/')} is not a file`);
                     }
                 }).then(f => {
-                    if(f && (f.file || f.length > 0))
+                    if(f && (f.file || f.file==="" || f.length > 0))
                         resolve(f);
                     else{
                         reject(`Error: ${path.join('/')} is not a file`);
@@ -363,7 +374,7 @@ export default class FileSystem {
                 })
             }else{
                 const f = this.#viewObjByPathLocal(path);
-                if(f && (f.file || f.length > 0)){
+                if(f && (f.file || f.file==="" || f.length > 0)){
                     resolve(f);
                 }else{
                     reject(`Error: ${path.join('/')} is not a file`);
@@ -406,14 +417,14 @@ export default class FileSystem {
             if(this.#database){ // if the database exists, 
                 this.#viewObjByPathDB(path).catch(error => {
                     const f = this.#viewObjByPathLocal(path);
-                    if(f && f.file){
+                    if(f && (f.file || f.file==="")){
                         this.#deleteOBJByPathLocal(path);
                         resolve('Deleted locally');
                     }else{
                         reject(`Error: ${path.join('/')} is not a file`);
                     }
                 }).then(f => {
-                    if(f && f.file)
+                    if(f && (f.file || f.file===""))
                         this.#deleteObjByPathDB(path, false).catch(error => {
                             reject('Error: could not delete file in DB');
                         }).then(f => {
@@ -425,7 +436,7 @@ export default class FileSystem {
                 })
             }else{
                 const f = this.#viewObjByPathLocal(path);
-                if(f && f.file){
+                if(f && (f.file || f.file==="")){
                     this.#deleteOBJByPathLocal(path);
                     resolve('Deleted locally');
                 }else{
@@ -437,7 +448,6 @@ export default class FileSystem {
 
     deleteFolder(path, recursive=false){
         return new Promise((resolve, reject) => {
-            console.log(this.#database);
             if(this.#database){ // if the database exists, 
                 this.#viewObjByPathDB(path).catch(error => {
                     const f = this.#viewObjByPathLocal(path);
@@ -482,10 +492,14 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             if(this.#database){
                 this.#addPathDB([{path, file, folder:false, builtIn: false}]).catch(error => {
-                    if(this.#addPathLocal([{path, file, folder:false, builtIn: false}])) reject('Error: could not find path');
+                    if(this.#addPathLocal([{path, file, folder:false, builtIn: false}])){ 
+                        console.log("did this run")
+                        reject('Error: could not find path');
+                    }
                     else resolve('added locally');
                 }).then(e => {
                     if(e) resolve('successfully added');
+                    else reject('not added');
                 })
             }else{
                 if(this.#addPathLocal([{path, file, folder:false, builtIn: false}])) reject('Error: could not find path');
@@ -514,7 +528,12 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             if(this.#database)
                 this.#viewObjByPathDB(path).catch(error => {
-                    reject('location not found');
+                    let f = this.#viewObjByPathLocal(path);
+                    if(f && f.folder){
+                        this.#currentPath = path;
+                        resolve('moved to path locally');
+                    }
+                    else reject('not folder or not found');
                 }).then(e => {
                     if(e && e.folder){
                         this.#currentPath = path;
@@ -526,7 +545,10 @@ export default class FileSystem {
                 })
             else{
                 let f = this.#viewObjByPathLocal(path);
-                if(f && f.folder) resolve('moved to path locally');
+                if(f && f.folder){
+                    this.#currentPath = path;
+                    resolve('moved to path locally');
+                }
                 else reject('not folder or not found');
             }
                 
