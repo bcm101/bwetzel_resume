@@ -102,7 +102,7 @@ export default class Commands {
                     ...output, 
                     {line: `${allPaths[i].join('/')}: `, className: 'folder', remove_spaces: false},
                     ...(content.map(f => {
-                        return {line: `   ${f.name}: `, className: f.type === 3 || f.type === 5 ? 'folder': 'file', remove_spaces: false}
+                        return {line: `   ${f.name}`, className: f.type === 3 || f.type === 5 ? 'folder': 'file', remove_spaces: false}
                     })),
                     {line: " ", className: 'folder', remove_spaces: false}
                 ];
@@ -154,9 +154,47 @@ export default class Commands {
             {line: "      [-p]: creates a parent directory, as needed", className: 'opened-file', remove_spaces: false}
         ]
 
+        const {options, paths} = await this.#getOptions(args);
 
+        const verbose = options.includes('v');
+        const createParent = options.includes('p');
 
-        const {_opt, paths} = await this.#getOptions(args);
+        const output = [];
+
+        for(let i = 0; i < paths.length; i++){
+            const path = paths[i];
+            const pathArr = this.#parsePath(path);
+            for(let j = 1; j < pathArr.length; j++){
+                const parentFolder = pathArr.slice(0, j);
+                try{
+                    await this.#FS.getFolder(parentFolder);
+                }catch(e){
+                    if(createParent){
+                        try{
+                            await this.#FS.addFolder(parentFolder);
+                            if(verbose) 
+                                output.push({line: `created folder ${parentFolder.join('/')}`, className: 'folder', remove_spaces: true});
+                        }catch(e){
+                            return [{line: `cannot create parent folder ${parentFolder.join('/')}`, className: 'command-output-error', remove_spaces: true}];
+                        }
+                    }else{
+                        return [{line: `cannot create parent folder ${parentFolder.join('/')}; try using [-p]`, className: 'command-output-error', remove_spaces: true}];
+                    }
+                }
+            } //only gets here if all exists/was created with no errors
+            try{
+                await this.#FS.addFolder(pathArr);
+                if(verbose)
+                    output.push({line: `created folder ${pathArr.join('/')}`, className: 'folder', remove_spaces: true});
+            }catch(e){
+                return [{line: `cannot create folder ${pathArr.join('/')}`, className: 'command-output-error', remove_spaces: true}];
+            }
+            
+        }
+
+        if(!verbose) return [{line: " ", remove_spaces: false, className: ' '}];
+
+        return output;
     }
 
     async mv(args){
@@ -169,10 +207,6 @@ export default class Commands {
 
     async rm(args){
 
-    }
-
-    async rm(args){
-        
     }
 
     async touch(args){

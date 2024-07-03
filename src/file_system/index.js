@@ -126,7 +126,7 @@ export default class FileSystem {
 
                 const table = this.#database.createObjectStore('filesorfolders', { keyPath: 'path'});
 
-                this.#addPathDB(this.#flattenStarterDB(), event.target.transaction)
+                this.#addPathDB(this.#flattenStarterDB(), event.target.transaction, true)
                 .catch(error => {console.error(error)})
                 .then(e => {
                     if(e) console.log("successfully added all starter paths to database");
@@ -136,7 +136,7 @@ export default class FileSystem {
         })
     }
 
-    #addPathDB(filesToAdd = [], txn = null) {
+    #addPathDB(filesToAdd = [], txn = null, addingBuiltIn=false) {
         return new Promise((resolve, reject) => {
             
             console.log("opening transaction");
@@ -150,15 +150,41 @@ export default class FileSystem {
                         reject(`error in transaction: ${f.path.join('/')} must be one of either a file or folder`);
                     }
 
-                    const query = objectStore.add(f);
-
-                    query.addEventListener('success', () => {
+                    const query1 = objectStore.add(f);
+                    
+                    query1.addEventListener('success', () => {
                         console.log("successfully added at ", f.path.join('/'));
+                        if(!addingBuiltIn){
+                            const query2 = objectStore.get(f.path.slice(0,f.path.length-1));
+
+                            query2.addEventListener('success', (e) => {
+                                const result = e.target.result;
+                                if(result && result.folder){
+                                    result.folder = [...result.folder, {
+                                        name: f.path[f.path.length-1], 
+                                        type: f.file ? this.#TYPES.FILE: this.#TYPES.FOLDER
+                                    }];
+                                    const query3 = objectStore.put(result);
+        
+                                    query3.addEventListener('success', (e) => {
+                                        console.log(`parent folder updated`);
+                                        resolve(e);
+                                    });
+                                    query3.addEventListener('error', () => {
+                                        console.error(`could not update parent directory`);
+                                        reject('could not update parent directory');
+                                    });
+        
+                                }else reject('parent is not folder');
+                            });
+
+                            query2.addEventListener('error', () => {
+                                console.error('could not retrieve parent folder');
+                                reject('could not retrieve parent folder');
+                            });
+                        }else resolve('added built in');
                     });
-                    query.addEventListener('complete', () => {
-                        resolve(f);
-                    });
-                    query.addEventListener('error', () => {
+                    query1.addEventListener('error', () => {
                         reject(`error in transaction: adding ${f.path.join('/')}`);
                     });
                 })
