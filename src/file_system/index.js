@@ -493,7 +493,6 @@ export default class FileSystem {
             if(this.#database){
                 this.#addPathDB([{path, file, folder:false, builtIn: false}]).catch(error => {
                     if(this.#addPathLocal([{path, file, folder:false, builtIn: false}])){ 
-                        console.log("did this run")
                         reject('Error: could not find path');
                     }
                     else resolve('added locally');
@@ -558,6 +557,41 @@ export default class FileSystem {
 
     getCurrentPath(){
         return this.#currentPath;
+    }
+
+    #pathExistsDB(path){
+        return new Promise((resolve, reject) => {
+            this.#viewObjByPathDB(path).catch(e => {
+                reject(false);
+                return null;
+            }).then(e => {
+                if(e) resolve(true);
+                else resolve(false);
+            })
+        })
+    }
+
+    #pathExistsLocal(path){
+        const f = this.#viewObjByPathLocal(path);
+        if(f) return true;
+        else return false;
+    }
+
+    pathExists(path){
+        return new Promise( async (resolve, reject) => {
+            const locallyExists = this.#pathExistsLocal(path);
+            let errorRaised = false;
+            let pathExistsDB = false;
+            try{
+                pathExistsDB = await this.#pathExistsDB(path);
+            }catch(e){
+                errorRaised = true;
+                pathExistsDB = false;
+            }
+
+            if(!this.#database || errorRaised) resolve(locallyExists);
+            else resolve(pathExistsDB);
+        })
     }
 
 }

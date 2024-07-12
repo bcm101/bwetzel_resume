@@ -22,7 +22,6 @@ export default class Commands {
             const currentPath = this.#FS.getCurrentPath();
             paths.splice(paths.indexOf('*'), 1);
             const allPaths = await this.#FS.getFolder(currentPath);
-            console.log(allPaths)
             paths = [...paths, ...allPaths.folder.map(f => f.name)];
         }
 
@@ -60,7 +59,6 @@ export default class Commands {
 
         }
         catch(e){
-            console.error(e)
             return null;
         }
 
@@ -130,7 +128,7 @@ export default class Commands {
 
         if(!args) return [
             {line: "cd [PATH TO DIRECTORY]", className: 'folder', remove_spaces: true},
-            {line: "changes the working directory to the path given", className: 'opened-file', remove_spaces: true},
+            {line: "changes the working directory to the path given", className: 'opened-file', remove_spaces: true}
         ]
 
         const {_opt, paths} = await this.#getOptions(args);
@@ -165,6 +163,10 @@ export default class Commands {
         for(let i = 0; i < paths.length; i++){
             const path = paths[i];
             const pathArr = this.#parsePath(path);
+            const pathAlreadyExists = await this.#FS.pathExists(pathArr);
+
+            if(pathAlreadyExists) return [{line: `cannot create folder ${pathArr.join('/')}`, className: 'command-output-error', remove_spaces: true}];
+
             for(let j = 1; j < pathArr.length; j++){
                 const parentFolder = pathArr.slice(0, j);
                 try{
@@ -207,7 +209,45 @@ export default class Commands {
     }
 
     async rm(args){
+        if(!args) return [
+            {line: "rm [OPTIONS] [NAMES]", className: 'folder', remove_spaces: true},
+            {line: "removes a directory or file", className: 'opened-file', remove_spaces: true},
+            {line: "   options:", className: 'opened-file', remove_spaces: false},
+            {line: "      [-d]: remove a directory", className: 'opened-file', remove_spaces: false},
+            {line: "      [-r]: recursively remove a directory and all its contents", className: 'opened-file', remove_spaces: false}
+        ]
 
+        let {options, paths} = await this.#getOptions(args);
+
+        const directory = options.includes('r') || options.includes('d');
+        const recursive = options.includes('r');
+
+        for(let i = 0; i < paths.length; i++){
+            const path = this.#parsePath(paths[i]);
+            try{
+                const file = await this.#FS.getFile(path);
+                console.log(file)
+                await this.#FS.deleteFile(path);
+                console.log("this run")
+                return [];
+            }catch(e){
+                console.error(e);
+                // try{
+
+                // }catch(e){
+
+                // }
+            }
+        }
+
+        // for every path
+            // parse the path
+            // if file, do nothing
+            // if empty folder and -d, do nothing
+            // if filled folder and -r, get all subpaths
+            // add all subpaths to allpaths
+        // get allpaths to delete every single one
+        return [{line: "hello world"}];
     }
 
     async touch(args){
@@ -221,12 +261,14 @@ export default class Commands {
         for(let i = 0; i < paths.length; i++){
             const path = this.#parsePath(paths[i]);
             const locationPath = path.slice(0, path.length-1);
+            const pathAlreadyExists = await this.#FS.pathExists(path);
+
+            if(pathAlreadyExists) return [{line: "error: cannot create file at path specified", className: "command-output-error", remove_spaces:true}];
 
             try{
                 await this.#FS.getFolder(locationPath);
                 await this.#FS.addFile(path, "");
             }catch(e){
-                console.error(e);
                 return [{line: "error: cannot create file at path specified", className: "command-output-error", remove_spaces:true}];
             }
 
@@ -234,10 +276,7 @@ export default class Commands {
 
         }
 
-
-        const output = [];
-
-        return [{line: "hello world", className: "command-output-error", remove_spaces:true}];
+        return [];
 
     }
 
@@ -356,14 +395,28 @@ export default class Commands {
     async help(args){
 
         if(!args) return [
-            {line: "help", className: 'folder', remove_spaces: true},
-            {line: "gives a description of all commands", className: 'opened-file', remove_spaces: true},
+            {line: "help [COMMANDS]", className: 'folder', remove_spaces: true},
+            {line: "gives a description of all commands, or only the commands named", className: 'opened-file', remove_spaces: true},
         ]
 
+        let output = [];
+
+        const {_, paths} = await this.#getOptions(args);
+
+        for(let i = 0; i < paths.length; i++){
+            try{
+                output = [...output, ...(await this[paths[i]]())];
+            }catch(e){
+                return [{line: `unrecognized command ${paths[i]}`, className: 'command-output-error', remove_spaces:true}]
+            }
+        }
+        
+        if(paths.length) return output;
+        
         const allCommands = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
         allCommands.splice(allCommands.indexOf("constructor"), 1);
         
-        let output = [];
+        
 
         for(let i = 0; i < allCommands.length; i++){
             const cmd = allCommands[i];
@@ -375,3 +428,12 @@ export default class Commands {
         return output;
     }
 }
+
+
+/*
+TODO:
+add rm command
+update touch/mkdir to not un if something already exists with that path
+add nano/clear command (more involved with terminal (somehow....))
+
+*/
