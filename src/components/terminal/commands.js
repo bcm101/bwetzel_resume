@@ -223,31 +223,33 @@ export default class Commands {
         const recursive = options.includes('r');
 
         for(let i = 0; i < paths.length; i++){
-            const path = this.#parsePath(paths[i]);
+            const path = typeof paths[i] === "string" ? this.#parsePath(paths[i]): paths[i];
+            const pathExists = await this.#FS.pathExists(path);
+
+            if(!pathExists) return [{line: `${path.join('/')} does not exist`, remove_spaces: true, className: 'command-output-error'}];
+            
+            let isFolder;
             try{
-                const file = await this.#FS.getFile(path);
-                console.log(file)
-                await this.#FS.deleteFile(path);
-                console.log("this run")
-                return [];
+                await this.#FS.getFolder(path);
+                if(!directory) return [{line: `${path.join('/')} is a directory; try using -d`, remove_spaces: true, className: 'command-output-error'}];
+                isFolder = true;
             }catch(e){
-                console.error(e);
-                // try{
-
-                // }catch(e){
-
-                // }
+                isFolder = false;
             }
+
+            try{
+                if(isFolder){
+                    await this.#FS.deleteFolder(path, recursive)
+                }else{
+                    await this.#FS.deleteFile(path);
+                }
+            }catch(e){
+                return [{line: `${e}`, className: 'command-output-error', remove_spaces: true}];
+            }
+
         }
 
-        // for every path
-            // parse the path
-            // if file, do nothing
-            // if empty folder and -d, do nothing
-            // if filled folder and -r, get all subpaths
-            // add all subpaths to allpaths
-        // get allpaths to delete every single one
-        return [{line: "hello world"}];
+        return [];
     }
 
     async touch(args){

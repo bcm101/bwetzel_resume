@@ -240,6 +240,25 @@ export default class FileSystem {
                             deleteRequest.addEventListener('error', error => console.error(`failed to delete: ${cursor.value.path.join('/')}`));
                         }
                         cursor.continue();
+                    }else{
+                        const locationPath = [...path];
+                        const name = locationPath.pop();
+
+                        const gettingLocation = store.get(locationPath);
+
+                        gettingLocation.addEventListener('error', (error) => reject(error));
+                        gettingLocation.addEventListener('success', e => {
+
+                            const locationFolder = e.target.result;
+
+                            const newLocationFolder = {...locationFolder}
+                            newLocationFolder.folder = newLocationFolder.folder.filter((f) => f.name !== name);
+
+                            const updatingLocation = store.put(newLocationFolder);
+
+                            updatingLocation.addEventListener('error', (error) => reject(error));
+                            updatingLocation.addEventListener('success', e => resolve(e));
+                        });
                     }
                 })
 
