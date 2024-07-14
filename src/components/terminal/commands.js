@@ -333,7 +333,7 @@ export default class Commands {
                 output = await this.#FS.getFile(pathOfFile);
 
                 if(output.length) output = [...output];
-                if(output.file || output.file === "") output = output.file.split('\n').map(line => {return {line, className: '', remove_spaces: true}});
+                if(output.file || output.file === "") output = output.file.split('\n').map(line => {return {line, className: 'opened-file', remove_spaces: true}});
 
                 if(displayLineNumber) output = output.map((li, i) => {
                     const ret = {...li};
@@ -390,8 +390,30 @@ export default class Commands {
 
     }
 
-    async nano(args){
+    async nano(args, _piped, nano_terminal){
 
+        if(args.length !== 2) return [{line: 'only accepts one argument of a file', className: 'command-output-error', remove_spaces: true}]
+
+        const {_o, paths} = await this.#getOptions(args);
+        const path = this.#parsePath(paths[0]);
+
+        let file = {};
+        try{
+            const f = await this.#FS.getFile(path);
+            if(f.length) file.content = f.map(e => e.line).join('\n');
+            else file.content = f.file;
+            file.name = path.join('/');
+        }catch(e){
+            file = {
+                name: path.join('/'),
+                content: ""
+            }
+        }
+
+        await nano_terminal(async (text) => {
+            this.#FS.addFile(path, text);
+        }, file);
+        return [];
     }
 
     async help(args){
@@ -434,8 +456,6 @@ export default class Commands {
 
 /*
 TODO:
-add rm command
-update touch/mkdir to not un if something already exists with that path
 add nano/clear command (more involved with terminal (somehow....))
 
 */

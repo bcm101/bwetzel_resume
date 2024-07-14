@@ -150,7 +150,7 @@ export default class FileSystem {
                         reject(`error in transaction: ${f.path.join('/')} must be one of either a file or folder`);
                     }
 
-                    const query1 = objectStore.add(f);
+                    const query1 = objectStore.put(f);
                     
                     query1.addEventListener('success', () => {
                         console.log("successfully added at ", f.path.join('/'));
@@ -276,16 +276,28 @@ export default class FileSystem {
             const name = path.pop();
             const locationStr = path.join('/');
 
+            const alreadyExists = this.#pathExistsLocal(path);
+
             let addedSuccessfully = false;
 
             for(let i = 0; i < this.#starterDB.length; i++){
                 if(this.#starterDB[i].path.join('/') === locationStr){
-                    this.#starterDB[i].data.push({
-                        name: name, 
-                        type: (f.file || f.file==="") ? this.#TYPES.FILE: this.#TYPES.FOLDER,
-                        data: f.file
-                    })
-                    addedSuccessfully = true;
+
+                    if(alreadyExists){
+                        for(let j = 0; j < this.#starterDB[i].data.length; j++){
+                            if(this.#starterDB[i].data[j].name === f.name)
+                                this.#starterDB[i].data[j].data = f.file;
+                        }
+                    }else{
+                        this.#starterDB[i].data.push({
+                            name: name, 
+                            type: (f.file || f.file==="") ? this.#TYPES.FILE: this.#TYPES.FOLDER,
+                            data: f.file
+                        })
+                        addedSuccessfully = true;
+                    }
+
+                    
                 }
             }
 
@@ -293,7 +305,7 @@ export default class FileSystem {
                 this.#starterDB.push({path: f.path, data: []});
             }
 
-            return addedSuccessfully;            
+            return addedSuccessfully || alreadyExists;            
 
         })
     }

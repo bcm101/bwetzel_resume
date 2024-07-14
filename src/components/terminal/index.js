@@ -12,12 +12,17 @@ export default class Terminal extends React.Component {
         fullScreen: false,
         history: [],
         currentCommandOutput: [],
-        initialCommand: this.props.initialCommand
+        initialCommand: this.props.initialCommand,
+        inNano: false
     }
 
     #commands = new Commands();
 
     #keyProps = 0;
+
+    #endNano = async () => {};
+    #openedFile = {};
+    #lastKey = '';
 
     #closeTerminal = () => {
         if(this.props.terminalClosedCallback) this.props.terminalClosedCallback();
@@ -72,7 +77,7 @@ export default class Terminal extends React.Component {
                     cmd = args[i][0][0];
 
                     for(let j = 0; j < pipeGroup.length; j++){
-                        out = await this.#commands[cmd](args[i][j], out)
+                        out = await this.#commands[cmd](args[i][j], out, this.#nano)
                     }
 
                     cmdOutput = [...cmdOutput, ...out];
@@ -129,6 +134,29 @@ export default class Terminal extends React.Component {
         this.#parseAndHandleCmd(this.state.initialCommand);
     }
 
+    #nano = async (saveNano = async () => {}, file) => {
+
+        // this function gets passed to the command class function nano,
+        // the command nano will call this function, and pass a callback function back for ending nano
+        // this final callback function will update the file and end the conversation
+
+        this.#openedFile = {
+            name: file.name,
+            content: file.content
+        };
+        this.setState({inNano: true});
+        this.#endNano = async (e) => { // this iwll be called to end the nano, wrapper for what was given by commands class
+            if(this.#lastKey==="Alt" && e.key === "x"){
+                this.setState({inNano: false});
+            }
+            if(this.#lastKey==="Alt" && e.key === "s"){
+                saveNano(e.target.value)
+            }
+            
+            this.#lastKey = e.key;
+        }
+    }
+
     render() {
 
         this.#waitDoneTyping();
@@ -146,19 +174,19 @@ export default class Terminal extends React.Component {
                     <div>-</div>
                 </div>
             </div>
-            <div className="main-terminal">
-                {this.state.history.map(line => {
+            <div className={`main-terminal${this.state.inNano ? ' no-overflow': ''}`}>
+                {!this.state.inNano && this.state.history.map(line => {
                     return this.#print(line);
                 })}
-                {this.state.currentCommandOutput.length > 0 &&
+                {this.state.currentCommandOutput.length > 0 && !this.state.inNano && 
                     this.state.currentCommandOutput.map((line, index) => {
                         const toPrint = line;
                         toPrint.time_before_typing = 50*index;
                         return this.#print(toPrint, true, 10);
                     })
                 }
-                {this.state.currentCommandOutput.length===0 && !this.state.initialCommand && <div>{this.#pmpt()}<input className="cmd-input" autoFocus onKeyDown={this.#enterNewCommand}></input></div>}
-                {this.state.initialCommand && this.#print({
+                {this.state.currentCommandOutput.length===0 && !this.state.initialCommand && !this.state.inNano && <div>{this.#pmpt()}<input className="cmd-input" autoFocus onKeyDown={this.#enterNewCommand}></input></div>}
+                {this.state.initialCommand && !this.state.inNano && this.#print({
                     line: this.state.initialCommand,
                     remove_spaces: true,
                     className: '',
@@ -167,6 +195,13 @@ export default class Terminal extends React.Component {
                     time_after_typing: 500,
                     time_before_typing: 500
                 }, true, 100, this.#doneWithInitialCommand)}
+                {this.state.inNano && <div className="nano-terminal">
+                    <div className="nano-top">{this.#openedFile.name}</div>
+                    <textarea className="nano-input" autoFocus defaultValue={this.#openedFile.content} onKeyDown={this.#endNano}></textarea>
+                    <div className="nano-bottom">
+                        {"\u00A0ALT+X\u00A0exit\u00A0\u00A0\u00A0ALT+S\u00A0save"}
+                    </div>
+                </div>}
             </div>
         </div>);
         

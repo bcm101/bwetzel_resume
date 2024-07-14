@@ -70,6 +70,10 @@
     overflow-wrap: break-word;
 }
 
+.terminal .main-terminal.no-overflow{
+    overflow: hidden;
+}
+
 .terminal .cmd-input {
     background-color: black;
     width: 60%;
@@ -140,6 +144,35 @@
     }
 }
 
+.terminal .main-terminal .nano-terminal{
+    width: 100%;
+    height: 100%;
+}
+
+.terminal .main-terminal .nano-top {
+    width: 100%;
+    height: max-content;
+    text-align: center;
+    background-color: bisque;
+}
+
+.terminal .main-terminal .nano-input {
+    background-color: black;
+    width: 100%;
+    color: rgb(0, 164, 0);
+    font-family: Lucida Console;
+    font-size: inherit;
+    height: calc(100% - 4ch);
+    position: sticky;
+    border: none;
+    outline: none;
+    resize: none;
+}
+
+.terminal .main-terminal .nano-bottom {
+    width: 100%;
+    height: max-content;
+}
 
 .terminal .folder {
     color: lightskyblue;
