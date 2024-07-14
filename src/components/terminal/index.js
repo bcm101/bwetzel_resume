@@ -135,22 +135,17 @@ export default class Terminal extends React.Component {
     }
 
     #nano = async (saveNano = async () => {}, file) => {
-
-        // this function gets passed to the command class function nano,
-        // the command nano will call this function, and pass a callback function back for ending nano
-        // this final callback function will update the file and end the conversation
-
         this.#openedFile = {
             name: file.name,
             content: file.content
         };
         this.setState({inNano: true});
-        this.#endNano = async (e) => { // this iwll be called to end the nano, wrapper for what was given by commands class
+        this.#endNano = async (e) => {
             if(this.#lastKey==="Alt" && e.key === "x"){
-                this.setState({inNano: false});
+                this.setState({inNano: false}); // end nano
             }
             if(this.#lastKey==="Alt" && e.key === "s"){
-                saveNano(e.target.value)
+                saveNano(e.target.value); // save nano to file
             }
             
             this.#lastKey = e.key;

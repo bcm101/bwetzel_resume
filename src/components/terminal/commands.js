@@ -273,9 +273,6 @@ export default class Commands {
             }catch(e){
                 return [{line: "error: cannot create file at path specified", className: "command-output-error", remove_spaces:true}];
             }
-
-
-
         }
 
         return [];
@@ -351,7 +348,6 @@ export default class Commands {
                     , ...output
                 ];
             }catch(e){
-                console.log(e)
                 output = [{line: `${pathOfFile.join('/')} is not a file or is not found`, remove_spaces: true, className: 'command-output-error'}];
             }
 
@@ -453,9 +449,3 @@ export default class Commands {
     }
 }
 
-
-/*
-TODO:
-add nano/clear command (more involved with terminal (somehow....))
-
-*/

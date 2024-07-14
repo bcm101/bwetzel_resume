@@ -159,11 +159,18 @@ export default class FileSystem {
 
                             query2.addEventListener('success', (e) => {
                                 const result = e.target.result;
-                                if(result && result.folder){
+                                const doesAlreadyExist = () => {
+                                    for(let i = 0; i < result.folder.length; i++)
+                                        if(result.folder[i].name === f.path[f.path.length-1])
+                                            return true;
+                                    return false;
+                                }
+                                if(result && result.folder && !doesAlreadyExist()){
                                     result.folder = [...result.folder, {
                                         name: f.path[f.path.length-1], 
                                         type: f.file || f.file==="" ? this.#TYPES.FILE: this.#TYPES.FOLDER
                                     }];
+
                                     const query3 = objectStore.put(result);
         
                                     query3.addEventListener('success', (e) => {
@@ -221,6 +228,26 @@ export default class FileSystem {
                 const request = store.delete(path);
                 request.addEventListener('error', (error) => reject(error));
                 request.addEventListener('success', e => resolve(e.target.result));
+
+                const locationPath = [...path];
+                const name = locationPath.pop();
+
+                const gettingLocation = store.get(locationPath);
+
+                gettingLocation.addEventListener('error', (error) => reject(error));
+                gettingLocation.addEventListener('success', e => {
+
+                    const locationFolder = e.target.result;
+
+                    const newLocationFolder = {...locationFolder}
+                    newLocationFolder.folder = newLocationFolder.folder.filter((f) => f.name !== name);
+
+                    const updatingLocation = store.put(newLocationFolder);
+
+                    updatingLocation.addEventListener('error', (error) => reject(error));
+                    updatingLocation.addEventListener('success', e => resolve(e));
+                });
+
             }else{
 
                 const isSubPath = (currentPath) => {
@@ -276,7 +303,7 @@ export default class FileSystem {
             const name = path.pop();
             const locationStr = path.join('/');
 
-            const alreadyExists = this.#pathExistsLocal(path);
+            const alreadyExists = this.#pathExistsLocal(f.path);
 
             let addedSuccessfully = false;
 
@@ -448,26 +475,27 @@ export default class FileSystem {
             if(this.#database){ // if the database exists, 
                 this.#viewObjByPathDB(path).catch(error => {
                     const f = this.#viewObjByPathLocal(path);
-                    if(f && (f.file || f.file==="")){
+                    if(f && (f.file || f.file==="" || f.length)){
                         this.#deleteOBJByPathLocal(path);
                         resolve('Deleted locally');
                     }else{
                         reject(`Error: ${path.join('/')} is not a file`);
                     }
                 }).then(f => {
-                    if(f && (f.file || f.file===""))
+                    if(f && (f.file || f.file==="" || f.length))
                         this.#deleteObjByPathDB(path, false).catch(error => {
                             reject('Error: could not delete file in DB');
                         }).then(f => {
                             resolve('Deleted in database');
                         })
                     else{
+                        console.log(f)
                         reject(`Error: ${path.join('/')} is not a file`);
                     }
                 })
             }else{
                 const f = this.#viewObjByPathLocal(path);
-                if(f && (f.file || f.file==="")){
+                if(f && (f.file || f.file==="" || f.length)){
                     this.#deleteOBJByPathLocal(path);
                     resolve('Deleted locally');
                 }else{
@@ -493,8 +521,8 @@ export default class FileSystem {
                         reject(`Error: ${path.join('/')} is not a folder`);
                     }
                 }).then(f => {
-                    if(f && f.folder)
-                        if(f.folder === 0 || recursive){
+                    if(f && f.folder){
+                        if(f.folder.length === 0 || recursive){
                             this.#deleteObjByPathDB(path, recursive).catch(error => {
                                 reject('Error: could not delete file in DB');
                             }).then(f => {
@@ -503,15 +531,19 @@ export default class FileSystem {
                         }else{
                             reject(`Error: folder at ${path.join('/')} is not empty; use -r to recursively delete`);
                         }
-                    else{
+                    }else{
                         reject(`Error: ${path.join('/')} is not a folder`);
                     }
                 })
             }else{
                 const f = this.#viewObjByPathLocal(path);
                 if(f && f.folder){
-                    this.#deleteOBJByPathLocal(path);
-                    resolve('Deleted locally');
+                    if(f.folder.length === 0 || recursive){
+                        this.#deleteOBJByPathLocal(path, true);
+                        resolve('Deleted locally');
+                    }else{
+                        reject(`Error: folder at ${path.join('/')} is not empty; use -r to recursively delete`);
+                    }
                 }else{
                     reject(`Error: ${path.join('/')} is not a folder`);
                 }

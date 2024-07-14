@@ -6,9 +6,9 @@ export default class Home extends Component {
 
     state = {
         terminalMinimized: false,
-        terminalOpen: true,
-        firstClicked: false,
-        playingClickingAnimation: false
+        terminalOpen: false,
+        firstClicked: true,
+        playingClickingAnimation: true
     }
 
     #mounted = false;
