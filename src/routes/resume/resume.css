@@ -1,0 +1,55 @@
+
+.resume-page {
+    background-color: rgb(252, 252, 240);
+    width: 100%;
+    min-height: 100vh;
+    overflow-y: auto;
+}
+
+.resume-page .top div{
+    width: 100%;
+    height: 8vh;
+    text-align: center;
+    font-size: 4vh;
+}
+
+.group {
+    width: 100%;
+}
+
+.group .header {
+    font-size: x-large;
+    font-weight: bold;
+    margin-left: 5%;
+    width: 95%;
+}
+
+.group .job-header {
+    font-size: large;
+    text-decoration-line: underline;
+    float: left;
+    margin-left: 5%;
+    width: 95%;
+    text-align: left;
+}
+
+.group .sub-job-header {
+    float: left;
+    margin-left: 5%;
+    width: 95%;
+    text-align: left;
+    font-style:oblique;
+}
+
+.group .sub-job-description {
+    float: left;
+    margin-left: 5%;
+    width: 95%;
+    text-align: left;
+}
+
+.date{
+    float: right;
+    margin-right: 5%;
+    font-style: italic;
+}
