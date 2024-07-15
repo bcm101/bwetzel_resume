@@ -19,7 +19,7 @@
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
         {"line": "I am an experienced full-stack web developer, and am very passionate about learning.", "remove_spaces": true, "className": "opened-file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
-        {"line": "My full non-interactive resume website can be found here", "remove_spaces": true, "link": "/#/resume"},
+        {"line": "My full non-interactive resume website can be found here", "remove_spaces": true, "link": "bwetzel_resume/#/resume"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
         {"line": "This website was made to be a demonstration of my skills. The terminal is designed to resemble the linux terminal, and you can view more information by viewing the files shown below:", "remove_spaces": true, "className": "opened-file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"}
