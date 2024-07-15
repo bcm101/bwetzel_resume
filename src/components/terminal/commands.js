@@ -71,7 +71,7 @@ export default class Commands {
             {line: "ls [OPTIONS] [PATHS TO DIRECTORIES]", className: 'folder', remove_spaces: true},
             {line: "displays the contents of all listed directories", className: 'opened-file', remove_spaces: true},
             {line: "   options:", className: 'opened-file', remove_spaces: false},
-            {line: "      R: recursively search through to find all subdirectories", className: 'opened-file', remove_spaces: false},
+            {line: "      [-R]: recursively search through to find all subdirectories", className: 'opened-file', remove_spaces: false},
         ]
 
         let {options, paths} = await this.#getOptions(args);
@@ -388,6 +388,11 @@ export default class Commands {
 
     async nano(args, _piped, nano_terminal){
 
+        if(!args) return [
+            {line: "nano [PATH TO FILE]", className: 'folder', remove_spaces: true},
+            {line: "opens the file given to be edited in the terminal", className: 'opened-file', remove_spaces: true},
+        ]
+
         if(args.length !== 2) return [{line: 'only accepts one argument of a file', className: 'command-output-error', remove_spaces: true}]
 
         const {_o, paths} = await this.#getOptions(args);
@@ -435,8 +440,6 @@ export default class Commands {
         
         const allCommands = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
         allCommands.splice(allCommands.indexOf("constructor"), 1);
-        
-        
 
         for(let i = 0; i < allCommands.length; i++){
             const cmd = allCommands[i];
@@ -444,12 +447,17 @@ export default class Commands {
             if(cmdDesc) output = [...output, ...cmdDesc, {line: ' ', remove_spaces: false}];
         }
         
+        output = [...output, 
+            {line: "for full details and examples, please follow the README.md file on my github linked below", remove_spaces: true, className: 'opened-file'}, 
+            {line: "github", link: "https://github.com/bcm101/bwetzel_resume"},
+            {line: ' ', remove_spaces: false}
+        ]
 
         return output;
     }
 
     async DELETE_DB(args) {
-        if(args.length === 1){
+        if(args && args.length === 1){
             try{
                 await this.#FS.DELETE_DB();
                 return [{line: 'deleted database successfully', className: 'folder'}];

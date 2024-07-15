@@ -21,6 +21,34 @@
     border-radius: 10px;
 }
 
+#terminal-icon-text{
+    position: absolute;
+    left: 10vw;
+    top: 18vh;
+    z-index: -1;
+}
+
+#delete-DB {
+    position: absolute;
+    left: 10vw;
+    top: 22vh;
+    width: 8vh;
+    height: 8vh;
+    background-image: url(DB_Icon.svg);
+    background-size: cover;
+    z-index: -1;
+    cursor:pointer;
+    background-color: white;
+    border-radius: 10px;
+}
+
+#delete-DB-icon-text{
+    position: absolute;
+    left: 10vw;
+    top: 30vh;
+    z-index: -1;
+}
+
 #mouse-pointer {
     position: absolute;
     left: 50vw;

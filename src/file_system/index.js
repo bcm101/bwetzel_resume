@@ -27,27 +27,33 @@ export default class FileSystem {
             {name: "~", type:this.#TYPES.BUILT_IN_FOLDER}
         ]},
         {path: ['~'], data: [
-            {name: "Projects", type: this.#TYPES.BUILT_IN_FOLDER},
-            {name: "Apps", type: this.#TYPES.BUILT_IN_FOLDER},
-            {name: "Academia", type: this.#TYPES.BUILT_IN_FOLDER},
+            {name: "Experience", type: this.#TYPES.BUILT_IN_FOLDER},
+            {name: "Research", type: this.#TYPES.BUILT_IN_FOLDER},
+            {name: "Skills", type: this.#TYPES.BUILT_IN_FOLDER},
+            // {name: "Projects", type: this.#TYPES.BUILT_IN_FOLDER},
+            {name: "Awards", type: this.#TYPES.BUILT_IN_FOLDER},
             {name: "BMW_Resume.txt", type: this.#TYPES.BUILT_IN_FILE}
         ]},
-        {path: ['~', 'Projects'], data: [
-            {name: "resume_site.txt", type: this.#TYPES.BUILT_IN_FILE},
-            {name: "VR_submarine.txt", type: this.#TYPES.BUILT_IN_FILE},
-            {name: "map_of_crimes_in_Chicago.txt", type: this.#TYPES.BUILT_IN_FILE},
-            {name: "discord_TTS_bot.txt", type: this.#TYPES.BUILT_IN_FILE}
+        {path: ['~', 'Experience'], data: [
+            {name: "front-end-web-developer", type: this.#TYPES.BUILT_IN_FILE},
+            {name: "full-stack-developer", type: this.#TYPES.BUILT_IN_FILE},
+            {name: "teaching-assistant", type: this.#TYPES.BUILT_IN_FILE}
         ]},
-        {path: ['~', 'Apps'], data: [
-            {name: "maze_maker.html", type: this.#TYPES.APP},
-            {name: "word_search_maker.html", type: this.#TYPES.APP},
-            {name: "word_randomizer.html", type: this.#TYPES.APP},
-            {name: "README.md", type: this.#TYPES.BUILT_IN_FILE}
+        {path: ['~', 'Research'], data: [
+            {name: "image-classification", type: this.#TYPES.BUILT_IN_FILE},
+            {name: "machine-learning-blockchain", type: this.#TYPES.BUILT_IN_FILE}
         ]},
-        {path: ['~', 'Academia'], data: [
-            {name: "thesis_info.txt", type: this.#TYPES.BUILT_IN_FILE},
-            {name: "MLP_research.txt", type: this.#TYPES.BUILT_IN_FILE}
+        {path: ['~', 'Skills'], data: [
+            {name: "languages", type: this.#TYPES.BUILT_IN_FILE},
+            {name: "algorithms", type: this.#TYPES.BUILT_IN_FILE},
+            {name: "data-visualization", type: this.#TYPES.BUILT_IN_FILE},
+            {name: "object-orient-programming", type: this.#TYPES.BUILT_IN_FILE}
         ]},
+        {path: ['~', 'Awards'], data: [
+            {name: "faculty-award(B.S.)", type: this.#TYPES.BUILT_IN_FILE},
+            {name: "faculty-award(M.S.)", type: this.#TYPES.BUILT_IN_FILE}
+        ]}
+        
     ];
     #currentPath = ['~'];
 
@@ -662,15 +668,16 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             const DBDeleteRequest = window.indexedDB.deleteDatabase("filesystem");
 
-            DBDeleteRequest.onerror = (event) => {
+            DBDeleteRequest.addEventListener("error", () => {
                 console.error("Error deleting database.");
-                reject();
-            };
+                reject("Error deleting database.");
+            }) 
             
-            DBDeleteRequest.onsuccess = (event) => {
+            DBDeleteRequest.addEventListener("success", () => {
                 console.log("Database deleted successfully");
-                resolve();
-            };
+                resolve("Database deleted successfully");
+            }) 
+
         });
         
     }

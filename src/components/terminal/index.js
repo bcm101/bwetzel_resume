@@ -129,8 +129,12 @@ export default class Terminal extends React.Component {
                     currentCommandOutput: [],
                     history: [...this.state.history, ...this.state.currentCommandOutput]
                 })
+                const terminal = document.getElementsByClassName('main-terminal')[0];
+                if(terminal) terminal.scrollTop = terminal.scrollHeight;
             }, 200
         )
+        
+        
     }
 
     #doneWithInitialCommand = () => {
@@ -180,7 +184,7 @@ export default class Terminal extends React.Component {
                     this.state.currentCommandOutput.map((line, index) => {
                         const toPrint = line;
                         toPrint.time_before_typing = 50*index;
-                        return this.#print(toPrint, true, 10);
+                        return this.#print(toPrint, true, 5);
                     })
                 }
                 {this.state.currentCommandOutput.length===0 && !this.state.initialCommand && !this.state.inNano && <div>{this.#pmpt()}<input className="cmd-input" autoFocus onKeyDown={this.#enterNewCommand}></input></div>}

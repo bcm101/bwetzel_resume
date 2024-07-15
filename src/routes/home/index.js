@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import Terminal from '../../components/terminal';
 import './home.css';
+import getFS from '../../filesystem';
 
 export default class Home extends Component {
 
@@ -13,6 +14,7 @@ export default class Home extends Component {
 
     #mounted = false;
     #initialCommand = 'cat BMW_Resume.txt && ls *';
+    #FS = getFS();
 
     #openTerminal = () => {
         this.setState({terminalOpen: true, terminalMinimized: false, playingClickingAnimation: false})
@@ -50,6 +52,11 @@ export default class Home extends Component {
                 />
             }
             <div id='terminal-icon' onClick={this.#openTerminal}></div>
+            <div id='terminal-icon-text'>Terminal</div>
+            <div id='delete-DB' onClick={() => {
+                this.#FS.DELETE_DB()
+            }}></div>
+            <div id='delete-DB-icon-text'>Delete DB</div>
             {this.state.playingClickingAnimation && <div id='mouse-pointer'></div>}
         </div>);
     }
