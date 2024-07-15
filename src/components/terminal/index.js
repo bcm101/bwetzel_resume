@@ -16,6 +16,8 @@ export default class Terminal extends React.Component {
         inNano: false
     }
 
+    #isMobile = window.visualViewport.width < 600;
+
     #commands = new Commands();
 
     #keyProps = 0;
@@ -102,6 +104,7 @@ export default class Terminal extends React.Component {
     }
 
     #print(line, show_animation=false, speed=100, callback=()=>{}) {
+        if(this.#isMobile && line.no_render_mobile) return <div key={this.#keyProps++}></div>
         return <Text
             key={this.#keyProps++}
             purge_multiple_spaces={line.remove_spaces}

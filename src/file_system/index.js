@@ -657,4 +657,22 @@ export default class FileSystem {
         })
     }
 
+    DELETE_DB(){
+
+        return new Promise((resolve, reject) => {
+            const DBDeleteRequest = window.indexedDB.deleteDatabase("filesystem");
+
+            DBDeleteRequest.onerror = (event) => {
+                console.error("Error deleting database.");
+                reject();
+            };
+            
+            DBDeleteRequest.onsuccess = (event) => {
+                console.log("Database deleted successfully");
+                resolve();
+            };
+        });
+        
+    }
+
 }

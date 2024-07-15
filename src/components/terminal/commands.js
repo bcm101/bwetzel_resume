@@ -447,5 +447,18 @@ export default class Commands {
 
         return output;
     }
+
+    async DELETE_DB(args) {
+        if(args.length === 1){
+            try{
+                await this.#FS.DELETE_DB();
+                return [{line: 'deleted database successfully', className: 'folder'}];
+            }catch(e){
+                return [];
+            }
+        }else{
+            return [];
+        }
+    }
 }
 
