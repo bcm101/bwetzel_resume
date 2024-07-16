@@ -30,7 +30,7 @@ export default class FileSystem {
             {name: "Experience", type: this.#TYPES.BUILT_IN_FOLDER},
             {name: "Research", type: this.#TYPES.BUILT_IN_FOLDER},
             {name: "Skills", type: this.#TYPES.BUILT_IN_FOLDER},
-            // {name: "Projects", type: this.#TYPES.BUILT_IN_FOLDER},
+            {name: "Projects", type: this.#TYPES.BUILT_IN_FOLDER},
             {name: "Awards", type: this.#TYPES.BUILT_IN_FOLDER},
             {name: "BMW_Resume.txt", type: this.#TYPES.BUILT_IN_FILE}
         ]},
@@ -52,6 +52,10 @@ export default class FileSystem {
         {path: ['~', 'Awards'], data: [
             {name: "faculty-award(B.S.)", type: this.#TYPES.BUILT_IN_FILE},
             {name: "faculty-award(M.S.)", type: this.#TYPES.BUILT_IN_FILE}
+        ]},
+        {path: ['~', 'Projects'], data: [
+            {name: "maze_maker.html", type: this.#TYPES.APP},
+            {name: "word_search_maker.html", type: this.#TYPES.APP}
         ]}
         
     ];
@@ -217,10 +221,11 @@ export default class FileSystem {
 
             request.addEventListener('error', (error) => reject(error));
             request.addEventListener('success', e => {
-                if(e.target.result && (e.target.result.file || e.target.result.file === "") && e.target.result.builtIn){
+                const f = e.target.result
+                if(f && (f.file || f.file === "" || (!f.file && !f.folder)) && f.builtIn){
                     resolve(built_in_files(path.join('/')));
                 }else
-                    resolve(e.target.result);
+                    resolve(f);
             });
         })
     }
@@ -424,13 +429,13 @@ export default class FileSystem {
             if(this.#database){ // if the database exists, 
                 this.#viewObjByPathDB(path).catch(error => {
                     const f = this.#viewObjByPathLocal(path);
-                    if(f && (f.file || f.file==="" || f.length > 0)){
+                    if(f && (f.file || f.file==="" || f.length > 0 || typeof f === "function")){
                         resolve(f);
                     }else{
                         reject(`Error: ${path.join('/')} is not a file`);
                     }
                 }).then(f => {
-                    if(f && (f.file || f.file==="" || f.length > 0))
+                    if(f && (f.file || f.file==="" || f.length > 0 || typeof f === "function"))
                         resolve(f);
                     else{
                         reject(`Error: ${path.join('/')} is not a file`);
@@ -438,7 +443,7 @@ export default class FileSystem {
                 })
             }else if(this.#database === false){
                 const f = this.#viewObjByPathLocal(path);
-                if(f && (f.file || f.file==="" || f.length > 0)){
+                if(f && (f.file || f.file==="" || f.length > 0 || typeof f === "function")){
                     resolve(f);
                 }else{
                     reject(`Error: ${path.join('/')} is not a file`);
@@ -490,27 +495,26 @@ export default class FileSystem {
             if(this.#database){ // if the database exists, 
                 this.#viewObjByPathDB(path).catch(error => {
                     const f = this.#viewObjByPathLocal(path);
-                    if(f && (f.file || f.file==="" || f.length)){
+                    if(f && (f.file || f.file==="" || f.length || typeof f === "function")){
                         this.#deleteOBJByPathLocal(path);
                         resolve('Deleted locally');
                     }else{
                         reject(`Error: ${path.join('/')} is not a file`);
                     }
                 }).then(f => {
-                    if(f && (f.file || f.file==="" || f.length))
+                    if(f && (f.file || f.file==="" || f.length || typeof f === "function"))
                         this.#deleteObjByPathDB(path, false).catch(error => {
                             reject('Error: could not delete file in DB');
                         }).then(f => {
                             resolve('Deleted in database');
                         })
                     else{
-                        console.log(f)
                         reject(`Error: ${path.join('/')} is not a file`);
                     }
                 })
             }else{
                 const f = this.#viewObjByPathLocal(path);
-                if(f && (f.file || f.file==="" || f.length)){
+                if(f && (f.file || f.file==="" || f.length || typeof f === "function")){
                     this.#deleteOBJByPathLocal(path);
                     resolve('Deleted locally');
                 }else{

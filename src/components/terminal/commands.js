@@ -329,8 +329,11 @@ export default class Commands {
                 
                 output = await this.#FS.getFile(pathOfFile);
 
+                console.log(output)
+
                 if(output.length) output = [...output];
-                if(output.file || output.file === "") output = output.file.split('\n').map(line => {return {line, className: 'opened-file', remove_spaces: true}});
+                else if(output.file || output.file === "") output = output.file.split('\n').map(line => {return {line, className: 'opened-file', remove_spaces: true}});
+                else if(typeof output === "function") output = output();
 
                 if(displayLineNumber) output = output.map((li, i) => {
                     const ret = {...li};

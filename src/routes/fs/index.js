@@ -5,33 +5,39 @@ export default class FileViewer extends Component{
 
     #FS = getFS();
 
-    #path = window.location.hash.match(/(?<=path=)[^&]*/g)[0];
+    state = {
+        reactComponent: null
+    }
 
-    #getFile = async () => {
+    #showFile = async () => {
         try{
-            const fileContents = await this.#FS.getFile(this.#path.split('/'));
+            const path = window.location.hash.match(/(?<=(\?|&)path=)[^&]*/g)[0];
+
+            const fileContents = await this.#FS.getFile(path.split('/'));
 
             if(fileContents.length){
-                return fileContents.map(e => e.line).join('\n');
-            }
-
-            if(fileContents.file || fileContents.file === ""){
-                return fileContents.file;
+                document.getElementById('wrapper').innerHTML = fileContents.map(e => e.line).join('\n');   
+            }else if(fileContents.file || fileContents.file === ""){
+                document.getElementById('wrapper').innerHTML = fileContents.file;
+            }else if(typeof fileContents === "function"){
+                this.setState({reactComponent: fileContents.component});
             }
 
             throw new Error('idk what to do here');
             
         }catch(e){
-            return ["cannot open file"];
+            document.getElementById('wrapper').innerHTML = "cannot open file";
         }
     }
 
     componentDidMount = async () => {
-        const file = await this.#getFile();
-        document.getElementById('wrapper').innerHTML = file;
+        if(!this.state.reactComponent)
+            await this.#showFile();
     }
 
     render(){
+        const Comp = this.state.reactComponent;
+        if(Comp) return <div id="wrapper"><Comp/></div>
         return <div id="wrapper">loading...</div>;
     }
 }

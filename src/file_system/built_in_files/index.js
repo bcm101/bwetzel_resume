@@ -9,8 +9,8 @@ export default function(path) {
     if(text)
         return text;
     else{
-        if(path === '~/Apps/maze_maker.html') return maze_maker;
-        if(path === '~/Apps/word_search_maker.html') return word_search_maker;
+        if(path === '~/Projects/maze_maker.html') return maze_maker;
+        if(path === '~/Projects/word_search_maker.html') return word_search_maker;
     }
 }
 
