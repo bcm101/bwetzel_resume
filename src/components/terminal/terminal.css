@@ -193,3 +193,7 @@
 .terminal .opened-file {
     color: darkcyan;
 }
+
+.main-terminal div{
+    margin-left: 1ch;
+}
