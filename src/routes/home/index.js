@@ -56,7 +56,7 @@ export default class Home extends Component {
             <div id='delete-DB' onClick={() => {
                 this.#FS.DELETE_DB()
             }}></div>
-            <div id='delete-DB-icon-text'>Delete DB</div>
+            <div id='delete-DB-icon-text'>Reset Local Info</div>
             {this.state.playingClickingAnimation && <div id='mouse-pointer'></div>}
         </div>);
     }

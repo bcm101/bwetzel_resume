@@ -26,6 +26,8 @@
     left: 10vw;
     top: 18vh;
     z-index: -1;
+    text-align: center;
+    width: 8vh;
 }
 
 #delete-DB {
@@ -45,8 +47,10 @@
 #delete-DB-icon-text{
     position: absolute;
     left: 10vw;
+    width: 8vh;
     top: 30vh;
     z-index: -1;
+    text-align: center;
 }
 
 #mouse-pointer {

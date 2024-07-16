@@ -57,7 +57,7 @@ export default class FileSystem {
     ];
     #currentPath = ['~'];
 
-    constructor(onDoneLoading = (_db) => {}) {
+    constructor(onDoneLoading = (_fs) => {}) {
         try{
             const openDB = this.#initializeDB();
         
@@ -436,13 +436,22 @@ export default class FileSystem {
                         reject(`Error: ${path.join('/')} is not a file`);
                     }
                 })
-            }else{
+            }else if(this.#database === false){
                 const f = this.#viewObjByPathLocal(path);
                 if(f && (f.file || f.file==="" || f.length > 0)){
                     resolve(f);
                 }else{
                     reject(`Error: ${path.join('/')} is not a file`);
                 }
+            }else{
+                window.setTimeout(async () => {
+                    try{
+                        const file = await this.getFile(path);
+                        resolve(file);
+                    }catch(e){
+                        reject(e);
+                    }
+                }, 500)
             }
         });
     }
