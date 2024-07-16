@@ -24,7 +24,7 @@ export default class Resume extends Component {
                     <ul>
                         <li>Lead a team of interns, handled Git branches, delegated work to other interns</li>
                         <li>Utilizing React.JS and D3.JS for front-end, and Elixir, Node.JS, and Java for back-end</li>
-                        <li>First team of interns to create an Application used in production</li>
+                        <li>First team of interns to create an application used in production</li>
                         <li>Applications had a large focus on management of financial data to help financial analysts make decisions</li>
                     </ul>
                 </div>
@@ -95,7 +95,7 @@ export default class Resume extends Component {
                         <li>Parallel Systems and Computing</li>
                         <li>Familiar with Common Algorithms</li>
                         <li>Data Visualization</li>
-                        <li>languages:</li>
+                        <li>Languages:</li>
                         <ul>
                             <li>Javascript</li>
                             <li>Python</li>
