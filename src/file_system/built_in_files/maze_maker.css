@@ -1,0 +1,27 @@
+
+.inputs {
+    width: 20vw;
+    height: 100vh;
+    max-width: max-content;
+}
+
+.inputs input {
+    margin-left: 2ch;
+    width: 5ch;
+    float: right;
+}
+
+.inputs button {
+    margin-right: 2ch;
+    float: right;
+    width: 1ch;
+    height: 2ch;
+}
+
+#maze {
+    position: absolute;
+    left: 25vw;
+    top: 5vh;
+    width: 0px;
+    height: 0px;
+}
