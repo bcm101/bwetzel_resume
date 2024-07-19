@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/bwetzel_resume/static/css/main.37dcd79e.css",
-    "main.js": "/bwetzel_resume/static/js/main.b22f0e3d.js",
+    "main.css": "/bwetzel_resume/static/css/main.07badedf.css",
+    "main.js": "/bwetzel_resume/static/js/main.7674864e.js",
     "static/js/453.4d7f4c8a.chunk.js": "/bwetzel_resume/static/js/453.4d7f4c8a.chunk.js",
     "static/media/DB_Icon.svg": "/bwetzel_resume/static/media/DB_Icon.1604b5c206f2e9a99603.svg",
     "index.html": "/bwetzel_resume/index.html",
     "static/media/terminal.svg": "/bwetzel_resume/static/media/terminal.cd4e9dd9c3bf9f40975c.svg",
-    "main.37dcd79e.css.map": "/bwetzel_resume/static/css/main.37dcd79e.css.map",
-    "main.b22f0e3d.js.map": "/bwetzel_resume/static/js/main.b22f0e3d.js.map",
+    "main.07badedf.css.map": "/bwetzel_resume/static/css/main.07badedf.css.map",
+    "main.7674864e.js.map": "/bwetzel_resume/static/js/main.7674864e.js.map",
     "453.4d7f4c8a.chunk.js.map": "/bwetzel_resume/static/js/453.4d7f4c8a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.37dcd79e.css",
-    "static/js/main.b22f0e3d.js"
+    "static/css/main.07badedf.css",
+    "static/js/main.7674864e.js"
   ]
 }
