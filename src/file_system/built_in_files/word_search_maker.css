@@ -1,0 +1,185 @@
+
+#inputs {
+    width: 100vw;
+    height: 30vh;
+}
+
+.word-list-input {
+    width: 100%;
+    height: 70%;
+    overflow: hidden;
+}
+
+#ch-list{
+    width: 30%;
+    height: 90%;
+    display: inline-block;
+    overflow-y: auto;
+}
+
+#ch-list input{
+    width: 33%;
+    border: none;
+    outline: none;
+}
+
+#ch-list .character {
+    width: 33%;
+    height: 2ch;
+    display: inline-block;
+    text-align: center;
+}
+
+#ch-list .character:hover {
+    background-color: antiquewhite;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.word-list-input textarea{
+    display: inline-block;
+    width: 68%;
+    height: 90%;
+    border: none;
+    outline: black;
+    resize: none;
+}
+
+.word-list-input .on-mobile{
+    width: 100%;
+}
+
+.state-inputs {
+    width: 100%;
+    height: 20%;
+}
+
+.state-inputs div{
+    float: left;
+    width: 16.66%;
+    height: 50%;
+}
+
+.state-inputs .inp-w input{
+    width: 90%;
+    height: 100%;
+}
+
+.generate {
+    width: 100%;
+    height: 10%;
+}
+
+#word-search {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+#popup {
+    opacity: 0%;
+    z-index: -1;
+    width: 60vw;
+    height: 60vh;
+    position: absolute;
+    left: 20vw;
+    top: 20vh;
+    background-color: whitesmoke;
+    border-radius: 2%;
+    border: 1px solid black;
+}
+
+#popup button{
+    position: relative;
+    height: 5vh;
+    cursor: pointer;
+}
+
+#popup button:hover{
+    background-color: rgb(193, 153, 231);
+}
+
+#popup .top-popup {
+    width: 100%;
+    height: 30%;
+    text-align: center;
+    border-bottom: 1px dotted black;
+    overflow: hidden;
+}
+
+#popup .top-popup .possible-save{
+    width: 60%;
+    float: left;
+    margin-top: 2ch;
+    outline: 1px dotted black;
+}
+
+#popup .top-popup .save{
+    margin-top: 2ch;
+    width: 40%;
+    float: right;
+    height: 8ch;
+}
+
+#popup .bottom-popup {
+    width: 100%;
+    height: 70%;
+    text-align: center;
+}
+
+#popup .bottom-popup .all-saved-ws {
+    width: 60%;
+    float: left;
+    overflow-y: auto;
+    height: 50%;
+    outline: 1px solid gray;
+    margin-top: 2ch;
+}
+
+.saved-ws {
+    outline: 1px dotted black;
+    cursor: pointer;
+
+}
+
+.saved-ws:hover {
+    background-color: rgb(223, 223, 0);
+}
+
+.saved-ws.selected {
+    background-color: rgb(223, 223, 0);
+}
+
+#popup .bottom-popup .lde-buttons {
+    float: right;
+    width: 40%;
+    margin-top: 2ch;
+    height: 50%;
+}
+
+#popup .lde-buttons div{
+    width: 100%;
+    height: 33%;
+}
+
+#popup .lde-buttons button{
+    width: 100%;
+    height: 100%;
+}
+
+#popup.show {
+    animation-name: showPopup;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes showPopup {
+    from {
+        opacity: 0%;
+        z-index: -1;
+    }
+    to {
+        opacity: 100%;
+        z-index: 1;
+    }
+}
