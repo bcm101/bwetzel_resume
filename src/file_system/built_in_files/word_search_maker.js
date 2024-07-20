@@ -3,7 +3,7 @@ import './word_search_maker.css';
 
 const word_search_maker = function () {
     return [
-        {line: "This is an webpage that can be run by accessing this link:", className: "opened-file", remove_space: "true"},
+        {line: "This is an webpage that can be run by accessing the following link. This project is meant to show my understanding of algorithms, specifically dynamic programming that I used to create a maze with given parameters. This is an improvement over the common recursive algorithm that is used to solve this problem.", className: "opened-file", remove_space: true},
         {line: "link", link: "/bwetzel_resume/#/fs?path=~/Projects/word_search_maker.html"}
     ];
 }

@@ -65,14 +65,14 @@
         {"line": "C", "remove_spaces": true, "className": "opened-file"}
     ],
     "~/Skills/data-visualization": [
-        {"line": "I have experience in representing large amounts of data in a readable and understandable way. ", "remove_spaces": true, "className": "file"},
+        {"line": "I have experience in representing large amounts of data in a readable and understandable way, both from school and from my job experience at Loomis Sayles. Throughout my internship at Loomis Sayles, the main use case for the projects I worked on was to visualize data in readable and understandable ways. This involved an understanding of financial and statistical equations to best represent the data.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"},
         {"line": "Below you will find an example of work I did for my graduate program where I was tasked with building a visualization of crimes in Chicago. The main goal of this project was interactivity using D3.JS.", "remove_spaces": true, "className": "opened-file"},
         {"line": "link", "remove_spaces": true, "link": "https://bcm101.github.io/final_project/"},
-        {"line": " ", "remove_spaces": false, "className": "opened-file"},
-        {"line": "Throughout my internship at Loomis Sayles, the main use case for the projects I worked on was to visualize data in readable and understandable ways. This involved an understanding of financial and statistical equations to best represent the data. ", "remove_spaces": true, "className": "opened-file"}
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Skills/algorithms": [
-        {"line": "Over the course of earning my two degrees, I have taken two courses on algorithms. One for my undergrad, and a more difficult class for my graduate program. I earned an A in both, and have a good understanding of common algorithms including searching algorithms like BDS, BFS, and binary search; sorting algorithms like merge sort; and graphing algorithms like Dijkstra and A*. I am also familiar with writing different classifications of algorithms such as greedy, dynamic, recursive, etc.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "Over the course of earning my two degrees, I have taken two courses on algorithms. One for my undergrad, and a more difficult class for my graduate program. I earned an A in both, and have a good understanding of common algorithms including searching algorithms like BDS, BFS, and binary search; sorting algorithms like merge sort; and graphing algorithms like Dijkstra and A*. I am also familiar with writing different classifications of algorithms such as greedy, dynamic, recursive, etc. Some of my knowledge in algorithms can be seen in my Projects folder of this website.", "remove_spaces": true, "className": "opened-file"}
     ],
     "~/Skills/object-oriented-programming": [
         {"line": "Object oriented programming has been used throughout my entire programming career aside from when I used languages such elixir, which is a functional language, and C which is a procedural language. Even in this website, which was coded using JS which isn't traditionally known for object oriented programming, I still obeyed the object oriented programming concepts of encapsulation, inheritance, and composition. I also was a teacher's assistant for an object oriented programming course where I taught students these concepts as well.", "remove_spaces": true, "className": "opened-file"}

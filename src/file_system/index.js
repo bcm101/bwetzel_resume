@@ -47,7 +47,7 @@ export default class FileSystem {
             {name: "languages", type: this.#TYPES.BUILT_IN_FILE},
             {name: "algorithms", type: this.#TYPES.BUILT_IN_FILE},
             {name: "data-visualization", type: this.#TYPES.BUILT_IN_FILE},
-            {name: "object-orient-programming", type: this.#TYPES.BUILT_IN_FILE}
+            {name: "object-oriented-programming", type: this.#TYPES.BUILT_IN_FILE}
         ]},
         {path: ['~', 'Awards'], data: [
             {name: "faculty-award(B.S.)", type: this.#TYPES.BUILT_IN_FILE},
