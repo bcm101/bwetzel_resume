@@ -187,6 +187,7 @@ maze_maker.component = class extends Component{
         const radiusPerCell = (h/2) / (numCellsH + 1);
         const centerX = w / 2;
         const centerY = h / 2;
+        const lineWidth = 200 / Math.max(numCellsW, numCellsH);
 
         ctx.clearRect(0, 0, w, h);
         ctx.fillStyle = "white";
@@ -197,6 +198,7 @@ maze_maker.component = class extends Component{
             ctx.fillRect(0, 0, w, h);
 
         ctx.fillStyle = "red";
+        ctx.lineWidth = lineWidth;
 
         ctx.beginPath();
 
