@@ -44,6 +44,10 @@ export default class Commands {
         return pathOfFile;
     }
 
+    #isAbsolutePath (path){
+        return path[0] === '/';
+    }
+
     async #findAllContained(path, recursive = true, total=[]){
         try{
             const allContentsAtPath = (await this.#FS.getFolder(path)).folder;
@@ -85,12 +89,16 @@ export default class Commands {
 
         if(recursivelyListAll)
             for(let i = 0; i < paths.length; i++){
-                const pathF = noSpecifiedDirectories ? this.#FS.getCurrentPath(): this.#parsePath(paths[i]);
+                let pathF;
+                if(noSpecifiedDirectories){
+                    pathF = this.#FS.getCurrentPath();
+                }else
+                    pathF = this.#isAbsolutePath(paths[i]) ? paths[0].slice(1).split('/'): this.#parsePath(paths[i]);
                 const allSubPaths = await this.#findAllContained(pathF, recursivelyListAll);
                 allPaths = [...allPaths, pathF, ...allSubPaths];
             }
         else if(noSpecifiedDirectories) allPaths = paths;
-        else allPaths = paths.map(p => this.#parsePath(p));
+        else allPaths = paths.map(p => this.#isAbsolutePath(p) ? paths[0].slice(1).split('/'): this.#parsePath(p));
 
         let output = [];
         
@@ -101,9 +109,16 @@ export default class Commands {
                     ...output, 
                     {line: `${allPaths[i].join('/')}: `, className: 'folder', remove_spaces: false},
                     ...(content.map(f => {
-                        return {line: `   ${f.name}`, className: f.type === 3 || f.type === 5 ? 'folder': 'file', remove_spaces: false}
+                        const pathToF = [...allPaths[i], f.name];
+                        const command = `${f.type === 3 || f.type === 5 ? 'cd': 'cat'} /${pathToF.join('/')}`;
+                        return {line: 
+                            `   ${f.name}`, 
+                            className: f.type === 3 || f.type === 5 ? 'folder': 'file', 
+                            remove_spaces: false, 
+                            runCommand: command
+                        }
                     })),
-                    {line: " ", className: 'folder', remove_spaces: false}
+                    {line: " ", className: '', remove_spaces: false}
                 ];
                 
             }catch(e){
@@ -133,10 +148,10 @@ export default class Commands {
 
         const {_opt, paths} = await this.#getOptions(args);
 
-        const newPath = this.#parsePath(paths[0]);
+        const path = this.#isAbsolutePath(paths[0]) ? paths[0].slice(1).split('/'): this.#parsePath(paths[0]);
 
         try{
-            await this.#FS.changeLocation(newPath);
+            await this.#FS.changeLocation(path);
             return [{line: " ", className: 'folder', remove_spaces: false}];
         }catch(e){
             return [{line: "Error in syntax or not a directory", className: 'command-output-error', remove_spaces: false}];
@@ -161,8 +176,7 @@ export default class Commands {
         const output = [];
 
         for(let i = 0; i < paths.length; i++){
-            const path = paths[i];
-            const pathArr = this.#parsePath(path);
+            const pathArr = this.#isAbsolutePath(paths[i]) ? paths[0].slice(1).split('/'): this.#parsePath(paths[i]);
             const pathAlreadyExists = await this.#FS.pathExists(pathArr);
 
             if(pathAlreadyExists) return [{line: `cannot create folder ${pathArr.join('/')}`, className: 'command-output-error', remove_spaces: true}];
@@ -223,7 +237,7 @@ export default class Commands {
         const recursive = options.includes('r');
 
         for(let i = 0; i < paths.length; i++){
-            const path = typeof paths[i] === "string" ? this.#parsePath(paths[i]): paths[i];
+            const path = this.#isAbsolutePath(paths[i]) ? paths[0].slice(1).split('/'): this.#parsePath(paths[i]);
             const pathExists = await this.#FS.pathExists(path);
 
             if(!pathExists) return [{line: `${path.join('/')} does not exist`, remove_spaces: true, className: 'command-output-error'}];
@@ -261,7 +275,7 @@ export default class Commands {
         const {_, paths} = await this.#getOptions(args);
 
         for(let i = 0; i < paths.length; i++){
-            const path = this.#parsePath(paths[i]);
+            const path = this.#isAbsolutePath(paths[i]) ? paths[0].slice(1).split('/'): this.#parsePath(paths[i]);
             const locationPath = path.slice(0, path.length-1);
             const pathAlreadyExists = await this.#FS.pathExists(path);
 
@@ -294,8 +308,6 @@ export default class Commands {
             {line: "      [-b]: omit empty lines from having numbers with -n", className: 'opened-file', remove_spaces: false},
         ]
 
-        const currentPath = this.#FS.getCurrentPath();
-
         let {options, paths} = await this.#getOptions(args);
 
         const displayLineNumber = options.includes('n');
@@ -321,15 +333,12 @@ export default class Commands {
         }
 
         for(let i = 0; i < paths.length; i++){
-
-            const pathOfFile = this.#parsePath(paths[i]);
+            const pathOfFile = this.#isAbsolutePath(paths[i]) ? paths[0].slice(1).split('/'): this.#parsePath(paths[i]);
 
             let output;
             try{
                 
                 output = await this.#FS.getFile(pathOfFile);
-
-                console.log(output)
 
                 if(output.length) output = [...output];
                 else if(output.file || output.file === "") output = output.file.split('\n').map(line => {return {line, className: 'opened-file', remove_spaces: true}});
@@ -399,7 +408,8 @@ export default class Commands {
         if(args.length !== 2) return [{line: 'only accepts one argument of a file', className: 'command-output-error', remove_spaces: true}]
 
         const {_o, paths} = await this.#getOptions(args);
-        const path = this.#parsePath(paths[0]);
+
+        const path = this.#isAbsolutePath(paths[0]) ? paths[0].slice(1).split('/'): this.#parsePath(paths[0]);
 
         let file = {};
         try{

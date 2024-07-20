@@ -24,7 +24,8 @@ export default class Text extends Component{
         speed: Math.abs(parseInt(this.props.speed)) || 100, // typing speed animation
         time_before_typing: parseInt(this.props.time_before_typing) ? Math.abs(parseInt(this.props.time_before_typing)) : 0, // time before typing while showing cursor
         time_after_typing: parseInt(this.props.time_after_typing) ? Math.abs(parseInt(this.props.time_after_typing)) : 0, // time after typing while showing cursor
-        className: this.props.className || "" // additional classnames aside from built in for 'is-typing' and 'is-not-typing'
+        className: this.props.className || "", // additional classnames aside from built in for 'is-typing' and 'is-not-typing'
+        clickable: this.props.clickable || false
     }
 
     callback = typeof this.props.callback === 'function' ? this.props.callback: () => {}
@@ -55,14 +56,17 @@ export default class Text extends Component{
                 }
             }, this.data.speed)
             
-            const className = this.state.numbers_shown === this.data.string.length || !this.data.show_animation ? `is-not-typing ${this.data.className}`: `is-typing ${this.data.className}`;
+            const isTypingClass = this.state.numbers_shown === this.data.string.length || !this.data.show_animation ? `is-not-typing`: `is-typing`;
+            const clickable = this.data.clickable ? `clickable-text`: '';
+
+            const className = `${isTypingClass} ${clickable} ${this.data.className}`
 
             if(this.state.numbers_shown === this.data.string.length && this.data.time_after_typing <= 0){
                 this.callback();
             }
 
         return (
-            <div className={className}>
+            <div className={className} onClick={this.data.clickable ? this.data.clickable: () => {}}>
                 {this.props.link && <a href={this.props.link} className={className}>
                     {this.props.before_string}
                     {this.data.show_animation && this.state.current_string}

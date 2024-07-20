@@ -194,6 +194,16 @@
     color: darkcyan;
 }
 
+.terminal .main-terminal .file.clickable-text:hover {
+    color: rgb(227, 186, 186); 
+    cursor: pointer;
+}
+
+.terminal .main-terminal .folder.clickable-text:hover {
+    color: rgb(206, 230, 246);
+    cursor: pointer;
+}
+
 .main-terminal div{
     margin-left: 1ch;
 }

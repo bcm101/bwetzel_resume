@@ -105,6 +105,13 @@ export default class Terminal extends React.Component {
 
     #print(line, show_animation=false, speed=100, callback=()=>{}) {
         if(this.#isMobile && line.no_render_mobile) return <div key={this.#keyProps++}></div>
+        let clickableFunction = false;
+        if(line.runCommand) clickableFunction = () => {
+            const inputTerminal = document.getElementById("terminal-input");
+            if(inputTerminal){
+                this.#parseAndHandleCmd(line.runCommand);
+            };
+        }
         return <Text
             key={this.#keyProps++}
             purge_multiple_spaces={line.remove_spaces}
@@ -118,6 +125,7 @@ export default class Terminal extends React.Component {
             show_cursor={line.show_cursor}
             time_after_typing={line.time_after_typing}
             callback={callback}
+            clickable={clickableFunction}
         />
     }
 
@@ -187,7 +195,7 @@ export default class Terminal extends React.Component {
                         return this.#print(toPrint, true, 5);
                     })
                 }
-                {this.state.currentCommandOutput.length===0 && !this.state.initialCommand && !this.state.inNano && <div>{this.#pmpt()}<input className="cmd-input" autoFocus onKeyDown={this.#enterNewCommand}></input></div>}
+                {this.state.currentCommandOutput.length===0 && !this.state.initialCommand && !this.state.inNano && <div>{this.#pmpt()}<input className="cmd-input" autoFocus onKeyDown={this.#enterNewCommand} id="terminal-input"></input></div>}
                 {this.state.initialCommand && !this.state.inNano && this.#print({
                     line: this.state.initialCommand,
                     remove_spaces: true,
