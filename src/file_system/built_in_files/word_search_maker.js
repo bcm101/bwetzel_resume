@@ -161,6 +161,24 @@ word_search_maker.component = class extends Component {
             .map(_j => {return {ch: randomCharacter(), partOfWord: null}})
         );
 
+        const copyWordSearch = (ws) => {
+            return new Array(w)
+            .fill(0)
+            .map((_e,i) => new Array(h)
+                .fill(0)
+                .map((_e, j) => {return {ch: ws[i][j].ch.slice(0), partOfWord: ws[i][j].partOfWord?.slice(0)}})
+            );
+        };
+
+        const copyWords = (words) => {
+            return new Array(words.length)
+            .fill(0)
+            .map((_e, i) => new Array(words[i].length)
+                .fill(0)
+                .map((_, j) => words[i][j].slice(0))
+            );
+        };
+
         const possibleCells = (direction, word) => {
 
             const wordLength = word.length;
@@ -209,18 +227,39 @@ word_search_maker.component = class extends Component {
             }
         }
 
-        for(let i = 0; i < words.length; i++){
-            const word = words[i];
+        const states = [{words: copyWords(words), ws: copyWordSearch(wordSearch), attempts: 0}];
+
+        const attemptsPer = 25;
+
+        do {
+
+            console.log(states.length, words.length)
+
+            const wordListAtState = copyWords(states[states.length-1].words);
+            const wordSearchAtState = copyWordSearch(states[states.length-1].ws);
+            const attempts = states[states.length-1].attempts;
+
+            if(attempts > attemptsPer){
+                states.pop();
+                continue;
+            };
+
+            const wordIndex = Math.floor(this.#rand() * wordListAtState.length);
+            const word = wordListAtState[wordIndex];
+            wordListAtState.splice(wordIndex, 1);
+
+            console.log(word, attempts, wordListAtState);
+
             const d = this.state.hardMode ? [0,1,2,3,4,5,6,7]: [2,3,4];
 
             let fits = false;
 
             while(d.length && !fits){
-                const dIndex = Math.floor(this.#rand() * d.length)
+                const dIndex = Math.floor(this.#rand() * d.length);
                 const rd = d[dIndex];
-                
+
                 const cellLocations = possibleCells(rd, word);
-                
+
                 while(cellLocations.length && !fits){
                     const cellLocationIndex = Math.floor(this.#rand() * cellLocations.length);
                     let currentCellLocation = cellLocations[cellLocationIndex];
@@ -228,7 +267,7 @@ word_search_maker.component = class extends Component {
                     let foundBreak = false;
 
                     for(let j = 0; j < word.length; j++){
-                        const currentCell = wordSearch[currentCellLocation.x][currentCellLocation.y];
+                        const currentCell = wordSearchAtState[currentCellLocation.x][currentCellLocation.y];
 
                         const canBeUsed = !currentCell.partOfWord || currentCell.ch === word[j];
                         if(!canBeUsed){
@@ -237,18 +276,21 @@ word_search_maker.component = class extends Component {
                         }
 
                         currentCellLocation = nextCellInDirection(currentCellLocation.x, currentCellLocation.y, rd);
-
                     }
-
                     if(!foundBreak){
                         fits = true;
                         currentCellLocation = cellLocations[cellLocationIndex];
                         for(let j = 0; j < word.length; j++){
-                            const currentCell = wordSearch[currentCellLocation.x][currentCellLocation.y];
+                            const currentCell = wordSearchAtState[currentCellLocation.x][currentCellLocation.y];
                             currentCell.ch = word[j];   
                             currentCell.partOfWord = word.join('-');
                             currentCellLocation = nextCellInDirection(currentCellLocation.x, currentCellLocation.y, rd);
                         }
+                        if(states.length === words.length) {
+                            console.log(wordSearchAtState)
+                            return wordSearchAtState;
+                        }
+                        else states.push({words: wordListAtState, ws: wordSearchAtState, attempts: 0});
                     }
 
                     cellLocations.splice(cellLocationIndex, 1);
@@ -256,10 +298,17 @@ word_search_maker.component = class extends Component {
 
                 d.splice(dIndex, 1);
             }
-            if(!fits) throw `Error: Cannot find spot for ${word.join('')}`;
-        }
 
-        return wordSearch;
+            if(!fits){
+                console.log("does this ever get called");
+                states.pop();
+                if(states.length)
+                    states[states.length-1].attempts += 1;
+            }
+
+        }while(states.length);
+
+        throw `Error: At least one word cannot fit`;
     }
 
     #updateState = () => {
@@ -335,7 +384,13 @@ word_search_maker.component = class extends Component {
 
     #deleteSaved = () => {
         try{
+            const allSaved = document.getElementsByClassName("saved-ws");
+            for(let i = 0; i < allSaved.length; i++)
+                allSaved[i].classList.remove('selected');
+
             window.localStorage.removeItem(this.#selectedSavedWS.name);
+            this.#selectedSavedWS = {};
+            
             this.setState({showingPopup: true});
         }catch(e){
             console.error(e);
@@ -358,7 +413,6 @@ word_search_maker.component = class extends Component {
                         const words = json.words;
                         const seed = json.seed;
                         const size = json.size;
-                        // possible check if words and seed exist ?
                         if(words)
                             savedWs.push({words, seed, name, size});
                     }catch(e){
