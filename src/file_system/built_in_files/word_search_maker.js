@@ -58,7 +58,8 @@ word_search_maker.component = class extends Component {
         w: null,
         h: null,
         showingPopup: false,
-        hardMode: null
+        hardMode: null,
+        showSolutions: false
     }
 
     #isMobile = window.visualViewport.width < 600;
@@ -66,6 +67,7 @@ word_search_maker.component = class extends Component {
     #rand = Math.random
     #currentWordStr = "";
     #selectedSavedWS = {};
+    #currentWordSearch = null;
 
     componentDidUpdate  = () => {
         if(this.state.randomSeed && typeof this.state.randomSeed === "string" && this.#needUpdate)
@@ -73,7 +75,9 @@ word_search_maker.component = class extends Component {
 
         try{
             if(this.#needUpdate)
-                this.#createAndDraw();
+                this.#create();
+            if(this.#currentWordSearch)
+                this.#draw();
         }catch(e){
             if(typeof e === "string"){
                 const words = document.getElementById("words");
@@ -84,18 +88,22 @@ word_search_maker.component = class extends Component {
 
     }
 
-    #createAndDraw = () => {
+    #draw = () => {
 
-        const wordSearch = this.#create();
-
+        const wordSearch = this.#currentWordSearch;
+        
         const {w,h} = this.state;
 
         const ws = document.getElementById("word-search");
+        ws.width = w * 100;
+        ws.height = h * 100;
         const vw = window.visualViewport.width;
         const vh = window.visualViewport.height;
         const maxStyleHeight = vh * .7;
         const maxStyleWidth = vw * .8;
         const ratio = w/h;
+        const fontSize = 50;
+        const lineWidth = 200 / Math.max(w, h);
 
         let styleWidth = maxStyleWidth;
         let styleHeight = styleWidth / ratio;
@@ -112,15 +120,12 @@ word_search_maker.component = class extends Component {
         const cellWidth = ws.width / w;
         const cellHeight = ws.height / h;
 
-        const fontSize = 50;
         ctx.font = `${fontSize}px Arial`;
-
         ctx.clearRect(0, 0, ws.width, ws.height);
-
         ctx.fillStyle = "white";
         ctx.fillRect(0,0,ws.width, ws.height);
         ctx.fillStyle = "black";
-
+        ctx.lineWidth = lineWidth;
         ctx.strokeRect(0,0, ws.width, ws.height);
 
         for(let i = 0; i < w*h; i++){
@@ -131,14 +136,18 @@ word_search_maker.component = class extends Component {
             const cellPosOnCanvasX = cellWidth * x + cellWidth /2 - fontSize /2;
             const cellPosOnCanvasY = cellHeight * y + cellHeight /2 + fontSize /2;
 
+            if(this.state.showSolutions && currentCell.partOfWord) ctx.fillStyle = "red";
+
             ctx.fillText(currentCell.ch, cellPosOnCanvasX, cellPosOnCanvasY);
 
+            ctx.fillStyle = "black";
         }
     }
 
     #create(){
         const {words, characters, w, h} = this.state;
-        
+        this.#needUpdate = false;
+
         const randomCharacter = () => {
             return characters[Math.floor(this.#rand()*characters.length)];
         }
@@ -179,9 +188,9 @@ word_search_maker.component = class extends Component {
             );
         };
 
-        const possibleCells = (direction, word) => {
+        const possibleCells = (direction, wordLength) => {
 
-            const wordLength = word.length;
+            wordLength = wordLength || 0;
 
             return new Array(w*h)
             .fill(0)
@@ -229,12 +238,12 @@ word_search_maker.component = class extends Component {
 
         const states = [{words: copyWords(words), ws: copyWordSearch(wordSearch), attempts: 0}];
 
-        const attemptsPer = 25;
+        const attemptsPer = 20;
+
+        const maxRuns = 50000;
+        let numRun = 0;
 
         do {
-
-            console.log(states.length, words.length)
-
             const wordListAtState = copyWords(states[states.length-1].words);
             const wordSearchAtState = copyWordSearch(states[states.length-1].ws);
             const attempts = states[states.length-1].attempts;
@@ -245,10 +254,8 @@ word_search_maker.component = class extends Component {
             };
 
             const wordIndex = Math.floor(this.#rand() * wordListAtState.length);
-            const word = wordListAtState[wordIndex];
+            const word = wordListAtState[wordIndex] || [];
             wordListAtState.splice(wordIndex, 1);
-
-            console.log(word, attempts, wordListAtState);
 
             const d = this.state.hardMode ? [0,1,2,3,4,5,6,7]: [2,3,4];
 
@@ -258,7 +265,7 @@ word_search_maker.component = class extends Component {
                 const dIndex = Math.floor(this.#rand() * d.length);
                 const rd = d[dIndex];
 
-                const cellLocations = possibleCells(rd, word);
+                const cellLocations = possibleCells(rd, word.length);
 
                 while(cellLocations.length && !fits){
                     const cellLocationIndex = Math.floor(this.#rand() * cellLocations.length);
@@ -286,8 +293,8 @@ word_search_maker.component = class extends Component {
                             currentCell.partOfWord = word.join('-');
                             currentCellLocation = nextCellInDirection(currentCellLocation.x, currentCellLocation.y, rd);
                         }
-                        if(states.length === words.length) {
-                            console.log(wordSearchAtState)
+                        if(states.length === words.length || !words.length) {
+                            this.#currentWordSearch = wordSearchAtState;                            
                             return wordSearchAtState;
                         }
                         else states.push({words: wordListAtState, ws: wordSearchAtState, attempts: 0});
@@ -300,15 +307,30 @@ word_search_maker.component = class extends Component {
             }
 
             if(!fits){
-                console.log("does this ever get called");
                 states.pop();
                 if(states.length)
                     states[states.length-1].attempts += 1;
             }
 
-        }while(states.length);
+            numRun++;
+
+
+        }while(states.length && numRun < maxRuns);
 
         throw `Error: At least one word cannot fit`;
+    }
+
+    #parseWordInput(str){
+        return str
+        .match(/[a-zA-Z0-9<>]+/g)
+        .map(e => e.match(/(?<=<)[^<>]+(?=>)|[^<>]/g))
+    }
+
+    #parseWH(str){
+        let [w, h] = str.matchAll(/[0-9]+/g).map(g=>parseInt(g[0]));
+        if(!w || w < 1) w = 20;
+        if(!h || h < 1) h = 20;
+        return {w,h};
     }
 
     #updateState = () => {
@@ -317,9 +339,7 @@ word_search_maker.component = class extends Component {
 
         const listInput = document.getElementById("words");
         const words = listInput.value ?
-            listInput.value
-            .match(/[a-zA-Z0-9<>]+/g)
-            .map(e => e.match(/(?<=<)[^<>]+(?=>)|[^<>]/g)):
+            this.#parseWordInput(listInput.value):
             []
         listInput.style.color = "black";
 
@@ -333,9 +353,7 @@ word_search_maker.component = class extends Component {
                 .flat()
         ])]
 
-        let [w, h] = document.getElementById("w-h").value.matchAll(/[0-9]+/g).map(g=>parseInt(g[0]));
-        if(!w || w < 1) w = 20;
-        if(!h || h < 1) h = 20;
+        const {w,h} = this.#parseWH(document.getElementById("w-h").value);
 
         const hardMode = document.getElementById("hard").checked;
 
@@ -343,9 +361,14 @@ word_search_maker.component = class extends Component {
         this.setState({randomSeed, words, characters, w, h, hardMode});
     }
 
-    #removeCharacter = (e) => {
-        const chList = document.getElementById("ch-list");
-        chList.removeChild(e.target);
+    #removeCharacter = (i) => {
+        return () => {
+            if(this.state.characters.length > 1){
+                const newCharList = [...this.state.characters.slice(0, i), ...this.state.characters.slice(i+1)];
+                this.#needUpdate = true;
+                this.setState({characters: newCharList});
+            }
+        }
     }
 
     #togglePopup = () => {
@@ -355,13 +378,22 @@ word_search_maker.component = class extends Component {
 
     #saveCurrent = () => {
         try{
-            const date = new Date(Date.now()).toString();
+            
+            const name = document.getElementById("save-input-name").value;
             const words = document.getElementById("words").value;
-            const seed = document.getElementById("rand-seed").value;
-            const size = document.getElementById("w-h").value;
-            const json = JSON.stringify({words, seed, size});
-            window.localStorage.setItem(date, json);
-            this.setState({showingPopup: true});
+
+            if(words && name){
+                const seed = document.getElementById("rand-seed").value;
+                const size = document.getElementById("w-h").value;
+                const incA_Z = document.getElementById("A-Z").checked;
+                const inca_z = document.getElementById("a-z").checked;
+                const hardMode = document.getElementById("hard").checked;
+                const characters = this.state.characters;
+                const json = JSON.stringify({words, seed, size, incA_Z, inca_z, characters, hardMode});
+                window.localStorage.setItem(name, json);
+                this.setState({showingPopup: true});
+            }
+            
         }catch(e){
             console.error(e);
         }
@@ -377,9 +409,19 @@ word_search_maker.component = class extends Component {
 
     #loadSaved = () => {
         const savedWs = this.#selectedSavedWS;
-        if(savedWs.words) document.getElementById("words").value = savedWs.words;
-        if(savedWs.seed) document.getElementById("rand-seed").value = savedWs.seed;
+        document.getElementById("words").value = savedWs.words;
+        const parsedWords = this.#parseWordInput(savedWs.words);
+        const {w,h} = this.#parseWH(savedWs.size);
+
+        if(savedWs.seed) document.getElementById("rand-seed").value = savedWs.seed;        
         if(savedWs.size) document.getElementById("w-h").value = savedWs.size;
+        document.getElementById("A-Z").checked = savedWs.incA_Z === true;
+        document.getElementById("a-z").checked = savedWs.inca_z === true;
+        document.getElementById("hard").checked = savedWs.hardMode === true;
+        
+        this.#needUpdate = true;
+        this.setState({characters: savedWs.characters, words: parsedWords, w, h, randomSeed: savedWs.seed, hardMode: savedWs.hardMode});
+
     }
 
     #deleteSaved = () => {
@@ -395,6 +437,24 @@ word_search_maker.component = class extends Component {
         }catch(e){
             console.error(e);
         }
+    }
+
+    #print = (e) => {
+
+        const canvas = document.getElementById('word-search');
+        if(!canvas) return;
+
+        const noPrints = document.getElementsByClassName('no-print');
+        for(let i = 0; i < noPrints.length; i++) noPrints[i].hidden = true;
+
+        const printScreen = document.getElementById('print');
+        printScreen.hidden = false;
+
+        window.print()
+        
+        for(let i = 0; i < noPrints.length; i++) noPrints[i].hidden = false;
+        printScreen.hidden = true;
+
     }
 
     render(){
@@ -413,31 +473,31 @@ word_search_maker.component = class extends Component {
                         const words = json.words;
                         const seed = json.seed;
                         const size = json.size;
+                        const incA_Z = json.incA_Z;
+                        const inca_z = json.inca_z;
+                        const hardMode = json.hardMode;
+                        const characters = json.characters;
                         if(words)
-                            savedWs.push({words, seed, name, size});
+                            savedWs.push({words, seed, name, size, incA_Z, inca_z, characters, hardMode});
                     }catch(e){
                         // this is expected if other things in localstorage
                     }
 
                 }
 
-                savedWs.sort((o1, o2) => {
-                    const date1 = new Date(o1.name);
-                    const date2 = new Date(o2.name);
-                    return date2 - date1;
-                })
+                savedWs.sort();
 
             }catch(e){
                 console.error(e);
             }
         
         return <div>
-            <div id="inputs">
+            <div id="inputs" className="no-print">
                 <div className="word-list-input">
                     <textarea id="words" placeholder="comma seperated list of words, group letters by inserting between < and >" className={this.#isMobile ? "on-mobile": ""} onChange={e => {this.#currentWordStr = e.target.value}}></textarea>
                     {!this.#isMobile && <div id="ch-list">
                         {!this.state.characters.length && <input placeholder="character list" readOnly></input>}
-                        {this.state.characters.map((ch, i) => <div className="character" key={i} onClick={this.#removeCharacter}>{ch}</div>)}
+                        {this.state.characters.map((ch, i) => <div className="character" key={i} onClick={this.#removeCharacter(i)}>{ch}</div>)}
                     </div>}
                 </div>
                 <div className="state-inputs">
@@ -446,18 +506,22 @@ word_search_maker.component = class extends Component {
                     <div className="a-z">{!this.#isMobile && "Include a-z: "}<input id="a-z" type="checkbox"></input></div>
                     <div className="A-Z">{!this.#isMobile && "Include A-Z: "}<input id="A-Z" type="checkbox" defaultChecked></input></div>
                     <div className="hard-move">{!this.#isMobile && "Hard Mode: "}<input id="hard" type="checkbox" defaultChecked></input></div>
+                    <div className="sol">{!this.#isMobile && "Show solutions: "}<input id="sol" type="checkbox" onClick={() => {this.setState({showSolutions: !this.state.showSolutions})}}></input></div>
                     <div className="save-load">{!this.#isMobile && "Save/Load: "}<button id="save-load" onClick={this.#togglePopup}>SL</button></div>
                 </div>
-                <div className="generate">Generate: <button id="generate" onClick={this.#updateState}>G</button></div>
+                <div className="generate no-print">
+                        <div>{!this.#isMobile && "Generate: "}<button id="generate" onClick={this.#updateState}>G</button></div>
+                        <div>{!this.#isMobile && "Print: "}<button id="print-button" onClick={this.#print}>P</button></div>
+                </div>
             </div>
             
-            {this.state.w && this.state.h && <canvas id="word-search" width={this.state.w*100} height={this.state.h*100}></canvas>}
+            {this.state.w && this.state.h && <canvas id="word-search" className="no-print"></canvas>}
 
-            <div id="popup" className={this.state.showingPopup ? "show": ""}>
+            <div id="popup" className={this.state.showingPopup ? "show no-print": "no-print"}>
                 <div className="top-popup">
                     <div>Current Word-Search</div>
                     <div className="possible-save">
-                        <div>{new Date(Date.now()).toString()}</div>
+                        <div>{this.state.showingPopup && <input autoFocus placeholder="type name here" id="save-input-name"></input>}</div>
                         <div>{[...this.#currentWordStr.slice(0, 31), ..."..."].join('')}</div>
                     </div>
                     <button className="save" onClick={this.#saveCurrent}>Save</button>
@@ -471,7 +535,7 @@ word_search_maker.component = class extends Component {
                                 this.#selectedSavedWS = saved;
                                 this.#clickSaved(e);
                             }}>
-                                <div>{saved.name}</div>
+                                <div><b>{saved.name}</b></div>
                                 <div>{[...saved.words.slice(0, 31), ..."..."].join('')}</div>
                             </div>
                         })}
@@ -480,6 +544,16 @@ word_search_maker.component = class extends Component {
                         <div><button onClick={this.#loadSaved}>Load</button></div>
                         <div><button onClick={this.#deleteSaved}>Delete</button></div>
                         <div><button onClick={this.#togglePopup}>Exit</button></div>
+                    </div>
+                </div>
+            </div>
+            <div id="print" hidden>
+                <div className="word-list-print-ready">
+                    <div><b>Word List</b></div>
+                    <div className="word-list-print-block">
+                        {this.state.words.map((word, i) => {
+                            return <div key={i}>{word.join('')}</div>
+                        })}
                     </div>
                 </div>
             </div>
