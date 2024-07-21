@@ -55,9 +55,9 @@ export default class FileSystem {
         ]},
         {path: ['~', 'Projects'], data: [
             {name: "maze_maker.html", type: this.#TYPES.APP},
-            {name: "word_search_maker.html", type: this.#TYPES.APP}
+            {name: "word_search_maker.html", type: this.#TYPES.APP},
+            {name: "daily_sudoku.html", type: this.#TYPES.APP}
         ]}
-        
     ];
     #currentPath = ['~'];
 
