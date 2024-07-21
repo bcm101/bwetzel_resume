@@ -2,7 +2,7 @@ import { Component } from "react";
 
 const daily_sudoku = function () {
     return [
-        {line: "This is a website linked below that will generate sudoku puzzles daily.", className: "opened-file", remove_space: true},
+        {line: "This is a website linked below that will generate sudoku puzzles daily.", className: "opened-file", remove_spaces: true},
         {line: "link", link: "/bwetzel_resume/#/fs?path=~/Projects/daily_sudoku.html"}
     ];
 }

@@ -3,7 +3,7 @@ import './maze_maker.css';
 
 const maze_maker = function () {
     return [
-        {line: "This is an webpage that can be run by accessing the following link. This project is meant to show my understanding of algorithms as I was able to efficiently and without recursion generate a maze based on given inputs.", className: "opened-file", remove_space: true},
+        {line: "This is an webpage that can be run by accessing the following link. This project is meant to show my understanding of algorithms as I was able to efficiently and without recursion generate a maze based on given inputs.", className: "opened-file", remove_spaces: true},
         {line: "link", link: "/bwetzel_resume/#/fs?path=~/Projects/maze_maker.html"}
     ];
 }
