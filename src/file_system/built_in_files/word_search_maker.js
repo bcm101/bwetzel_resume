@@ -513,6 +513,15 @@ word_search_maker.component = class extends Component {
                         <div>{!this.#isMobile && "Generate: "}<button id="generate" onClick={this.#updateState}>G</button></div>
                         <div>{!this.#isMobile && "Print: "}<button id="print-button" onClick={this.#print}>P</button></div>
                 </div>
+                {!this.state.characters.length && <div>
+                    <br></br>
+                    <p>Hi! This website is designed to help two of my family members who are teachers to generate word searches to entertain kids. To make a word search, one must enter a list of words to be included in the word search. Then, they can enter the optional inputs of setting width/height ('w,h' input box) and setting a random seed. A random seed will determine whether the word search will be the same next time you generate with the same inputs. For example, if you generate a word search with the random seed of 'hello', and then you generate it again, the word search will not change as the seed is the exact same. But, if you remove the random seed and generate twice you will see two different word searches.</p>
+                    <p>This word search also lets you get pretty custom with the way characters are handled. If you aren't on mobile, you can see a character list in the top right of the screen when you hit generate. This list lets you remove individual characters from showing up in the word list. Moreover, the 'include a-z' checkbox (leftmost) and 'include A-Z' checkbox (second to the left) will include all the lowercase and uppercase letters in the character list respectively. If you wish to include a combination of characters as a single space in the word search, one can group letters when entering them in the word list.</p>
+                    <p>One can save word searches by hitting the save/load button (rightmost), and entering a name for new word search. Hit save, and you should see it appear in the dropdown. If it doesn't appear, its likely your browser does not appreciate me saving data to its local storage, and you will have to save with a notepad file or something (gross).</p>
+                    <p>Lastly, hard mode (second to last checkbox) is when words can go in all directions in the word search. Not hard mode is restricted to only 3 directions which are down, down-right, and right.</p>
+                    <p>Everything else should be pretty self explanatory! I hope people get as much fun out of this as I had while making it.</p>
+                    <p>-Brandon</p>
+                </div>}
             </div>
             
             {this.state.w && this.state.h && <canvas id="word-search" className="no-print"></canvas>}
