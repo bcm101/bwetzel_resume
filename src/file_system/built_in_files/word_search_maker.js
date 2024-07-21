@@ -83,7 +83,7 @@ word_search_maker.component = class extends Component {
                 const words = document.getElementById("words");
                 words.value = words.value + "\n" + e;
                 words.style.color = "red";
-            }else console.error(e);
+            };
         }
 
     }
@@ -532,7 +532,7 @@ word_search_maker.component = class extends Component {
                 </div>}
             </div>
             
-            {this.state.w && this.state.h && <canvas id="word-search" className="no-print"></canvas>}
+            {this.state.w && this.state.h && this.state.characters.length && <canvas id="word-search" className="no-print"></canvas>}
 
             <div id="popup" className={this.state.showingPopup ? "show no-print": "no-print"}>
                 <div className="top-popup">
