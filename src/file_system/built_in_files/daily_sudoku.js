@@ -54,9 +54,14 @@ daily_sudoku.component = class extends Component{
         return `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
     }
 
-    #rand = Math.random //getRand(this.#getDay());
-    #numberList;
-    #grid;
+    state = {
+        attempts: null,
+        unSolvedGrid: null
+    }
+
+    #rand = Math.random // getRand(this.#getDay()); // random function that enables daily puzzles that are the same for everyone
+    #numberList; // list of possible numbers to fill in (1-9 usually for sudoku)
+    #solvedGrid; // solution grid
 
     #shuffle = (array) => {
         let currentIndex = array.length;
@@ -79,9 +84,7 @@ daily_sudoku.component = class extends Component{
         .map((_, j) => new Array(d)
             .fill(0)
             .map((_, i) => {
-                // if(j === 0 && i === 0) return {number: 0, builtIn: true}
-                // return {number: d*j+i+1, builtIn: true}
-                return {number: 0, builtIn: true}
+                return {number: 0, builtIn: true, shouldShow: false}
             })
         );
     }
@@ -98,8 +101,8 @@ daily_sudoku.component = class extends Component{
         .map((_, i) => i+1)
     }
     
-    #getSquare(x, y){
-        const d = this.#grid.length;
+    #getSquare(x, y, grid){
+        const d = grid.length;
         const squares = Math.floor(Math.pow(d, .5));
         const square = new Array(d);
     
@@ -110,56 +113,46 @@ daily_sudoku.component = class extends Component{
             const xs = xSquareNum*squares + i;
             for(let j = 0; j < squares; j++){
                 const ys = ySquareNum*squares + j;
-                square[i*squares+j] = this.#grid[xs][ys].number;
+                square[i*squares+j] = grid[xs][ys].number;
             }
         }
         return square;
     }
 
-    #isFullGrid(){
-        const d = this.#grid.length;
+    #isFullGrid(grid){
+        const d = grid.length;
         for(let i = 0; i < d; i++)
             for(let j = 0; j < d; j++)
-                if(this.#grid[i][j].number === 0)
+                if(grid[i][j].number === 0)
                     return false;
         return true;
     }
 
-    #fillGrid(){
-        const d = this.#grid.length;
+    #fillGrid(grid){
+        const d = grid.length;
         const totalCells = d*d;
         let x;
         let y;
 
-        // const grid = this.#grid;
-
         for(let i = 0; i < totalCells; i++){
             x = i % d;
             y = Math.floor(i/d);
-            if(this.#grid[x][y].number === 0){
+            if(grid[x][y].number === 0){
                 this.#shuffle(this.#numberList);
-                // const numberList = this.#numberList;
                 for(let j = 0; j < d; j++){
                     const number = this.#numberList[j];
-                    const col = this.#grid[x].map(e => e.number);
-                    if(!col.includes(number)){ // not include in column
-                        const row = this.#grid.map(e => e[y].number);
-                        if(!row.includes(number)){ // not include in row
-                            const square = this.#getSquare(x, y);
+                    const row = grid[x].map(e => e.number);
+                    if(!row.includes(number)){ // not include in row
+                        const col = grid.map(e => e[y].number);
+                        if(!col.includes(number)){ // not include in column
+                            const square = this.#getSquare(x, y, grid);
                             if(!square.includes(number)){ // not included in the square
-                                this.#grid[x][y].number = number;
-                                // console.log(`row: ${row.join(',')}`);
-                                // console.log(`col: ${col.join(',')}`);
-                                // console.log(`sqr: ${square.join(',')}`);
-                                // console.log(number);
-                                if(this.#isFullGrid()){
-                                    console.log("found full grid?")
+                                grid[x][y].number = number;
+                                if(this.#isFullGrid(grid))
                                     return true;
-                                }
                                 else
-                                    if(this.#fillGrid()){
+                                    if(this.#fillGrid(grid))
                                         return true;
-                                    }
                             }
                         }
                     }
@@ -167,28 +160,162 @@ daily_sudoku.component = class extends Component{
                 break;
             }
         }
-        // const currentGridNumber = this.#grid[x][y];
-        this.#grid[x][y].number = 0;
-        // console.log("backtracking", currentGridNumber)
+        grid[x][y].number = 0;
         return false;
     }
 
-    #solveGrid(){
-        
+    #copyGrid(grid){
+        const d = grid.length;
+        return new Array(d)
+        .fill(0)
+        .map((_, i) => new Array(d)
+            .fill(0)
+            .map((_, j) => {
+                return {
+                    number: grid[i][j].number,
+                    builtIn: grid[i][j].builtIn,
+                    shouldShow: grid[i][j].shouldShow
+                }
+            })
+        );
+    }
+
+    async #findPuzzle(difficulty, solvedGrid){
+
+        let unSolvedGrid = this.#copyGrid(solvedGrid);
+        const d = solvedGrid.length;
+        let solutionsFound = 0;
+        let totalAttempts = 10;
+        let totalRemoved = 0;
+
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        const countSolutions = grid => {
+            const d = grid.length;
+            const totalCells = d*d;
+            let x;
+            let y;
+
+            if(solutionsFound > 1) return true;
+
+            for(let i = 0; i < totalCells; i++){
+                x = i % d;
+                y = Math.floor(i/d);
+                if(grid[x][y].number === 0){
+
+                    console.log("unsolved cell at ", x, y);
+                    console.log(grid[x].map(e => e.number).join(), grid.map(e => e[y].number).join(), this.#getSquare(x, y, grid).join())
+
+                    this.#shuffle(this.#numberList);
+                    for(let j = 0; j < d; j++){
+                        const number = this.#numberList[j];
+                        const row = grid[x].map(e => e.number);
+                        if(!row.includes(number)){ // not include in row
+                            const col = grid.map(e => e[y].number);
+                            if(!col.includes(number)){ // not include in column
+                                const square = this.#getSquare(x, y, grid);
+                                if(!square.includes(number)){ // not included in the square
+                                    grid[x][y].number = number;
+                                    if(this.#isFullGrid(grid)){
+                                        solutionsFound++;
+                                        console.log(square.join(), col.join(), row.join(), number, x, y)
+                                        break;
+                                    }
+                                    else
+                                        if(countSolutions(grid))
+                                            return true;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            grid[x][y].number = 0;
+            return false;
+        };
+
+        while(totalAttempts > 0){
+            let x = Math.floor(this.#rand() * d);
+            let y = Math.floor(this.#rand() * d);
+
+            while(unSolvedGrid[x][y] === 0){
+                x = Math.floor(this.#rand() * d);
+                y = Math.floor(this.#rand() * d);
+            }
+
+            unSolvedGrid[x][y].number = 0;
+            unSolvedGrid[x][y].shouldShow = true;
+            unSolvedGrid[x][y].builtIn = false;
+
+            let copyOfGrid = this.#copyGrid(unSolvedGrid);
+
+            countSolutions(copyOfGrid);
+            if(solutionsFound !== 1){
+                totalAttempts--;
+                unSolvedGrid[x][y].number = solvedGrid[x][y].number;
+                unSolvedGrid[x][y].shouldShow = solvedGrid[x][y].shouldShow;
+                unSolvedGrid[x][y].builtIn = solvedGrid[x][y].builtIn;
+                continue;
+            };
+
+            console.log(solutionsFound)
+
+            solutionsFound = 0;
+
+            totalRemoved++;
+
+            await sleep(100);
+
+            this.setState({attempts: difficulty, unSolvedGrid: this.#copyGrid(unSolvedGrid)});
+
+        }
+
+
+
+        console.log("done generating: removed ", totalRemoved);
+
     }
     
+    #genSetAttempts = (difficulty) => {
+        return () => {
+            // this.setState({attempts});
+            this.#findPuzzle(difficulty, this.#solvedGrid);
+        }
+    }
+
+    componentDidMount = () => {
+        const d = 9; // this only makes sense to be a perfect square... will likely get weird issues if not
+        this.#numberList = this.#numberListGenerator(d);
+        this.#solvedGrid = this.#makeGrid(d);
+        this.#fillGrid(this.#solvedGrid);
+        this.setState({unSolvedGrid: this.#copyGrid(this.#solvedGrid)});
+    }
+
     render(){
 
-        const d = 9;
-        this.#numberList = this.#numberListGenerator(d);
-
-        this.#grid = this.#makeGrid(d);
-
         return <div>
-            <button onClick={() => {
-                this.#fillGrid();
-                console.log(this.#grid);
-            }}>FILL GRID</button>
+            {!this.state.attempts && <div>
+                <button onClick={this.#genSetAttempts(20)}>Easy</button>
+                <button onClick={this.#genSetAttempts(30)}>Medium</button>
+                <button onClick={this.#genSetAttempts(60)}>Hard</button>
+            </div>}
+            {this.state.attempts && <div>
+                <table className="sudoku-puzzle">
+                    <tbody>
+                        {this.state.unSolvedGrid.map((row, i) => {
+                            return <tr key={i}>{row.map((cell, j) => {
+
+                                return <td key={j}>{cell.number}</td>
+
+                                if(cell.shouldShow) return <td key={j}>{cell.number}</td>
+                                    
+                                return <td key={j} className={cell.number ? "not-shown": ""}>b</td>
+                            })}</tr>
+                        })}
+                    </tbody>
+                </table>
+            </div>}
         </div>
     }
 }
