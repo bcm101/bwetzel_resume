@@ -15,7 +15,7 @@ maze_maker.component = class extends Component{
         h: null,
         startX: null,
         startY: null,
-        isCircle: false,
+        isCircle: true,
         endX: null,
         endY: null,
         showSolution: false,
@@ -317,16 +317,21 @@ maze_maker.component = class extends Component{
             this.#draw();
     }
 
+    componentDidMount = () => {
+        const generate = document.getElementById("generate");
+        generate.click();
+    }
+
     render(){
 
         return <div>
 
             <div className="inputs">
-                <div>Size: <input id="size" placeholder="w, h" onChange={this.#setSize}></input></div>
-                <div>Start Location: <input id="start" placeholder="(x,y)" onChange={this.#setStart}></input></div>
-                <div>End Location: <input id="end" placeholder="(x,y)" onChange={this.#setEnd}></input></div>
-                <div>Circular: <input type="checkbox" onClick={this.#checkCircular}></input></div>
-                <div>Generate: <button onClick={this.#onClickGenerate}></button></div>
+                <div>Size: <input id="size" placeholder="w, h" onChange={this.#setSize} defaultValue="20,20"></input></div>
+                <div>Start Location: <input id="start" placeholder="(x,y)" onChange={this.#setStart} defaultValue="(1,1)"></input></div>
+                <div>End Location: <input id="end" placeholder="(x,y)" onChange={this.#setEnd} defaultValue="(20,20)"></input></div>
+                <div>Circular: <input type="checkbox" onClick={this.#checkCircular} defaultChecked></input></div>
+                <div>Generate: <button id="generate" onClick={this.#onClickGenerate}></button></div>
                 <div>Solution: <input type="checkbox" onClick={this.#showSolutionChecked}></input></div>
             </div>
 
