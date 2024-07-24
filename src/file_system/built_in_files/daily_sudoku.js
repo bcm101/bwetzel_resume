@@ -1,4 +1,5 @@
 import { Component } from "react";
+import './daily_sudoku.css';
 
 const daily_sudoku = function () {
     return [
@@ -55,13 +56,18 @@ daily_sudoku.component = class extends Component{
     }
 
     state = {
-        attempts: null,
-        unSolvedGrid: null
+        difficulty: null,
+        unSolvedGrid: null,
+        isComplete: false
     }
 
-    #rand = Math.random // getRand(this.#getDay()); // random function that enables daily puzzles that are the same for everyone
+    #rand; // random function that enables daily puzzles that are the same for everyone
     #numberList; // list of possible numbers to fill in (1-9 usually for sudoku)
     #solvedGrid; // solution grid
+    #selectedCell;
+    #timeStart;
+    #gridVisible = false;
+    #madeChangeToGrid = false;
 
     #shuffle = (array) => {
         let currentIndex = array.length;
@@ -84,7 +90,7 @@ daily_sudoku.component = class extends Component{
         .map((_, j) => new Array(d)
             .fill(0)
             .map((_, i) => {
-                return {number: 0, builtIn: true, shouldShow: false}
+                return {number: 0, builtIn: true, shouldShow: false, wrong: false}
             })
         );
     }
@@ -119,11 +125,19 @@ daily_sudoku.component = class extends Component{
         return square;
     }
 
-    #isFullGrid(grid){
+    #getRow(x, grid){
+        return grid[x].map(e => e.number);
+    }
+
+    #getCol(y, grid){
+        return grid.map(e => e[y].number);
+    }
+
+    #isCorrectGrid(grid){
         const d = grid.length;
         for(let i = 0; i < d; i++)
             for(let j = 0; j < d; j++)
-                if(grid[i][j].number === 0)
+                if(grid[i][j].number === 0 || grid[i][j].wrong)
                     return false;
         return true;
     }
@@ -138,17 +152,19 @@ daily_sudoku.component = class extends Component{
             x = i % d;
             y = Math.floor(i/d);
             if(grid[x][y].number === 0){
-                this.#shuffle(this.#numberList);
+                const numberList = this.#numberList.slice(0);
+
+                this.#shuffle(numberList);
                 for(let j = 0; j < d; j++){
-                    const number = this.#numberList[j];
-                    const row = grid[x].map(e => e.number);
+                    const number = numberList[j];
+                    const row = this.#getRow(x, grid);
                     if(!row.includes(number)){ // not include in row
-                        const col = grid.map(e => e[y].number);
+                        const col = this.#getCol(y, grid)
                         if(!col.includes(number)){ // not include in column
                             const square = this.#getSquare(x, y, grid);
                             if(!square.includes(number)){ // not included in the square
                                 grid[x][y].number = number;
-                                if(this.#isFullGrid(grid))
+                                if(this.#isCorrectGrid(grid))
                                     return true;
                                 else
                                     if(this.#fillGrid(grid))
@@ -174,18 +190,28 @@ daily_sudoku.component = class extends Component{
                 return {
                     number: grid[i][j].number,
                     builtIn: grid[i][j].builtIn,
-                    shouldShow: grid[i][j].shouldShow
+                    shouldShow: grid[i][j].shouldShow,
+                    wrong: grid[i][j].wrong
                 }
             })
         );
     }
+
+    #showGrid = grid => {
+        this.#gridVisible = true;
+        return grid.map(row => {
+            return row.map(cell => {
+                return {number: cell.number, builtIn: cell.builtIn, shouldShow: true, wrong: cell.wrong};
+            });
+        });
+    };
 
     async #findPuzzle(difficulty, solvedGrid){
 
         let unSolvedGrid = this.#copyGrid(solvedGrid);
         const d = solvedGrid.length;
         let solutionsFound = 0;
-        let totalAttempts = 10;
+        let totalAttempts = 20;
         let totalRemoved = 0;
 
         const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -203,12 +229,12 @@ daily_sudoku.component = class extends Component{
                 y = Math.floor(i/d);
                 if(grid[x][y].number === 0){
 
-                    console.log("unsolved cell at ", x, y);
-                    console.log(grid[x].map(e => e.number).join(), grid.map(e => e[y].number).join(), this.#getSquare(x, y, grid).join())
+                    const numberList = this.#numberList.slice(0);
+                    this.#shuffle(numberList);
 
-                    this.#shuffle(this.#numberList);
                     for(let j = 0; j < d; j++){
-                        const number = this.#numberList[j];
+                        
+                        const number = numberList[j];
                         const row = grid[x].map(e => e.number);
                         if(!row.includes(number)){ // not include in row
                             const col = grid.map(e => e[y].number);
@@ -216,14 +242,15 @@ daily_sudoku.component = class extends Component{
                                 const square = this.#getSquare(x, y, grid);
                                 if(!square.includes(number)){ // not included in the square
                                     grid[x][y].number = number;
-                                    if(this.#isFullGrid(grid)){
+                                    if(this.#isCorrectGrid(grid)){
                                         solutionsFound++;
-                                        console.log(square.join(), col.join(), row.join(), number, x, y)
                                         break;
                                     }
-                                    else
+                                    else{
                                         if(countSolutions(grid))
                                             return true;
+                                    }
+                                         
                                 }
                             }
                         }
@@ -235,11 +262,11 @@ daily_sudoku.component = class extends Component{
             return false;
         };
 
-        while(totalAttempts > 0){
+        while(totalRemoved < difficulty && totalAttempts > 0){
             let x = Math.floor(this.#rand() * d);
             let y = Math.floor(this.#rand() * d);
 
-            while(unSolvedGrid[x][y] === 0){
+            while(!unSolvedGrid[x][y].number){
                 x = Math.floor(this.#rand() * d);
                 y = Math.floor(this.#rand() * d);
             }
@@ -249,72 +276,230 @@ daily_sudoku.component = class extends Component{
             unSolvedGrid[x][y].builtIn = false;
 
             let copyOfGrid = this.#copyGrid(unSolvedGrid);
-
+            
             countSolutions(copyOfGrid);
+
+
             if(solutionsFound !== 1){
                 totalAttempts--;
                 unSolvedGrid[x][y].number = solvedGrid[x][y].number;
                 unSolvedGrid[x][y].shouldShow = solvedGrid[x][y].shouldShow;
                 unSolvedGrid[x][y].builtIn = solvedGrid[x][y].builtIn;
+                solutionsFound = 0;
+
+                if(totalAttempts === 0)
+                    this.setState({difficulty: difficulty, unSolvedGrid: this.#showGrid(unSolvedGrid)});
+
                 continue;
             };
-
-            console.log(solutionsFound)
 
             solutionsFound = 0;
 
             totalRemoved++;
 
-            await sleep(100);
+            if(totalRemoved === difficulty) {
+                await sleep(300);
+                this.setState({difficulty: difficulty, unSolvedGrid: this.#showGrid(unSolvedGrid)});
+                break;
+            }
 
-            this.setState({attempts: difficulty, unSolvedGrid: this.#copyGrid(unSolvedGrid)});
+            await sleep(50);
+
+            this.setState({difficulty: difficulty, unSolvedGrid: this.#copyGrid(unSolvedGrid)});
 
         }
-
-
 
         console.log("done generating: removed ", totalRemoved);
 
+        return unSolvedGrid;
     }
     
-    #genSetAttempts = (difficulty) => {
-        return () => {
-            // this.setState({attempts});
-            this.#findPuzzle(difficulty, this.#solvedGrid);
+    #loadGrid = async (d, difficulty) => {
+
+        try{ // find grid in local storage perchance?
+            const item = window.localStorage.getItem(`BWetzel-DailySudoku-${difficulty}`);
+            const {unSolvedGrid, solvedGrid, date} = JSON.parse(item);
+            if(unSolvedGrid && solvedGrid && date === this.#getDay()){
+                // console.log(unSolvedGrid)
+                this.#solvedGrid = solvedGrid;
+                const isComplete = this.#isCorrectGrid(unSolvedGrid);
+                this.setState({difficulty, unSolvedGrid: this.#showGrid(unSolvedGrid), isComplete});
+                return;
+            }else throw new Error("no local storage found");          
+        }catch(e){
+            console.log("generating...");
+        }
+
+        this.#setUpStartGrid(d);
+        const grid = await this.#findPuzzle(difficulty, this.#solvedGrid);
+        this.#saveGrid(difficulty, grid);
+    }
+
+    #saveGrid = (identifier, grid) => {
+        if(this.#gridVisible){
+            const json = JSON.stringify({unSolvedGrid: grid, solvedGrid: this.#solvedGrid, date: this.#getDay()});
+            const key = `BWetzel-DailySudoku-${identifier}`;
+            try{
+                window.localStorage.setItem(key, json);
+            }catch(e){
+                console.error(e);
+            }
         }
     }
 
-    componentDidMount = () => {
-        const d = 9; // this only makes sense to be a perfect square... will likely get weird issues if not
+    #generateAndSetDifficulty = (d, difficulty) => {
+        return () => {
+            this.#rand = getRand(`${this.#getDay()}${difficulty}`);
+            this.#loadGrid(d, difficulty);
+        }
+    }
+
+    #selectCell = (x,y) => {
+        return (e) => {
+            if(this.#selectedCell?.target === e.target){
+                this.#selectedCell = null;
+                e.target.classList.remove("selected");
+                return;
+            }
+            this.#selectedCell = {target: e.target, x, y};
+            const allSelected = document.getElementsByClassName("selected");
+            for(let i = 0; i < allSelected.length; i++) allSelected[i].classList.remove("selected");
+            e.target.classList.add("selected");
+        }
+    }
+
+    #setUpStartGrid = d => {
         this.#numberList = this.#numberListGenerator(d);
         this.#solvedGrid = this.#makeGrid(d);
         this.#fillGrid(this.#solvedGrid);
         this.setState({unSolvedGrid: this.#copyGrid(this.#solvedGrid)});
     }
 
+    componentDidUpdate = () => {
+        if(this.#madeChangeToGrid){
+            this.#madeChangeToGrid = false;
+            this.#saveGrid(this.state.difficulty, this.state.unSolvedGrid);
+        }
+    }
+
+    componentDidMount = () => {
+        document.addEventListener("keydown", (e) => {
+            if(this.#selectedCell){
+                let key = parseInt(e.key);
+                if(key && key <= this.state.unSolvedGrid.length){
+                    const unSolvedGrid = this.#copyGrid(this.state.unSolvedGrid)
+
+                    const x = this.#selectedCell.x;
+                    const y = this.#selectedCell.y;
+
+                    const newObjForSelectedCell = {
+                        number: key,
+                        builtIn: unSolvedGrid[x][y].builtIn,
+                        shouldShow: unSolvedGrid[x][y].shouldShow,
+                        wrong: this.#solvedGrid[this.#selectedCell.x][this.#selectedCell.y].number !== key
+                    }
+
+                    unSolvedGrid[x][y] = newObjForSelectedCell;
+
+                    this.#madeChangeToGrid = true;
+
+                    if(this.#isCorrectGrid(unSolvedGrid)){
+                        this.#selectedCell = null;
+                        this.setState({unSolvedGrid: unSolvedGrid, isComplete: true});
+                    }else
+                        this.setState({unSolvedGrid: unSolvedGrid});
+                    
+                }
+                    
+                if(e.key === "Backspace" || e.key === "Delete"){
+                    const unSolvedGrid = this.#copyGrid(this.state.unSolvedGrid)
+
+                    const x = this.#selectedCell.x;
+                    const y = this.#selectedCell.y;
+
+                    const newObjForSelectedCell = {
+                        number: 0,
+                        builtIn: unSolvedGrid[x][y].builtIn,
+                        shouldShow: unSolvedGrid[x][y].shouldShow,
+                        wrong: false
+                    }
+                    
+                    unSolvedGrid[x][y] = newObjForSelectedCell;
+
+                    this.#madeChangeToGrid = true;
+
+                    this.setState({unSolvedGrid: unSolvedGrid});
+                }
+                    
+            }
+        });
+
+        this.#timeStart = Date.now();
+
+    }
+
     render(){
 
+        const rand = getRand(this.#getDay());
+
+        const w = window.screen.width * .8;
+        const h = window.screen.height * .8;
+
+        const dimensionOfPuzzle = Math.min(w,h);
+        const leftMargin = `calc(50vw - ${dimensionOfPuzzle/2}px)`;
+        const topMargin = `calc(50vh - ${dimensionOfPuzzle/2}px)`;
+
         return <div>
-            {!this.state.attempts && <div>
-                <button onClick={this.#genSetAttempts(20)}>Easy</button>
-                <button onClick={this.#genSetAttempts(30)}>Medium</button>
-                <button onClick={this.#genSetAttempts(60)}>Hard</button>
+            {!this.state.difficulty &&<div>
+                <div className="header">Daily Sudoku Puzzles!</div>
+                <button onClick={this.#generateAndSetDifficulty(4, 14)} className="button-option">4x4</button>
+                <button onClick={this.#generateAndSetDifficulty(9, 30)} className="button-option">Easy</button>
+                <button onClick={this.#generateAndSetDifficulty(9, 40)} className="button-option">Medium</button>
+                <button onClick={this.#generateAndSetDifficulty(9, 60)} className="button-option">Hard</button>
             </div>}
-            {this.state.attempts && <div>
-                <table className="sudoku-puzzle">
+            {this.state.difficulty && <div style={{width: '100vw', height: '100vh'}}>
+                <table id="sudoku-puzzle" className={this.state.isComplete ? "completed": ""} style={{
+                    width: `${dimensionOfPuzzle}px`, 
+                    height: `${dimensionOfPuzzle}px`, 
+                    left: leftMargin, 
+                    top: topMargin
+                }}>
                     <tbody>
                         {this.state.unSolvedGrid.map((row, i) => {
-                            return <tr key={i}>{row.map((cell, j) => {
+                            const d = row.length;
+                            const square = Math.floor(Math.pow(d, .5));
+                            const percentageofTable = Math.round(10000 / d) / 100;
 
-                                return <td key={j}>{cell.number}</td>
+                            return <tr key={i} style={{width: "100%", height: `${percentageofTable}%`}}>{row.map((cell, j) => {
 
-                                if(cell.shouldShow) return <td key={j}>{cell.number}</td>
-                                    
-                                return <td key={j} className={cell.number ? "not-shown": ""}>b</td>
+                                const listOfColors = ["red", "blue", "green"];
+                                const color = listOfColors[Math.floor(rand() * listOfColors.length)]
+
+                                const shownClassname = cell.shouldShow ? "shown": `not-shown ${color}`;
+                                const leftSideofSquare = j % square === 0 ? " left-square": "";
+                                const rightSideofSquare = j % square === square-1 ? " right-square": "";
+                                const topofSquare = i % square === 0 ? " top-square": "";
+                                const bottomofSquare = i % square === square-1 ? " bottom-square": "";
+                                const typable = cell.builtIn || this.state.isComplete ? " not-typable": " typable";
+                                const wrong = cell.wrong ? " wrong": "";
+                                const selected = this.#selectedCell?.x === i && this.#selectedCell?.y === j ? " selected": "";
+
+                                const onclick = cell.builtIn || this.state.isComplete ? () => {}: this.#selectCell(i, j);
+
+                                const cn = `${shownClassname}${leftSideofSquare}${rightSideofSquare}${topofSquare}${bottomofSquare}${typable}${wrong}${selected}`;
+
+                                return <td key={j} className={cn} style={{width: `${percentageofTable}%`, height: `${percentageofTable}%`}} onClick={onclick}>
+                                    {cell.shouldShow && cell.number > 0 ? cell.number: ""}
+                                </td>
                             })}</tr>
                         })}
                     </tbody>
                 </table>
+            </div>}
+            {this.state.isComplete && <div id="success-popup">
+                <p>You completed the daily sudoku puzzle!</p>
+                <p>Congratulations!</p>
+                <p>Come back tomorrow for a new sudoku</p>
             </div>}
         </div>
     }

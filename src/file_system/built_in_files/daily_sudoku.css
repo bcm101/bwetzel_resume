@@ -1,0 +1,134 @@
+
+.header {
+    height: 20vh;
+    text-align: center;
+    font-size: xx-large;
+}
+
+.button-option {
+    margin: auto;
+    width: 20vw;
+    height: 15vh;
+    display: list-item;
+    background-color: rgb(49, 49, 245);
+    text-align: center;
+    margin-top: 1vh;
+    border-radius: 20%;
+    color: white;
+    font-size: x-large;
+    min-width: 300px;
+}
+
+.button-option:hover {
+    background-color: rgb(101, 101, 219);
+    cursor: pointer;
+}
+
+#sudoku-puzzle {
+    position: absolute;
+    border-collapse:collapse;
+    overflow: hidden;
+}
+
+#sudoku-puzzle.completed {
+    background: linear-gradient(-45deg, white 40%, rgb(166, 255, 251) 50%, white 60%);
+    background-size: 500%;
+    background-position-x: 100%;
+    animation: shimmer 1s forwards linear;
+    animation-delay: .3s;
+}
+
+@keyframes shimmer {
+    to {
+        background-position: 0%;
+    }
+}
+
+#success-popup {
+    position: absolute;
+    width: 80vw;
+    height: 80vh;
+    left: 10vw;
+    top: 10vh;
+    background-color: rgb(255, 255, 255);
+    border: 1px dotted black;
+    text-align: center;
+    opacity: 0%;
+    animation: fade-in .2s forwards linear;
+    animation-delay: 1.5s;
+}
+
+@keyframes fade-in {
+    to {
+        opacity: 100%;
+    }
+}
+
+#sudoku-puzzle tbody tr td{
+    border: 1px solid black;
+    text-align: center;
+    font-size: 150%;
+    overflow: hidden;
+}
+
+#sudoku-puzzle td.not-shown.red{
+    background-color: red;
+}
+
+#sudoku-puzzle td.not-shown.blue{
+    background-color: blue;
+}
+
+#sudoku-puzzle td.not-shown.green{
+    background-color: green;
+}
+
+#sudoku-puzzle td.shown.selected {
+    background-color: rgb(0, 255, 242);
+}
+
+#sudoku-puzzle td.shown{
+    animation-name: unhideCell;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+#sudoku-puzzle td.shown.typable:hover{
+    cursor: pointer;
+    background-color: rgb(0, 255, 242);
+}
+
+#sudoku-puzzle td.shown.typable.wrong{
+    background-color: rgba(163, 20, 49, 0.319);
+}
+
+#sudoku-puzzle td.shown.not-typable{
+    font-weight: 300;
+}
+
+#sudoku-puzzle td.left-square{
+    border-left: 2px solid black;
+}
+
+#sudoku-puzzle td.right-square{
+    border-right: 2px solid black;
+}
+
+#sudoku-puzzle td.top-square{
+    border-top: 2px solid black;
+}
+
+#sudoku-puzzle td.bottom-square{
+    border-bottom: 2px solid black;
+}
+
+@keyframes unhideCell {
+    from {
+        color: rgb(0, 255, 242);
+        background-color: rgb(0, 255, 242);
+    }
+    to {
+        color: black;
+        /* background-color: white; */
+    }
+}
