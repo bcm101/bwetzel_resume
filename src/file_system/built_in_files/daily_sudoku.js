@@ -213,53 +213,48 @@ daily_sudoku.component = class extends Component{
         let unSolvedGrid = this.#copyGrid(solvedGrid);
         const d = solvedGrid.length;
         let solutionsFound = 0;
-        let totalAttempts = 20;
+        let totalAttempts = 100;
         let totalRemoved = 0;
 
         const sleep = ms => new Promise(r => setTimeout(r, ms));
 
         const countSolutions = grid => {
             const d = grid.length;
-            const totalCells = d*d;
-            let x;
-            let y;
+            const neighbors = this.#findNeighbors(grid);
 
             if(solutionsFound > 1) return true;
+ 
+            const cellCoordinates = this.#selectNumberFromNeighbors(neighbors);
+            if(!cellCoordinates) return true;
 
-            for(let i = 0; i < totalCells; i++){
-                x = i % d;
-                y = Math.floor(i/d);
-                if(grid[x][y].number === 0){
+            const {x, y} = cellCoordinates;
+            const numberList = this.#numberList.slice(0);
+            this.#shuffle(numberList);
 
-                    const numberList = this.#numberList.slice(0);
-                    this.#shuffle(numberList);
-
-                    for(let j = 0; j < d; j++){
-                        
-                        const number = numberList[j];
-                        const row = grid[x].map(e => e.number);
-                        if(!row.includes(number)){ // not include in row
-                            const col = grid.map(e => e[y].number);
-                            if(!col.includes(number)){ // not include in column
-                                const square = this.#getSquare(x, y, grid);
-                                if(!square.includes(number)){ // not included in the square
-                                    grid[x][y].number = number;
-                                    if(this.#isCorrectGrid(grid)){
-                                        solutionsFound++;
-                                        break;
-                                    }
-                                    else{
-                                        if(countSolutions(grid))
-                                            return true;
-                                    }
-                                         
-                                }
+            for(let i = 0; i < d; i++){
+                
+                const number = numberList[i];
+                const row = grid[x].map(e => e.number);
+                if(!row.includes(number)){ // not include in row
+                    const col = grid.map(e => e[y].number);
+                    if(!col.includes(number)){ // not include in column
+                        const square = this.#getSquare(x, y, grid);
+                        if(!square.includes(number)){ // not included in the square
+                            grid[x][y].number = number;
+                            if(this.#isCorrectGrid(grid)){
+                                solutionsFound++;
+                                break;
                             }
+                            else{
+                                if(countSolutions(grid))
+                                    return true;
+                            }
+                                    
                         }
                     }
-                    break;
                 }
             }
+            
             grid[x][y].number = 0;
             return false;
         };
@@ -316,9 +311,52 @@ daily_sudoku.component = class extends Component{
         return unSolvedGrid;
     }
     
+    #findNeighbors(grid){
+        const d = grid.length;
+
+        const neighbors = new Array(d)
+        .fill(0)
+        .map(_ => []);
+
+        for(let i = 0; i < d*d; i++){
+            const x = i % d;
+            const y = Math.floor(i / d);
+
+            if(grid[x][y].number !== 0) continue;
+
+            const col = this.#getCol(y, grid);
+            const row = this.#getRow(x, grid);
+            const square = this.#getSquare(x, y, grid);
+
+            const uniqueNeighbors = [...new Set([...col, ...row, ... square])]
+                .filter(num => num)
+                .length;
+
+            if(uniqueNeighbors < d)
+                neighbors[uniqueNeighbors].push({x, y});
+
+        }
+
+        return neighbors;
+    }
+
+    #selectNumberFromNeighbors(neighbors){
+        const d = neighbors.length;
+        for(let i = d-1; i >= 0; i--){
+            const neighborGroup = neighbors[i];
+            if(neighborGroup.length){
+                const index = Math.floor(this.#rand() * neighborGroup.length);
+                const selectedNumber = neighborGroup[index];
+                neighborGroup.splice(index, 1);
+                return selectedNumber;
+            }
+        }
+        return null;
+    }
+
     #loadGrid = async (d, difficulty) => {
 
-        try{ // find grid in local storage perchance?
+        try{
             const item = window.localStorage.getItem(`BWetzel-DailySudoku-${difficulty}`);
             const {unSolvedGrid, solvedGrid, date} = JSON.parse(item);
             if(unSolvedGrid && solvedGrid && date === this.#getDay()){
@@ -571,8 +609,9 @@ daily_sudoku.component = class extends Component{
             {this.state.isComplete && <div id="success-popup">
                 <p>You completed the daily sudoku puzzle!</p>
                 <p>Congratulations!</p>
-                <p>Come back tomorrow for a new sudoku</p>
+                <p>Come back tomorrow for a new sudoku or generate another here</p>
                 <button className="button-option" onClick={this.#generateAnother}>Generate Another?</button>
+                <button className="button-option" onClick={() => {window.location.reload()}}>Home</button>
             </div>}
             
         </div>
