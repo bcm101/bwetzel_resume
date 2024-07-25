@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/bwetzel_resume/static/css/main.cbeee362.css",
-    "main.js": "/bwetzel_resume/static/js/main.77c80bb1.js",
+    "main.css": "/bwetzel_resume/static/css/main.46105f19.css",
+    "main.js": "/bwetzel_resume/static/js/main.f61ef84a.js",
     "static/js/453.4d7f4c8a.chunk.js": "/bwetzel_resume/static/js/453.4d7f4c8a.chunk.js",
     "static/media/DB_Icon.svg": "/bwetzel_resume/static/media/DB_Icon.1604b5c206f2e9a99603.svg",
     "index.html": "/bwetzel_resume/index.html",
     "static/media/terminal.svg": "/bwetzel_resume/static/media/terminal.cd4e9dd9c3bf9f40975c.svg",
-    "main.cbeee362.css.map": "/bwetzel_resume/static/css/main.cbeee362.css.map",
-    "main.77c80bb1.js.map": "/bwetzel_resume/static/js/main.77c80bb1.js.map",
+    "main.46105f19.css.map": "/bwetzel_resume/static/css/main.46105f19.css.map",
+    "main.f61ef84a.js.map": "/bwetzel_resume/static/js/main.f61ef84a.js.map",
     "453.4d7f4c8a.chunk.js.map": "/bwetzel_resume/static/js/453.4d7f4c8a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.cbeee362.css",
-    "static/js/main.77c80bb1.js"
+    "static/css/main.46105f19.css",
+    "static/js/main.f61ef84a.js"
   ]
 }
