@@ -480,7 +480,7 @@ daily_sudoku.component = class extends Component{
             keypadWidth = keypadHeight = dimensionOfPuzzle;
         }
 
-        return <div style={{width: "100vw", height: "100vh"}}>
+        return <div>
             {!this.state.difficulty &&<div>
                 <div className="header">Daily Sudoku Puzzles!</div>
                 <button onClick={this.#generateAndSetDifficulty(4, 14)} className="button-option">4x4</button>
@@ -488,7 +488,7 @@ daily_sudoku.component = class extends Component{
                 <button onClick={this.#generateAndSetDifficulty(9, 40)} className="button-option">Medium</button>
                 <button onClick={this.#generateAndSetDifficulty(9, 60)} className="button-option">Hard</button>
             </div>}
-            {this.state.difficulty && <div style={{width: '100vw', height: '100vh'}}>
+            {this.state.difficulty && <div>
                 <table id="sudoku-puzzle" className={this.state.isComplete ? "completed": ""} style={{
                     width: `${dimensionOfPuzzle}px`, 
                     height: `${dimensionOfPuzzle}px`, 
@@ -538,11 +538,10 @@ daily_sudoku.component = class extends Component{
                 height: keypadHeight
             }}>
                 {this.#numberListGenerator(this.state.unSolvedGrid.length+1).map((num, i) => {
-                    
-
+                
                     const d = this.state.unSolvedGrid.length;
 
-                    if(i === d) return <button id="print-sudoku" onClick={this.#print}>print</button>
+                    if(i === d) return <button key={i} id="print-sudoku" onClick={this.#print}>print</button>
 
                     let width;
 

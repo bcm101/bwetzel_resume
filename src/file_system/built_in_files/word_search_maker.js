@@ -568,7 +568,7 @@ word_search_maker.component = class extends Component {
                     <div><b>Word List</b></div>
                     <div className="word-list-print-block">
                         {this.state.words.map((word, i) => {
-                            return <div> {word.join('')} </div>
+                            return <div key={i}> {word.join('')} </div>
                         })}
                     </div>
                 </div>
