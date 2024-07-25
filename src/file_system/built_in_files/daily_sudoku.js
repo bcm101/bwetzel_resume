@@ -542,7 +542,7 @@ daily_sudoku.component = class extends Component{
 
                     const d = this.state.unSolvedGrid.length;
 
-                    if(i === d) return <button id="print" onClick={this.#print}>print</button>
+                    if(i === d) return <button id="print-sudoku" onClick={this.#print}>print</button>
 
                     let width;
 
