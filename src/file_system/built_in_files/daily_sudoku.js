@@ -445,7 +445,7 @@ daily_sudoku.component = class extends Component{
         document.getElementById("sudoku-puzzle").style.left = "15vw";
         document.getElementById("sudoku-puzzle").style.top = "0";
         window.print();
-        window.location.reload();
+        // window.location.reload();
     }
 
     render(){
@@ -542,7 +542,7 @@ daily_sudoku.component = class extends Component{
 
                     const d = this.state.unSolvedGrid.length;
 
-                    if(i+1 === d) return <button id="print" onClick={this.#print}>print</button>
+                    if(i === d) return <button id="print" onClick={this.#print}>print</button>
 
                     let width;
 

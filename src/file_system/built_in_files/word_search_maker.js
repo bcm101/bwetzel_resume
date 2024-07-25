@@ -457,11 +457,11 @@ word_search_maker.component = class extends Component {
 
         window.print();
         
-        canvas.style.height = currentWH.h;
-        canvas.style.width = currentWH.w;
+        // canvas.style.height = currentWH.h;
+        // canvas.style.width = currentWH.w;
 
-        for(let i = 0; i < noPrints.length; i++) noPrints[i].hidden = false;
-        printScreen.hidden = true;
+        // for(let i = 0; i < noPrints.length; i++) noPrints[i].hidden = false;
+        // printScreen.hidden = true;
 
     }
 
