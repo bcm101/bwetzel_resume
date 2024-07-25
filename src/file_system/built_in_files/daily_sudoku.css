@@ -16,7 +16,7 @@
     border-radius: 20%;
     color: white;
     font-size: x-large;
-    min-width: 300px;
+    min-width: 200px;
 }
 
 .button-option:hover {
@@ -24,8 +24,23 @@
     cursor: pointer;
 }
 
+#keypad {
+    position: absolute;
+    /* background-color: aqua; */
+}
+
+#print {
+    position: absolute;
+    height: 4ch;
+    width: 10ch;
+    cursor: pointer;
+    z-index: 1;
+}
+
 #sudoku-puzzle {
     position: absolute;
+    /* display: inline-block; */
+    /* float: left; */
     border-collapse:collapse;
     overflow: hidden;
 }
@@ -67,7 +82,6 @@
 #sudoku-puzzle tbody tr td{
     border: 1px solid black;
     text-align: center;
-    font-size: 150%;
     overflow: hidden;
 }
 

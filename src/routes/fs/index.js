@@ -26,7 +26,7 @@ export default class FileViewer extends Component{
             throw new Error('idk what to do here');
             
         }catch(e){
-            document.getElementById('wrapper').innerHTML = "cannot open file";
+            document.getElementById('wrapper').innerHTML = "<div>cannot open file.. if this seems like an error, try deleting your local storage using the icon on home page when you close the terminal</div><div><a href='/bwetzel_resume'>home page</a></div>";
         }
     }
 

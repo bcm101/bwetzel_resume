@@ -150,6 +150,10 @@ export default class Terminal extends React.Component {
     }
 
     #nano = async (saveNano = async () => {}, file) => {
+
+        // turns out by viewing the event you can see if something was pressed with alt, need to do that to avoid some goofy errors
+        // look up keyboard event 
+
         this.#openedFile = {
             name: file.name,
             content: file.content

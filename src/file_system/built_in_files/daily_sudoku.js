@@ -68,6 +68,7 @@ daily_sudoku.component = class extends Component{
     #timeStart;
     #gridVisible = false;
     #madeChangeToGrid = false;
+    // #isMobile = window.visualViewport.width < 700 || window.visualViewport.height < 700;
 
     #shuffle = (array) => {
         let currentIndex = array.length;
@@ -320,7 +321,6 @@ daily_sudoku.component = class extends Component{
             const item = window.localStorage.getItem(`BWetzel-DailySudoku-${difficulty}`);
             const {unSolvedGrid, solvedGrid, date} = JSON.parse(item);
             if(unSolvedGrid && solvedGrid && date === this.#getDay()){
-                // console.log(unSolvedGrid)
                 this.#solvedGrid = solvedGrid;
                 const isComplete = this.#isCorrectGrid(unSolvedGrid);
                 this.setState({difficulty, unSolvedGrid: this.#showGrid(unSolvedGrid), isComplete});
@@ -438,18 +438,49 @@ daily_sudoku.component = class extends Component{
 
     }
 
+    #print = (e) => {
+        e.target.parentElement.hidden = true;
+        document.getElementById("sudoku-puzzle").style.width = "70vw";
+        document.getElementById("sudoku-puzzle").style.height = "70vw";
+        document.getElementById("sudoku-puzzle").style.left = "15vw";
+        document.getElementById("sudoku-puzzle").style.top = "0";
+        window.print();
+        window.location.reload();
+    }
+
     render(){
 
         const rand = getRand(this.#getDay());
 
-        const w = window.screen.width * .8;
-        const h = window.screen.height * .8;
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height; 
 
-        const dimensionOfPuzzle = Math.min(w,h);
-        const leftMargin = `calc(50vw - ${dimensionOfPuzzle/2}px)`;
-        const topMargin = `calc(50vh - ${dimensionOfPuzzle/2}px)`;
+        let dimensionOfPuzzle = Math.min(screenWidth * .8, screenHeight * .8);
+        const showKeysUnder = screenWidth - 2 * dimensionOfPuzzle < 100;
 
-        return <div>
+        let leftMarginPuzzle;
+        let topMarginPuzzle;
+        let leftMarginKeys;
+        let topMarginKeys;
+        let keypadWidth;
+        let keypadHeight;
+
+        if(showKeysUnder){
+            topMarginPuzzle = `10px`;
+            leftMarginPuzzle = `calc(50vw - ${dimensionOfPuzzle/2}px)`;
+            leftMarginKeys = `calc(50vw - ${dimensionOfPuzzle/2}px)`;
+            topMarginKeys = `${20+dimensionOfPuzzle}px`;
+            keypadWidth = dimensionOfPuzzle;
+            keypadHeight = `${screenHeight - dimensionOfPuzzle - 20}px`;
+        }else{
+            topMarginPuzzle = `calc(50vh - ${dimensionOfPuzzle/2}px)`;
+            leftMarginPuzzle = `50px`;
+            leftMarginKeys = `${75 + dimensionOfPuzzle}px`;
+            topMarginKeys = `calc(50vh - ${dimensionOfPuzzle/2}px)`;
+            keypadWidth = keypadHeight = dimensionOfPuzzle;
+        }
+
+        return <div style={{width: "100vw", height: "100vh"}}>
             {!this.state.difficulty &&<div>
                 <div className="header">Daily Sudoku Puzzles!</div>
                 <button onClick={this.#generateAndSetDifficulty(4, 14)} className="button-option">4x4</button>
@@ -461,8 +492,8 @@ daily_sudoku.component = class extends Component{
                 <table id="sudoku-puzzle" className={this.state.isComplete ? "completed": ""} style={{
                     width: `${dimensionOfPuzzle}px`, 
                     height: `${dimensionOfPuzzle}px`, 
-                    left: leftMargin, 
-                    top: topMargin
+                    left: leftMarginPuzzle, 
+                    top: topMarginPuzzle
                 }}>
                     <tbody>
                         {this.state.unSolvedGrid.map((row, i) => {
@@ -488,7 +519,11 @@ daily_sudoku.component = class extends Component{
 
                                 const cn = `${shownClassname}${leftSideofSquare}${rightSideofSquare}${topofSquare}${bottomofSquare}${typable}${wrong}${selected}`;
 
-                                return <td key={j} className={cn} style={{width: `${percentageofTable}%`, height: `${percentageofTable}%`}} onClick={onclick}>
+                                return <td key={j} className={cn} style={{
+                                    width: `${percentageofTable}%`, 
+                                    height: `${percentageofTable}%`,
+                                    fontSize: `${dimensionOfPuzzle/d/2}px`
+                                }} onClick={onclick}>
                                     {cell.shouldShow && cell.number > 0 ? cell.number: ""}
                                 </td>
                             })}</tr>
@@ -496,11 +531,43 @@ daily_sudoku.component = class extends Component{
                     </tbody>
                 </table>
             </div>}
+            {this.state.difficulty && <div id="keypad" style={{
+                left: leftMarginKeys,
+                top: topMarginKeys,
+                width: keypadWidth,
+                height: keypadHeight
+            }}>
+                {this.#numberListGenerator(this.state.unSolvedGrid.length+1).map((num, i) => {
+                    
+
+                    const d = this.state.unSolvedGrid.length;
+
+                    if(i+1 === d) return <button id="print" onClick={this.#print}>print</button>
+
+                    let width;
+
+                    if(screenHeight - dimensionOfPuzzle - 20 > dimensionOfPuzzle || !showKeysUnder)
+                        width = keypadWidth / Math.pow(d, .5);
+                    else
+                        width = keypadWidth / d;
+
+                    const height = keypadHeight;
+                    const maxHeight = dimensionOfPuzzle / Math.pow(d, .5);
+                    const fontSize = `${Math.max(width/8, height/8)}px`;
+                    const onclick = () => {
+                        document.dispatchEvent(new KeyboardEvent('keydown', {key: `${num}`}));
+                    }
+
+                    return <button onClick={onclick} key={i} style={{width, height, maxHeight, fontSize}}>{num}</button>
+                })}
+            </div>}
+            {/* {this.state.difficulty && <button id="print">print</button>} */}
             {this.state.isComplete && <div id="success-popup">
                 <p>You completed the daily sudoku puzzle!</p>
                 <p>Congratulations!</p>
                 <p>Come back tomorrow for a new sudoku</p>
             </div>}
+            
         </div>
     }
 }
