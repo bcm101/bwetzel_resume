@@ -373,7 +373,7 @@ daily_sudoku.component = class extends Component{
         this.#numberList = this.#numberListGenerator(d);
         this.#solvedGrid = this.#makeGrid(d);
         this.#fillGrid(this.#solvedGrid);
-        this.setState({unSolvedGrid: this.#copyGrid(this.#solvedGrid)});
+        this.setState({unSolvedGrid: this.#copyGrid(this.#solvedGrid), isComplete: false});
     }
 
     componentDidUpdate = () => {
@@ -447,6 +447,13 @@ daily_sudoku.component = class extends Component{
         document.getElementById("sudoku-puzzle").style.top = "0";
         window.print();
         // window.location.reload();
+    }
+
+    #generateAnother = () => {
+        this.#rand = Math.random;
+        const d = this.#solvedGrid.length;
+        this.#setUpStartGrid(d);
+        this.#findPuzzle(this.state.difficulty, this.#solvedGrid);
     }
 
     render(){
@@ -561,11 +568,11 @@ daily_sudoku.component = class extends Component{
                     return <button onClick={onclick} key={i} style={{width, height, maxHeight, fontSize}}>{num}</button>
                 })}
             </div>}
-            {/* {this.state.difficulty && <button id="print">print</button>} */}
             {this.state.isComplete && <div id="success-popup">
                 <p>You completed the daily sudoku puzzle!</p>
                 <p>Congratulations!</p>
                 <p>Come back tomorrow for a new sudoku</p>
+                <button className="button-option" onClick={this.#generateAnother}>Generate Another?</button>
             </div>}
             
         </div>
