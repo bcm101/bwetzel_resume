@@ -34,8 +34,16 @@
     height: 4ch;
     width: 10ch;
     cursor: pointer;
-    /* z-index: 1; */
     left: 0px;
+    top: 0px;
+}
+
+#show-wrong{
+    position: absolute;
+    height: 4ch;
+    width: 20ch;
+    cursor: pointer;
+    left: 10ch;
     top: 0px;
 }
 

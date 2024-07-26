@@ -168,12 +168,12 @@ maze_maker.component = class extends Component{
         const ctx = canvas.getContext("2d");
 
         if(this.state.isCircle){
-            const a = Math.min(window.visualViewport.width * .7, window.visualViewport.height * .9);
+            const a = Math.min(window.innerWidth * .7, window.innerHeight * .9);
             canvas.style.width = `${a}px`;
             canvas.style.height = `${a}px`;
         }else{
-            canvas.style.width = `${window.visualViewport.width * .7}px`;
-            canvas.style.height = `${window.visualViewport.height * .9}px`;
+            canvas.style.width = `${window.innerWidth * .7}px`;
+            canvas.style.height = `${window.innerHeight * .9}px`;
         }
 
         const w = canvas.width;

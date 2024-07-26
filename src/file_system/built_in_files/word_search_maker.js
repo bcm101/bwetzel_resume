@@ -62,7 +62,7 @@ word_search_maker.component = class extends Component {
         showSolutions: false
     }
 
-    #isMobile = window.visualViewport.width < 600;
+    #isMobile = window.innerWidth < 600;
     #needUpdate = false;
     #rand = Math.random
     #currentWordStr = "";
@@ -97,8 +97,8 @@ word_search_maker.component = class extends Component {
         const ws = document.getElementById("word-search");
         ws.width = w * 100;
         ws.height = h * 100;
-        const vw = window.visualViewport.width;
-        const vh = window.visualViewport.height;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
         const maxStyleHeight = vh * .7;
         const maxStyleWidth = vw * .8;
         const ratio = w/h;
@@ -456,13 +456,6 @@ word_search_maker.component = class extends Component {
         canvas.style.width = '70vw';
 
         window.print();
-        
-        // canvas.style.height = currentWH.h;
-        // canvas.style.width = currentWH.w;
-
-        // for(let i = 0; i < noPrints.length; i++) noPrints[i].hidden = false;
-        // printScreen.hidden = true;
-
     }
 
     render(){

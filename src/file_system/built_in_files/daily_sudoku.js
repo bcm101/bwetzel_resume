@@ -59,7 +59,8 @@ daily_sudoku.component = class extends Component{
     state = {
         difficulty: null,
         unSolvedGrid: null,
-        isComplete: false
+        isComplete: false,
+        showWrongAnswers: false
     }
 
     #rand; // random function that enables daily puzzles that are the same for everyone
@@ -477,6 +478,10 @@ daily_sudoku.component = class extends Component{
             }
         });
 
+        window.onresize = () => {
+            this.forceUpdate();
+        }
+
         this.#timeStart = Date.now();
 
         // localStorage.clear(); // remove when done testing generation
@@ -504,8 +509,8 @@ daily_sudoku.component = class extends Component{
 
         const rand = getRand(this.#getDay());
 
-        const screenWidth = window.screen.width;
-        const screenHeight = window.screen.height; 
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight; 
 
         let dimensionOfPuzzle = Math.min(screenWidth * .8, screenHeight * .8);
         const showKeysUnder = screenWidth - 2 * dimensionOfPuzzle < 100;
@@ -564,7 +569,7 @@ daily_sudoku.component = class extends Component{
                                 const topofSquare = i % square === 0 ? " top-square": "";
                                 const bottomofSquare = i % square === square-1 ? " bottom-square": "";
                                 const typable = cell.builtIn || this.state.isComplete ? " not-typable": " typable";
-                                const wrong = cell.wrong ? " wrong": "";
+                                const wrong = cell.wrong && this.state.showWrongAnswers ? " wrong": "";
                                 const selected = this.#selectedCell?.x === i && this.#selectedCell?.y === j ? " selected": "";
 
                                 const onclick = cell.builtIn || this.state.isComplete ? () => {}: this.#selectCell(i, j);
@@ -589,12 +594,12 @@ daily_sudoku.component = class extends Component{
                 width: keypadWidth,
                 height: keypadHeight
             }}>
-                {this.#numberListGenerator(this.state.unSolvedGrid.length+1).map((num, i) => {
+                {this.#numberListGenerator(this.state.unSolvedGrid.length+2).map((num, i) => {
                 
                     const d = this.state.unSolvedGrid.length;
 
                     if(i === d) return <button key={i} id="print-sudoku" onClick={this.#print}>print</button>
-
+                    if(i === d+1) return <button key={i} id="show-wrong" onClick={()=> {this.setState({showWrongAnswers: !this.state.showWrongAnswers})}}>show wrong answers?</button>
                     let width;
 
                     if(screenHeight - dimensionOfPuzzle - 20 > dimensionOfPuzzle || !showKeysUnder)
@@ -604,7 +609,7 @@ daily_sudoku.component = class extends Component{
 
                     const height = keypadHeight;
                     const maxHeight = dimensionOfPuzzle / Math.pow(d, .5);
-                    const fontSize = `${Math.max(width/8, height/8)}px`;
+                    const fontSize = `${Math.min(width/8, height/8)}px`;
                     const onclick = () => {
                         document.dispatchEvent(new KeyboardEvent('keydown', {key: `${num}`}));
                     }
