@@ -9,7 +9,7 @@ export default class Resume extends Component {
                 <div>Brandon Matthew Wetzel</div>
             </div>
             <div className='group'>
-                <div className='header'>Experience</div>
+                <div className='header-of-group'>Experience</div>
                 <div className='job-header'>Loomis Sayles</div>
                 <div className='sub-job-header'>Front-End Web Development<div className='date'>Summer 2018</div></div>
                 <div className='sub-job-description'>
@@ -40,7 +40,7 @@ export default class Resume extends Component {
                 </div>
             </div>
             <div className='group'>
-                <div className='header'>Education</div>
+                <div className='header-of-group'>Education</div>
                 <div className='job-header'>B.S. in Computer Science, Minor in Mathematics<div className='date'>Aug 2022</div></div>
                 <div className='sub-job-description'>
                     <ul>
@@ -58,7 +58,7 @@ export default class Resume extends Component {
                 </div>
             </div>
             <div className='group'>
-                <div className='header'>Accomplishments</div>
+                <div className='header-of-group'>Accomplishments</div>
                 <div className='job-header'><a href='https://www.astesj.com/v09/i03/p07/'>Publication in Journal</a><div className='date'>Apr 2024</div></div>
                 <div className='sub-job-description'>
                     <ul>
@@ -87,7 +87,7 @@ export default class Resume extends Component {
                 </div>
             </div>
             <div className='group'>
-                <div className='header'>Skills</div>
+                <div className='header-of-group'>Skills</div>
                 <div className='sub-job-description'>
                     <ul>
                         <li>Full-Stack Development</li>
