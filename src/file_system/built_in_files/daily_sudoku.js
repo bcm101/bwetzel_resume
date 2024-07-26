@@ -213,7 +213,7 @@ daily_sudoku.component = class extends Component{
         let unSolvedGrid = this.#copyGrid(solvedGrid);
         const d = solvedGrid.length;
         let solutionsFound = 0;
-        let totalAttempts = 100;
+        let totalAttempts = 50;
         let totalRemoved = 0;
 
         const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -222,14 +222,13 @@ daily_sudoku.component = class extends Component{
             const d = grid.length;
             const neighbors = this.#findNeighbors(grid);
 
-            if(solutionsFound > 1) return true;
+            if(solutionsFound > 1) return false;
  
             const cellCoordinates = this.#selectNumberFromNeighbors(neighbors);
-            if(!cellCoordinates) return true;
+            if(!cellCoordinates) return false;
 
             const {x, y} = cellCoordinates;
             const numberList = this.#numberList.slice(0);
-            this.#shuffle(numberList);
 
             for(let i = 0; i < d; i++){
                 
@@ -306,7 +305,11 @@ daily_sudoku.component = class extends Component{
 
         }
 
-        console.log("done generating: removed ", totalRemoved);
+        console.log("done generating; removed ", totalRemoved, " numbers from filled grid.");
+        // sanity check
+        solutionsFound = 0;
+        countSolutions(this.#copyGrid(unSolvedGrid));
+        console.log("number of solutions: ", solutionsFound);
 
         return unSolvedGrid;
     }
@@ -334,6 +337,7 @@ daily_sudoku.component = class extends Component{
 
             if(uniqueNeighbors < d)
                 neighbors[uniqueNeighbors].push({x, y});
+            else return false;
 
         }
 
@@ -474,6 +478,8 @@ daily_sudoku.component = class extends Component{
         });
 
         this.#timeStart = Date.now();
+
+        // localStorage.clear(); // remove when done testing generation
 
     }
 
