@@ -87,7 +87,7 @@ daily_sudoku.component = class extends Component{
         }
     }
 
-    #makeGrid(d) {
+    #makeGrid(d) {        
         return new Array(d)
         .fill(0)
         .map((_, j) => new Array(d)
@@ -223,7 +223,7 @@ daily_sudoku.component = class extends Component{
             const d = grid.length;
             const neighbors = this.#findNeighbors(grid);
 
-            if(solutionsFound > 1) return false;
+            if(solutionsFound > 1) return true;
  
             const cellCoordinates = this.#selectNumberFromNeighbors(neighbors);
             if(!cellCoordinates) return false;
@@ -306,6 +306,8 @@ daily_sudoku.component = class extends Component{
 
         }
 
+        this.#timeStart = Date.now();
+
         console.log("done generating; removed ", totalRemoved, " numbers from filled grid.");
         // sanity check
         solutionsFound = 0;
@@ -363,13 +365,14 @@ daily_sudoku.component = class extends Component{
 
         try{
             const item = window.localStorage.getItem(`BWetzel-DailySudoku-${difficulty}`);
-            const {unSolvedGrid, solvedGrid, date} = JSON.parse(item);
+            const {unSolvedGrid, solvedGrid, date, timeGenerated} = JSON.parse(item);
             if(unSolvedGrid && solvedGrid && date === this.#getDay()){
+                this.#timeStart = timeGenerated;
                 this.#solvedGrid = solvedGrid;
                 const isComplete = this.#isCorrectGrid(unSolvedGrid);
                 this.setState({difficulty, unSolvedGrid: this.#showGrid(unSolvedGrid), isComplete});
                 return;
-            }else throw new Error("no local storage found");          
+            }else throw new Error("no local storage found");
         }catch(e){
             console.log("generating...");
         }
@@ -381,7 +384,7 @@ daily_sudoku.component = class extends Component{
 
     #saveGrid = (identifier, grid) => {
         if(this.#gridVisible){
-            const json = JSON.stringify({unSolvedGrid: grid, solvedGrid: this.#solvedGrid, date: this.#getDay()});
+            const json = JSON.stringify({unSolvedGrid: grid, solvedGrid: this.#solvedGrid, date: this.#getDay(), timeGenerated: this.#timeStart});
             const key = `BWetzel-DailySudoku-${identifier}`;
             try{
                 window.localStorage.setItem(key, json);
@@ -482,8 +485,6 @@ daily_sudoku.component = class extends Component{
             this.forceUpdate();
         }
 
-        this.#timeStart = Date.now();
-
         // localStorage.clear(); // remove when done testing generation
 
     }
@@ -503,6 +504,17 @@ daily_sudoku.component = class extends Component{
         const d = this.#solvedGrid.length;
         this.#setUpStartGrid(d);
         this.#findPuzzle(this.state.difficulty, this.#solvedGrid);
+    }
+
+    #getTimeSinceGenerated = () => {
+        const ms = Date.now() - this.#timeStart;
+        const seconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+
+        this.#timeStart = null;
+
+        return `${hours % 24}:${minutes % 60 < 10 ? '0': ''}${minutes % 60}:${seconds % 60 < 10 ? '0': ''}${seconds % 60}`;
     }
 
     render(){
@@ -540,7 +552,7 @@ daily_sudoku.component = class extends Component{
         return <div>
             {!this.state.difficulty &&<div>
                 <div className="header">Daily Sudoku Puzzles!</div>
-                <button onClick={this.#generateAndSetDifficulty(4, 14)} className="button-option">4x4</button>
+                <button onClick={this.#generateAndSetDifficulty(4, 12)} className="button-option">4x4</button>
                 <button onClick={this.#generateAndSetDifficulty(9, 30)} className="button-option">Easy</button>
                 <button onClick={this.#generateAndSetDifficulty(9, 40)} className="button-option">Medium</button>
                 <button onClick={this.#generateAndSetDifficulty(9, 60)} className="button-option">Hard</button>
@@ -619,10 +631,11 @@ daily_sudoku.component = class extends Component{
             </div>}
             {this.state.isComplete && <div id="success-popup">
                 <p>You completed the daily sudoku puzzle!</p>
+                {this.#timeStart && <p>Your time since first generating this puzzle was: {this.#getTimeSinceGenerated()}</p>}
                 <p>Congratulations!</p>
                 <p>Come back tomorrow for a new sudoku or generate another here</p>
                 <button className="button-option" onClick={this.#generateAnother}>Generate Another?</button>
-                <button className="button-option" onClick={() => {window.location.reload()}}>Home</button>
+                <button className="button-option" onClick={() => {this.setState({showWrongAnswers: false, difficulty: null, isComplete: false, unSolvedGrid: null})}}>Home</button>
             </div>}
             
         </div>
