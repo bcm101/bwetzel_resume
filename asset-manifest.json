@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/bwetzel_resume/static/css/main.7c1d8ca5.css",
-    "main.js": "/bwetzel_resume/static/js/main.87bc5783.js",
+    "main.js": "/bwetzel_resume/static/js/main.50988cbe.js",
     "static/js/453.4d7f4c8a.chunk.js": "/bwetzel_resume/static/js/453.4d7f4c8a.chunk.js",
     "static/media/DB_Icon.svg": "/bwetzel_resume/static/media/DB_Icon.1604b5c206f2e9a99603.svg",
     "index.html": "/bwetzel_resume/index.html",
     "static/media/terminal.svg": "/bwetzel_resume/static/media/terminal.cd4e9dd9c3bf9f40975c.svg",
     "main.7c1d8ca5.css.map": "/bwetzel_resume/static/css/main.7c1d8ca5.css.map",
-    "main.87bc5783.js.map": "/bwetzel_resume/static/js/main.87bc5783.js.map",
+    "main.50988cbe.js.map": "/bwetzel_resume/static/js/main.50988cbe.js.map",
     "453.4d7f4c8a.chunk.js.map": "/bwetzel_resume/static/js/453.4d7f4c8a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7c1d8ca5.css",
-    "static/js/main.87bc5783.js"
+    "static/js/main.50988cbe.js"
   ]
 }
