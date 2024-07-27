@@ -24,7 +24,6 @@ export default class Terminal extends React.Component {
 
     #endNano = async () => {};
     #openedFile = {};
-    #lastKey = '';
 
     #closeTerminal = () => {
         if(this.props.terminalClosedCallback) this.props.terminalClosedCallback();
@@ -160,14 +159,13 @@ export default class Terminal extends React.Component {
         };
         this.setState({inNano: true});
         this.#endNano = async (e) => {
-            if(this.#lastKey==="Alt" && e.key === "x"){
+            if(e.altKey && e.key === "x"){
                 this.setState({inNano: false}); // end nano
             }
-            if(this.#lastKey==="Alt" && e.key === "s"){
+            if(e.altKey && e.key === "s"){
                 saveNano(e.target.value); // save nano to file
             }
-            
-            this.#lastKey = e.key;
+        
         }
     }
 
