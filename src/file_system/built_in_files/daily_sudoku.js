@@ -608,12 +608,15 @@ daily_sudoku.component = class extends Component{
                 width: keypadWidth,
                 height: keypadHeight
             }}>
-                {this.#numberListGenerator(this.state.unSolvedGrid.length+2).map((num, i) => {
+                {this.#numberListGenerator(this.state.unSolvedGrid.length+3).map((num, i) => {
                 
                     const d = this.state.unSolvedGrid.length;
 
                     if(i === d) return <button key={i} id="print-sudoku" onClick={this.#print}>print</button>
                     if(i === d+1) return <button key={i} id="show-wrong" onClick={()=> {this.setState({showWrongAnswers: !this.state.showWrongAnswers})}}>show wrong answers?</button>
+                    if(i === d+2) return <button key={i} id="delete-cell-button" onClick={()=> {
+                        document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Backspace'}));
+                    }}>X</button>
                     let width;
 
                     if(screenHeight - dimensionOfPuzzle - 20 > dimensionOfPuzzle || !showKeysUnder)
