@@ -25,13 +25,13 @@
         {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Experience/front-end-web-developer": [
-        {"line": "Relevant Skills: Collaboration, UI Design, Data Processing/Visualization", "remove_spaces": true, "className": "file"},
+        {"line": "Relevant Skills: Collaboration, UI Design, Data Processing/Visualization, Version Control with Git", "remove_spaces": true, "className": "file"},
         {"line": "Relevant Languages/Frameworks: Javascript, React.JS, D3.JS, Python, CSS", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
         {"line": "In the summer of 2018, I worked as a front-end web developer intern at Loomis Sayles. I worked in a team of interns, where there was a large focus on collaboration as we all worked on the same projects. The projects mainly had the purpose of assisting financial analysts by creating visualizations of financial data. The financial data was provided by the back-end. My mathematics knowledge was useful here as well, as financial and statistical equations were critical to this experience.", "remove_spaces": true, "className": "opened-file"}
     ],
     "~/Experience/full-stack-developer": [
-        {"line": "Relevant Skills: Collaboration/Leading, Full-Stack Design, Data Processing/Visualization", "remove_spaces": true, "className": "file"},
+        {"line": "Relevant Skills: Collaboration/Leading, Full-Stack Design, Data Processing/Visualization, Version Control with Git", "remove_spaces": true, "className": "file"},
         {"line": "Relevant Languages/Frameworks: Javascript, React.JS, D3.JS, Python, CSS, Phoenix Framework for Elixir, Java Spring, Node.JS", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
         {"line": "In the summers of 2019 to 2021, I worked as a full-stack developer intern at Loomis Sayles. Due to my success as a front-end developer in 2018, I transitioned to a leadership role for a team of interns. This role involved management of Git version control and assigning work to fellow interns. The applications that were built had a heavy focus on visualization and manipulation of financial data. For the back-end, Phoenix framework for Elixir, Java Spring, and Node.JS all were utilized. I made several RESTful APIs that would send data to the front-end. The front-end utilized React.JS and D3.JS to create visualizations of financial data designed to assist financial analysts in making decisions.", "remove_spaces": true, "className": "opened-file"}
@@ -82,5 +82,11 @@
     ],
     "~/Awards/faculty-award(B.S.)": [
         {"line": "This award is given to the student with the highest GPA in the graduating class of the UMass Dartmouth Computer Science B.S. program.", "remove_spaces": true, "className": "opened-file"}
+    ],
+    "~/Projects/AWS-TTS-bot": [
+        {"line": "Relevant Skills: API Integration, AWS Software Development kit, User Interactivity", "remove_spaces": true, "className": "file"},
+        {"line": "Relevant Languages/Frameworks: Javascript, Node.JS, AWS Api, Discord.JS", "remove_spaces": true, "className": "file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"},
+        {"line": "Working alongside a classmate in my undergraduate program, we built a Discord chatbot that will recieve text and enter a voice call to speak in one of the accents provided by the AWS API service. The chatbot was programmed for interactivity and ensuring a good user experience while providing meaningful functionality to users who are unable to speak.", "remove_spaces": true, "className": "opened-file"}
     ]
 }
