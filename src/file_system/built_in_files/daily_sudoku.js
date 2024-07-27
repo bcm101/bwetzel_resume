@@ -512,12 +512,16 @@ daily_sudoku.component = class extends Component{
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
 
-        this.#timeStart = null;
 
-        return `${hours % 24}:${minutes % 60 < 10 ? '0': ''}${minutes % 60}:${seconds % 60 < 10 ? '0': ''}${seconds % 60}`;
+        const str = `${hours % 24}:${minutes % 60 < 10 ? '0': ''}${minutes % 60}:${seconds % 60 < 10 ? '0': ''}${seconds % 60}`;
+        this.#timeStart = str;
+
+        return str;
     }
 
     render(){
+
+        console.log(this.#timeStart)
 
         const rand = getRand(this.#getDay());
 
@@ -631,7 +635,8 @@ daily_sudoku.component = class extends Component{
             </div>}
             {this.state.isComplete && <div id="success-popup">
                 <p>You completed the daily sudoku puzzle!</p>
-                {this.#timeStart && <p>Your time since first generating this puzzle was: {this.#getTimeSinceGenerated()}</p>}
+                {this.#timeStart && typeof this.#timeStart === 'string' && <p>Your time to complete this puzzle was: {this.#timeStart}</p>}
+                {this.#timeStart && typeof this.#timeStart === 'number' && <p>Your time to complete this puzzle is: {this.#getTimeSinceGenerated()}</p>}
                 <p>Congratulations!</p>
                 <p>Come back tomorrow for a new sudoku or generate another here</p>
                 <button className="button-option" onClick={this.#generateAnother}>Generate Another?</button>
