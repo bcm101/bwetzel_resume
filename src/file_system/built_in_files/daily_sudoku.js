@@ -521,8 +521,6 @@ daily_sudoku.component = class extends Component{
 
     render(){
 
-        console.log(this.#timeStart)
-
         const rand = getRand(this.#getDay());
 
         const screenWidth = window.innerWidth;
