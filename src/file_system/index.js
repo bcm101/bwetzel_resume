@@ -68,10 +68,12 @@ export default class FileSystem {
             openDB.then(db => {
                 console.log("opened database successfully");
                 onDoneLoading(this);
+                // this.#database = false;
             });
 
             openDB.catch((error) => {
-                throw new Error(error);
+                console.error(error);
+                this.#database = false;
             });
         }catch(error){
             console.error(error);
