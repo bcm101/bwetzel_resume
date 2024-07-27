@@ -84,8 +84,8 @@
         {"line": "This award is given to the student with the highest GPA in the graduating class of the UMass Dartmouth Computer Science B.S. program.", "remove_spaces": true, "className": "opened-file"}
     ],
     "~/Projects/AWS-TTS-bot": [
-        {"line": "Relevant Skills: API Integration, AWS Software Development kit, User Interactivity", "remove_spaces": true, "className": "file"},
-        {"line": "Relevant Languages/Frameworks: Javascript, Node.JS, AWS Api, Discord.JS", "remove_spaces": true, "className": "file"},
+        {"line": "Relevant Skills: API Integration, AWS, User Interactivity", "remove_spaces": true, "className": "file"},
+        {"line": "Relevant Languages/Frameworks: Javascript, Node.JS, AWS Software Development Kit, Discord.JS", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
         {"line": "Working alongside a classmate in my undergraduate program, we built a Discord chatbot that will recieve text and enter a voice call to speak in one of the accents provided by the AWS API service. The chatbot was programmed for interactivity and ensuring a good user experience while providing meaningful functionality to users who are unable to speak.", "remove_spaces": true, "className": "opened-file"}
     ]
