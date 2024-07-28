@@ -56,10 +56,10 @@ export default class Text extends Component{
                 }
             }, this.data.speed)
             
-            const isTypingClass = this.state.numbers_shown === this.data.string.length || !this.data.show_animation ? `is-not-typing`: `is-typing`;
-            const clickable = this.data.clickable ? `clickable-text`: '';
+            const isTypingClass = this.state.numbers_shown === this.data.string.length || !this.data.show_animation ? `is-not-typing `: `is-typing `;
+            const clickable = this.data.clickable ? `clickable-text `: '';
 
-            const className = `${isTypingClass} ${clickable} ${this.data.className}`
+            const className = `${isTypingClass}${clickable}${this.data.className}`
 
             if(this.state.numbers_shown === this.data.string.length && this.data.time_after_typing <= 0){
                 this.callback();
@@ -67,7 +67,7 @@ export default class Text extends Component{
 
         return (
             <div className={className} onClick={this.data.clickable ? this.data.clickable: () => {}}>
-                {this.props.link && <a href={this.props.link} className={className}>
+                {this.props.link && <a href={this.props.link} className={`${className} terminal-link`}>
                     {this.props.before_string}
                     {this.data.show_animation && this.state.current_string}
                     {!this.data.show_animation && (this.data.purge_multiple_spaces ? this.data.string: this.data.string.replace(/ /g, "\u00A0"))}

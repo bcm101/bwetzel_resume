@@ -194,6 +194,10 @@
     color: darkcyan;
 }
 
+.terminal .terminal-link {
+    color: aqua;
+}
+
 .terminal .main-terminal .file.clickable-text:hover {
     color: rgb(227, 186, 186); 
     cursor: pointer;
