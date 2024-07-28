@@ -28,24 +28,28 @@
         {"line": "Relevant Skills: Collaboration, UI Design, Data Processing/Visualization, Version Control with Git", "remove_spaces": true, "className": "file"},
         {"line": "Relevant Languages/Frameworks: Javascript, React.JS, D3.JS, Python, CSS", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
-        {"line": "In the summer of 2018, I worked as a front-end web developer intern at Loomis Sayles. I worked in a team of interns, where there was a large focus on collaboration as we all worked on the same projects. The projects mainly had the purpose of assisting financial analysts by creating visualizations of financial data. The financial data was provided by the back-end. My mathematics knowledge was useful here as well, as financial and statistical equations were critical to this experience.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "In the summer of 2018, I worked as a front-end web developer intern at Loomis Sayles. I worked in a team of interns, where there was a large focus on collaboration as we all worked on the same projects. The projects mainly had the purpose of assisting financial analysts by creating visualizations of financial data. The financial data was provided by the back-end. My mathematics knowledge was useful here as well, as financial and statistical equations were critical to this experience.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Experience/full-stack-developer": [
         {"line": "Relevant Skills: Collaboration/Leading, Full-Stack Design, Data Processing/Visualization, Version Control with Git", "remove_spaces": true, "className": "file"},
         {"line": "Relevant Languages/Frameworks: Javascript, React.JS, D3.JS, SQL, Python, CSS, Phoenix Framework for Elixir, Java Spring, Node.JS", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
-        {"line": "In the summers of 2019 to 2021, I worked as a full-stack developer intern at Loomis Sayles. Due to my success as a front-end developer in 2018, I transitioned to a leadership role for a team of interns. This role involved management of Git version control and assigning work to fellow interns. The applications that were built had a heavy focus on visualization and manipulation of financial data. For the back-end, Phoenix framework for Elixir, Java Spring, and Node.JS all were utilized. I made several RESTful APIs that would send data to the front-end. The front-end utilized React.JS and D3.JS to create visualizations of financial data designed to assist financial analysts in making decisions.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "In the summers of 2019 to 2021, I worked as a full-stack developer intern at Loomis Sayles. Due to my success as a front-end developer in 2018, I transitioned to a leadership role for a team of interns. This role involved management of Git version control and assigning work to fellow interns. The applications that were built had a heavy focus on visualization and manipulation of financial data. For the back-end, Phoenix framework for Elixir, Java Spring, and Node.JS all were utilized. I made several RESTful APIs that would send data to the front-end. The front-end utilized React.JS and D3.JS to create visualizations of financial data designed to assist financial analysts in making decisions.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Experience/teaching-assistant": [
         {"line": "Relevant Skills: Teaching, Helping Others, Simplifying Concepts, Assessing Skill Knowledge, Addressing Skill Gaps", "remove_spaces": true, "className": "file"},
         {"line": "Taught in Courses: Parallel and Distributed Systems (Graduate course), Theoretical Computer Science (Graduate course), Object-Oriented Programming (Undergraduate course)", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
-        {"line": "Due to my high academic achievements, I was appointed as a teaching assistant for these 3 courses. As a teaching assistant I helped with answering student's questions, I held office hours, and I graded students' work.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "Due to my high academic achievements, I was appointed as a teaching assistant for these 3 courses. As a teaching assistant I helped with answering student's questions, I held office hours, and I graded students' work.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Research/image-classification": [
         {"line": "Relevant Skills: Deep Learning, Machine Learning, Image Classification, C programming", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
-        {"line": "Working alongside Professor Valova, PhD at UMD during my undergraduate studies, I performed research into deep learning methods for image classification. I built a neural network using the C programming language, and I performed experiments on efficiency for training.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "Working alongside Professor Valova, PhD at UMD during my undergraduate studies, I performed research into deep learning methods for image classification. I built a neural network using the C programming language, and I performed experiments on efficiency for training.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Research/machine-learning-blockchain": [
         {"line": "Relevant Skills: Machine Learning, Solidity Programming, Blockchain, Ethereum, Smart Contracts", "remove_spaces": true, "className": "file"},
@@ -54,7 +58,8 @@
         {"line": "During my graduate thesis coursework and research working alongside Professor Xu, PhD, I researched methods of attaining trustworthiness of machine learning models using blockchain.", "remove_spaces": true, "className": "opened-file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
         {"line": "abstract:", "remove_spaces": true, "className": "opened-file"},
-        {"line": "Machine learning-based predictive models often face challenges, particularly biases and a lack of trust in their predictions when deployed by individual agents. Establishing a robust deployment methodology that supports validating the accuracy and fairness of these models is a critical endeavor. In this paper, we introduce a novel approach to deploying predictive models, such as pre-trained neural network models, in a public blockchain network using smart contracts. Smart contracts are encoded in our approach as self-executing protocols for storing various parameters of the predictive models. We develop efficient algorithms for uploading and retrieving model parameters from smart contracts on a public blockchain, thereby ensuring the trustworthiness and immutability of the stored models, making them available for testing and validation by all peers within the network. In addition, users can rate and comment on the models, which are permanently recorded in the blockchain. To demonstrate the effectiveness of our approach, we present a case study focusing on storing vehicle price prediction models and review comments. Our experimental results show that deploying predictive models on a public blockchain network provides a proficient and reliable way to ensure model security, immutability, and transparency.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "Machine learning-based predictive models often face challenges, particularly biases and a lack of trust in their predictions when deployed by individual agents. Establishing a robust deployment methodology that supports validating the accuracy and fairness of these models is a critical endeavor. In this paper, we introduce a novel approach to deploying predictive models, such as pre-trained neural network models, in a public blockchain network using smart contracts. Smart contracts are encoded in our approach as self-executing protocols for storing various parameters of the predictive models. We develop efficient algorithms for uploading and retrieving model parameters from smart contracts on a public blockchain, thereby ensuring the trustworthiness and immutability of the stored models, making them available for testing and validation by all peers within the network. In addition, users can rate and comment on the models, which are permanently recorded in the blockchain. To demonstrate the effectiveness of our approach, we present a case study focusing on storing vehicle price prediction models and review comments. Our experimental results show that deploying predictive models on a public blockchain network provides a proficient and reliable way to ensure model security, immutability, and transparency.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Skills/languages": [
         {"line": "Profecient in the languages: ", "remove_spaces": true, "className": "file"},
@@ -62,7 +67,8 @@
         {"line": "Elixir", "remove_spaces": true, "className": "opened-file"},
         {"line": "Python", "remove_spaces": true, "className": "opened-file"},
         {"line": "Java", "remove_spaces": true, "className": "opened-file"},
-        {"line": "C", "remove_spaces": true, "className": "opened-file"}
+        {"line": "C", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Skills/data-visualization": [
         {"line": "I have experience representing large amounts of data in a readable and understandable way, both from school and my experience at Loomis Sayles. At Loomis Sayles, I leveraged my data visualization and processing skills to analyze financial data. Utilizing financial and statistical knowledge, I transformed complex datasets into insightful visuals.", "remove_spaces": true, "className": "opened-file"},
@@ -72,27 +78,33 @@
         {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Skills/algorithms": [
-        {"line": "Over the course of earning my two degrees, I took two courses on algorithms: one for my undergraduate program, and a more difficult class for my graduate program. I earned an A in both, and understand and can implement common algorithms including searching algorithms like DFS, BFS, and binary search; sorting algorithms like merge sort; and graphing algorithms like Dijkstra and A*. I have experience writing different classifications of algorithms such as greedy, dynamic, recursive, and others. Some of my knowledge in algorithms can be seen in my Projects folder of this website.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "Over the course of earning my two degrees, I took two courses on algorithms: one for my undergraduate program, and a more difficult class for my graduate program. I earned an A in both, and understand and can implement common algorithms including searching algorithms like DFS, BFS, and binary search; sorting algorithms like merge sort; and graphing algorithms like Dijkstra and A*. I have experience writing different classifications of algorithms such as greedy, dynamic, recursive, and others. Some of my knowledge in algorithms can be seen in my Projects folder of this website.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Skills/object-oriented-programming": [
-        {"line": "Throughout my programming career, object-oriented principles have been my go-to approach, except when working with functional languages like Elixir or procedural languages like C. Even in this JavaScript website, traditionally seen as less object-oriented, I've embraced the object-oriented concepts of encapsulation, inheritance, and composition.  My experience extends to teaching these concepts as a Teaching Assistant for an object-oriented programming course.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "Throughout my programming career, object-oriented principles have been my go-to approach, except when working with functional languages like Elixir or procedural languages like C. Even in this JavaScript website, traditionally seen as less object-oriented, I've embraced the object-oriented concepts of encapsulation, inheritance, and composition.  My experience extends to teaching these concepts as a Teaching Assistant for an object-oriented programming course.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Awards/faculty-award(M.S.)": [
-        {"line": "This award is given to the student with the highest GPA in the graduating class of the UMass Dartmouth Computer Science M.S. program.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "This award is given to the student with the highest GPA in the graduating class of the UMass Dartmouth Computer Science M.S. program.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Awards/faculty-award(B.S.)": [
-        {"line": "This award is given to the student with the highest GPA in the graduating class of the UMass Dartmouth Computer Science B.S. program.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "This award is given to the student with the highest GPA in the graduating class of the UMass Dartmouth Computer Science B.S. program.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Projects/AWS-TTS-bot": [
         {"line": "Relevant Skills: API Integration, AWS, User Interactivity", "remove_spaces": true, "className": "file"},
         {"line": "Relevant Languages/Frameworks: Javascript, Node.JS, AWS Software Development Kit, Discord.JS", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
-        {"line": "Working alongside a classmate in my undergraduate program, we built a Discord chatbot that will recieve text and enter a voice call to speak in one of the accents provided by the AWS API service. The chatbot was programmed for interactivity and ensuring a good user experience while providing meaningful functionality to users who are unable to speak.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "Working alongside a classmate in my undergraduate program, we built a Discord chatbot that will recieve text and enter a voice call to speak in one of the accents provided by the AWS API service. The chatbot was programmed for interactivity and ensuring a good user experience while providing meaningful functionality to users who are unable to speak.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
-    "~/Projects/Resume-website": [
+    "~/Projects/resume-website": [
         {"line": "Relevant Skills: UI Design, Version Control with Git, Transactional Databases", "remove_spaces": true, "className": "file"},
         {"line": "Relevant Languages/Frameworks: Javascript, React.JS, IndexedDB, HTML", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
-        {"line": "This portfolio website is designed to give a brief overview of my accomplishments in a way that also demonstrates my creativity. It was designed using React.JS, and is hosted using Github pages. The file system is implemented using IndexedDB so it stays persistent between reloads. Commands can be found by typing the command 'help', which will also present a link to the github for this website for more detailed descriptions and examples.", "remove_spaces": true, "className": "opened-file"}
+        {"line": "This portfolio website is designed to give a brief overview of my accomplishments in a way that also demonstrates my creativity. It was designed using React.JS, and is hosted using Github pages. The file system is implemented using IndexedDB so it stays persistent between reloads. Commands can be found by typing the command 'help', which will also present a link to the github for this website for more detailed descriptions and examples.", "remove_spaces": true, "className": "opened-file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ]
 }
