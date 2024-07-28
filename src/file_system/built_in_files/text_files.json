@@ -32,7 +32,7 @@
     ],
     "~/Experience/full-stack-developer": [
         {"line": "Relevant Skills: Collaboration/Leading, Full-Stack Design, Data Processing/Visualization, Version Control with Git", "remove_spaces": true, "className": "file"},
-        {"line": "Relevant Languages/Frameworks: Javascript, React.JS, D3.JS, Python, CSS, Phoenix Framework for Elixir, Java Spring, Node.JS", "remove_spaces": true, "className": "file"},
+        {"line": "Relevant Languages/Frameworks: Javascript, React.JS, D3.JS, SQL, Python, CSS, Phoenix Framework for Elixir, Java Spring, Node.JS", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
         {"line": "In the summers of 2019 to 2021, I worked as a full-stack developer intern at Loomis Sayles. Due to my success as a front-end developer in 2018, I transitioned to a leadership role for a team of interns. This role involved management of Git version control and assigning work to fellow interns. The applications that were built had a heavy focus on visualization and manipulation of financial data. For the back-end, Phoenix framework for Elixir, Java Spring, and Node.JS all were utilized. I made several RESTful APIs that would send data to the front-end. The front-end utilized React.JS and D3.JS to create visualizations of financial data designed to assist financial analysts in making decisions.", "remove_spaces": true, "className": "opened-file"}
     ],
@@ -88,5 +88,11 @@
         {"line": "Relevant Languages/Frameworks: Javascript, Node.JS, AWS Software Development Kit, Discord.JS", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
         {"line": "Working alongside a classmate in my undergraduate program, we built a Discord chatbot that will recieve text and enter a voice call to speak in one of the accents provided by the AWS API service. The chatbot was programmed for interactivity and ensuring a good user experience while providing meaningful functionality to users who are unable to speak.", "remove_spaces": true, "className": "opened-file"}
+    ],
+    "~/Projects/Resume-website": [
+        {"line": "Relevant Skills: UI Design, Version Control with Git, Transactional Databases", "remove_spaces": true, "className": "file"},
+        {"line": "Relevant Languages/Frameworks: Javascript, React.JS, IndexedDB, HTML", "remove_spaces": true, "className": "file"},
+        {"line": " ", "remove_spaces": false, "className": "opened-file"},
+        {"line": "This portfolio website is designed to give a brief overview of my accomplishments in a way that also demonstrates my creativity. It was designed using React.JS, and is hosted using Github pages. The file system is implemented using IndexedDB so it stays persistent between reloads. Commands can be found by typing the command 'help', which will also present a link to the github for this website for more detailed descriptions and examples.", "remove_spaces": true, "className": "opened-file"}
     ]
 }

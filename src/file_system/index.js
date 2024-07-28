@@ -57,7 +57,8 @@ export default class FileSystem {
             {name: "maze_maker.html", type: this.#TYPES.APP},
             {name: "word_search_maker.html", type: this.#TYPES.APP},
             {name: "daily_sudoku.html", type: this.#TYPES.APP},
-            {name: "AWS-TTS-bot", type: this.#TYPES.BUILT_IN_FILE}
+            {name: "AWS-TTS-bot", type: this.#TYPES.BUILT_IN_FILE},
+            {name: 'Resume-website', type: this.#TYPES.BUILT_IN_FILE}
         ]}
     ];
     #currentPath = ['~'];
