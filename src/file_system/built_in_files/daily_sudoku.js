@@ -640,8 +640,8 @@ daily_sudoku.component = class extends Component{
                 {this.#timeStart && typeof this.#timeStart === 'string' && <p>Your time to complete this puzzle was: {this.#timeStart}</p>}
                 {this.#timeStart && typeof this.#timeStart === 'number' && <p>Your time to complete this puzzle is: {this.#getTimeSinceGenerated()}</p>}
                 <p>Congratulations!</p>
-                <p>Come back tomorrow for a new sudoku or generate another here</p>
-                <button className="button-option" onClick={this.#generateAnother}>Generate Another?</button>
+                <p>Come back tomorrow for a new sudoku or generate another here.</p>
+                <button className="button-option" onClick={this.#generateAnother}>Generate Random Puzzle</button>
                 <button className="button-option" onClick={() => {this.setState({showWrongAnswers: false, difficulty: null, isComplete: false, unSolvedGrid: null})}}>Home</button>
             </div>}
             
