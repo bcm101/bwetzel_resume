@@ -3,7 +3,7 @@ import './word_search_maker.css';
 
 const word_search_maker = function () {
     return [
-        {line: "This is an webpage that can be run by accessing the following link. This project is meant to show my understanding of algorithms, as well as to benefit my mother who is a teacher and uses games to assess student understanding.", className: "opened-file", remove_spaces: true},
+        {line: "This is a webpage that can be run by accessing the following link below. This project is meant to show my understanding of algorithms, as well as to benefit my mother who is a teacher and uses games to assess student understanding.", className: "opened-file", remove_spaces: true},
         {line: "link", link: "/bwetzel_resume/#/fs?path=~/Projects/word_search_maker.html"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ];

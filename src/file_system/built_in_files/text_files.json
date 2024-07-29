@@ -105,14 +105,14 @@
         {"line": "Relevant Skills: API Integration, AWS, User Interactivity", "remove_spaces": true, "className": "file"},
         {"line": "Relevant Languages/Frameworks: Javascript, Node.JS, AWS Software Development Kit, Discord.JS", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
-        {"line": "Working alongside a classmate in my undergraduate program, we built a Discord chatbot that will recieve text and enter a voice call to speak in one of the voices provided by the AWS API service. The chatbot was programmed for interactivity and ensuring a good user experience while providing meaningful functionality to users who are unable to speak.", "remove_spaces": true, "className": "opened-file"},
+        {"line": "As an undergraduate student, I collaborated with a classmate to develop a Discord chatbot capable of converting text input into spoken language. Leveraging AWS API voice services, the chatbot joins voice calls and communicates using a variety of voices. Prioritizing user experience and accessibility, we designed the chatbot to be interactive and beneficial for individuals with speech impairments.", "remove_spaces": true, "className": "opened-file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ],
     "~/Projects/resume-website": [
         {"line": "Relevant Skills: UI Design, Version Control with Git, Transactional Databases", "remove_spaces": true, "className": "file"},
         {"line": "Relevant Languages/Frameworks: Javascript, React.JS, IndexedDB, HTML", "remove_spaces": true, "className": "file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
-        {"line": "This portfolio website is designed to give a brief overview of my accomplishments in a way that also demonstrates my creativity. It was designed using React.JS, and is hosted using Github pages. The file system is implemented using IndexedDB so it stays persistent between reloads. Commands can be found by typing the command 'help', which will also present a link to the github for this website for more detailed descriptions and examples.", "remove_spaces": true, "className": "opened-file"},
+        {"line": "This portfolio showcases my accomplishments while highlighting my creative approach. Built with React.JS and hosted on GitHub Pages, the site utilizes IndexedDB for persistent data storage between reloads. Commands can be found by typing the command 'help', which also provides a link to the GitHub repository for in-depth details and examples.", "remove_spaces": true, "className": "opened-file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ]
 }
