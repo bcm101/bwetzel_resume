@@ -41,7 +41,8 @@ export default class FileSystem {
         ]},
         {path: ['~', 'Research'], data: [
             {name: "image-classification", type: this.#TYPES.BUILT_IN_FILE},
-            {name: "machine-learning-blockchain", type: this.#TYPES.BUILT_IN_FILE}
+            {name: "machine-learning-blockchain", type: this.#TYPES.BUILT_IN_FILE},
+            {name: "thesis", type: this.#TYPES.BUILT_IN_FILE}
         ]},
         {path: ['~', 'Skills'], data: [
             {name: "languages", type: this.#TYPES.BUILT_IN_FILE},
