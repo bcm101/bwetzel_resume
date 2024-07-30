@@ -95,12 +95,14 @@ export default class Resume extends Component {
                         <li>Parallel Systems and Computing</li>
                         <li>Familiar with Common Algorithms</li>
                         <li>Data Visualization</li>
+                        <li>SQL/Transactional Databases</li>
                         <li>Languages:</li>
                         <ul>
                             <li>Javascript</li>
                             <li>Python</li>
                             <li>Java</li>
                             <li>C</li>
+                            <li>Elixir</li>
                         </ul>
                     </ul>
                 </div>
