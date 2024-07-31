@@ -4,7 +4,7 @@ import './daily_sudoku.css';
 const daily_sudoku = function () {
     return [
         {line: "This is a website that can be run by accessing the link below. This site generates Sudoku puzzles daily. The puzzles are created using an algorithm that first generates a complete, solved Sudoku puzzle. Then, numbers are removed one at a time. After each removal, the puzzle is checked to ensure it still has only one solution. This process continues until removing another number would create multiple solutions. The puzzle's difficulty is determined by the maximum number of removals before this point. The algorithm for counting solutions is a recursive, backtracking approach that backtracks only when encountering conflicts between cells. To improve efficiency, the algorithm prioritizes filling cells with many neighboring filled-in cells. This drastically increases the likelihood of finding solutions quickly if any exist.", className: "opened-file", remove_spaces: true},
-        {line: "link", link: "/bwetzel_resume/#/fs?path=~/Projects/daily_sudoku.html"},
+        {line: "link", link: "/#/fs?path=~/Projects/daily_sudoku.html"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"}
     ];
 }
