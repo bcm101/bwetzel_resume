@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/bwetzel_resume/static/css/main.07b5cc9e.css",
-    "main.js": "/bwetzel_resume/static/js/main.eb1c47da.js",
-    "static/js/453.4d7f4c8a.chunk.js": "/bwetzel_resume/static/js/453.4d7f4c8a.chunk.js",
-    "static/media/DB_Icon.svg": "/bwetzel_resume/static/media/DB_Icon.1604b5c206f2e9a99603.svg",
-    "index.html": "/bwetzel_resume/index.html",
-    "static/media/terminal.svg": "/bwetzel_resume/static/media/terminal.cd4e9dd9c3bf9f40975c.svg",
-    "main.07b5cc9e.css.map": "/bwetzel_resume/static/css/main.07b5cc9e.css.map",
-    "main.eb1c47da.js.map": "/bwetzel_resume/static/js/main.eb1c47da.js.map",
-    "453.4d7f4c8a.chunk.js.map": "/bwetzel_resume/static/js/453.4d7f4c8a.chunk.js.map"
+    "main.css": "/brandonwetzel.us/static/css/main.5d729067.css",
+    "main.js": "/brandonwetzel.us/static/js/main.89d53b6e.js",
+    "static/js/453.4d7f4c8a.chunk.js": "/brandonwetzel.us/static/js/453.4d7f4c8a.chunk.js",
+    "static/media/DB_Icon.svg": "/brandonwetzel.us/static/media/DB_Icon.1604b5c206f2e9a99603.svg",
+    "index.html": "/brandonwetzel.us/index.html",
+    "static/media/terminal.svg": "/brandonwetzel.us/static/media/terminal.cd4e9dd9c3bf9f40975c.svg",
+    "main.5d729067.css.map": "/brandonwetzel.us/static/css/main.5d729067.css.map",
+    "main.89d53b6e.js.map": "/brandonwetzel.us/static/js/main.89d53b6e.js.map",
+    "453.4d7f4c8a.chunk.js.map": "/brandonwetzel.us/static/js/453.4d7f4c8a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.07b5cc9e.css",
-    "static/js/main.eb1c47da.js"
+    "static/css/main.5d729067.css",
+    "static/js/main.89d53b6e.js"
   ]
 }
