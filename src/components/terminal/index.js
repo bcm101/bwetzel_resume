@@ -26,7 +26,13 @@ export default class Terminal extends React.Component {
     #openedFile = {};
 
     #closeTerminal = () => {
-        if(this.props.terminalClosedCallback) this.props.terminalClosedCallback();
+        try{
+            const fs = getFS();
+            fs.changeLocation(['~']);
+            this.props.terminalClosedCallback();
+        }catch(e){
+            console.error(e);
+        }
     }
 
     #minimizeTerminal = () => {
@@ -84,7 +90,6 @@ export default class Terminal extends React.Component {
                     cmdOutput = [...cmdOutput, ...out];
                 }
             }catch(e){
-                console.error(e); //remove when done testing
                 cmdOutput = [
                     {line: "", className: '', remove_spaces: false},
                     {line: `Unrecognized command '${cmd}'; type help for a list of commands.`, className: 'command-output-error', remove_spaces: true},

@@ -107,13 +107,14 @@ export default class Commands {
                 const content = (await this.#FS.getFolder(allPaths[i])).folder;
                 output = [
                     ...output, 
-                    {line: `${allPaths[i].join('/')}: `, className: 'folder', remove_spaces: false},
+                    {line: `${allPaths[i].join('/')}: `, className: 'folder', remove_spaces: false, runCommand: `cd /${allPaths[i].join('/')} && ls`},
                     ...(content.map(f => {
+                        const isFolder = f.type === 3 || f.type === 5;
                         const pathToF = [...allPaths[i], f.name];
-                        const command = `${f.type === 3 || f.type === 5 ? 'cd': 'cat'} /${pathToF.join('/')}`;
+                        const command = `${isFolder ? 'cd': 'cat'} /${pathToF.join('/')}${isFolder ? ' && ls': ''}`;
                         return {line: 
                             `   ${f.name}`, 
-                            className: f.type === 3 || f.type === 5 ? 'folder': 'file', 
+                            className: isFolder ? 'folder': 'file', 
                             remove_spaces: false, 
                             runCommand: command
                         }
