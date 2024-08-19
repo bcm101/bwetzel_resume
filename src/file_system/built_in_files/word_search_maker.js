@@ -69,6 +69,7 @@ word_search_maker.component = class extends Component {
     #currentWordStr = "";
     #selectedSavedWS = {};
     #currentWordSearch = null;
+    #currentNameOfSearch = null;
 
     componentDidUpdate  = () => {
         if(this.state.randomSeed && typeof this.state.randomSeed === "string" && this.#needUpdate)
@@ -379,11 +380,12 @@ word_search_maker.component = class extends Component {
 
     #saveCurrent = () => {
         try{
-            
+
             const name = document.getElementById("save-input-name").value;
             const words = document.getElementById("words").value;
 
             if(words && name){
+                this.#currentNameOfSearch = name;
                 const seed = document.getElementById("rand-seed").value;
                 const size = document.getElementById("w-h").value;
                 const incA_Z = document.getElementById("A-Z").checked;
@@ -420,6 +422,8 @@ word_search_maker.component = class extends Component {
         document.getElementById("a-z").checked = savedWs.inca_z === true;
         document.getElementById("hard").checked = savedWs.hardMode === true;
         
+        this.#currentNameOfSearch = savedWs.name;
+
         this.#needUpdate = true;
         this.setState({characters: savedWs.characters, words: parsedWords, w, h, randomSeed: savedWs.seed, hardMode: savedWs.hardMode});
 
@@ -451,10 +455,17 @@ word_search_maker.component = class extends Component {
         const printScreen = document.getElementById('print');
         printScreen.hidden = false;
 
-        const currentWH = {h: canvas.style.height, w: canvas.style.width};
-
         canvas.style.height = '70vh';
         canvas.style.width = '70vw';
+
+        if(this.#currentNameOfSearch){
+            const title = document.getElementById("title-of-wordsearch-print")
+            title.innerHTML = this.#currentNameOfSearch;
+            title.style.width = "100vw";
+            title.style.textAlign = "center";
+            title.style.fontWeight = "bold";
+        }
+            
 
         window.print();
     }
@@ -493,7 +504,7 @@ word_search_maker.component = class extends Component {
                 console.error(e);
             }
         
-        return <div>
+        return <div id="total-wordsearch-content">
             <div id="inputs" className="no-print">
                 <div className="word-list-input">
                     <textarea id="words" placeholder="comma seperated list of words, group letters by inserting between < and >" className={this.#isMobile ? "on-mobile": ""} onChange={e => {this.#currentWordStr = e.target.value}}></textarea>
@@ -525,7 +536,9 @@ word_search_maker.component = class extends Component {
                 </div>}
             </div>
             
-            {this.state.w && this.state.h && this.state.characters.length && <canvas id="word-search" className="no-print"></canvas>}
+            <div id="title-of-wordsearch-print" style={{width: "100%", textAlign: "center"}}></div>
+
+            {this.state.w && this.state.h && this.state.characters.length && <canvas id="word-search"></canvas>}
 
             <div id="popup" className={this.state.showingPopup ? "show no-print": "no-print"}>
                 <div className="top-popup">

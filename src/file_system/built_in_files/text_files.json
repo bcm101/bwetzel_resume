@@ -67,7 +67,6 @@
         {"line": " ", "remove_spaces": false, "className": "opened-file"},
         {"line": "My thesis is an expansion of the work I did with Professor Xu, PHD that got published in ASTESJ. The research was focused on how to decrease the need to trust centrally hosted machine learning models. The proposed solution involved hosting the machine learning models over a blockchain network using smart contract's functions to validate the machine learning model locally on a user's machine. This expansion involved more real-world case studies that further demonstrated the practicality and efficiency of my solution as well as the introduction of a simple website that implements the proposed solution.", "remove_spaces": true, "className": "opened-file"},
         {"line": " ", "remove_spaces": false, "className": "opened-file"}
-
     ],
     "~/Skills/languages": [
         {"line": "Profecient in the languages: ", "remove_spaces": true, "className": "file"},
