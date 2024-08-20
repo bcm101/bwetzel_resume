@@ -60,7 +60,8 @@ daily_sudoku.component = class extends Component{
         difficulty: null,
         unSolvedGrid: null,
         isComplete: false,
-        showWrongAnswers: false
+        showWrongAnswers: false,
+        word: null
     }
 
     #rand; // random function that enables daily puzzles that are the same for everyone
@@ -70,7 +71,6 @@ daily_sudoku.component = class extends Component{
     #timeStart;
     #gridVisible = false;
     #madeChangeToGrid = false;
-    // #isMobile = window.visualViewport.width < 700 || window.visualViewport.height < 700;
 
     #shuffle = (array) => {
         let currentIndex = array.length;
@@ -112,6 +112,7 @@ daily_sudoku.component = class extends Component{
     
     #getSquare(x, y, grid){
         const d = grid.length;
+        if(!this.#isPerfectSquare(d)) return null;
         const squares = Math.floor(Math.pow(d, .5));
         const square = new Array(d);
     
@@ -161,20 +162,22 @@ daily_sudoku.component = class extends Component{
                 for(let j = 0; j < d; j++){
                     const number = numberList[j];
                     const row = this.#getRow(x, grid);
-                    if(!row.includes(number)){ // not include in row
-                        const col = this.#getCol(y, grid)
-                        if(!col.includes(number)){ // not include in column
-                            const square = this.#getSquare(x, y, grid);
-                            if(!square.includes(number)){ // not included in the square
-                                grid[x][y].number = number;
-                                if(this.#isCorrectGrid(grid))
-                                    return true;
-                                else
-                                    if(this.#fillGrid(grid))
-                                        return true;
-                            }
-                        }
-                    }
+
+                    if(row.includes(number)) continue;
+                    
+                    const col = this.#getCol(y, grid);
+                    if(col.includes(number)) continue;
+
+                    const square = this.#getSquare(x, y, grid);
+                    if(square && square.includes(number)) continue;
+
+                    grid[x][y].number = number;
+
+                    if(this.#isCorrectGrid(grid))
+                        return true;
+                    else
+                        if(this.#fillGrid(grid))
+                            return true;
                 }
                 break;
             }
@@ -220,7 +223,6 @@ daily_sudoku.component = class extends Component{
         const sleep = ms => new Promise(r => setTimeout(r, ms));
 
         const countSolutions = grid => {
-            const d = grid.length;
             const neighbors = this.#findNeighbors(grid);
 
             if(solutionsFound > 1) return true;
@@ -235,24 +237,22 @@ daily_sudoku.component = class extends Component{
                 
                 const number = numberList[i];
                 const row = grid[x].map(e => e.number);
-                if(!row.includes(number)){ // not include in row
-                    const col = grid.map(e => e[y].number);
-                    if(!col.includes(number)){ // not include in column
-                        const square = this.#getSquare(x, y, grid);
-                        if(!square.includes(number)){ // not included in the square
-                            grid[x][y].number = number;
-                            if(this.#isCorrectGrid(grid)){
-                                solutionsFound++;
-                                break;
-                            }
-                            else{
-                                if(countSolutions(grid))
-                                    return true;
-                            }
-                                    
-                        }
-                    }
-                }
+
+                if(row.includes(number)) continue;
+                    
+                const col = this.#getCol(y, grid);
+                if(col.includes(number)) continue;
+
+                const square = this.#getSquare(x, y, grid);
+                if(square && square.includes(number)) continue;
+
+                grid[x][y].number = number;
+
+                if(this.#isCorrectGrid(grid)){
+                    solutionsFound++;
+                    break;
+                }else if(countSolutions(grid))
+                    return true;
             }
             
             grid[x][y].number = 0;
@@ -317,8 +317,13 @@ daily_sudoku.component = class extends Component{
         return unSolvedGrid;
     }
     
+    #isPerfectSquare = (number) => {
+        return Math.ceil(Math.pow(number, .5)) === Math.floor(Math.pow(number, .5))
+    }
+
     #findNeighbors(grid){
         const d = grid.length;
+        const isPerfectSquare = this.#isPerfectSquare(d);
 
         const neighbors = new Array(d)
         .fill(0)
@@ -332,7 +337,7 @@ daily_sudoku.component = class extends Component{
 
             const col = this.#getCol(y, grid);
             const row = this.#getRow(x, grid);
-            const square = this.#getSquare(x, y, grid);
+            const square = isPerfectSquare ? this.#getSquare(x, y, grid): [];
 
             const uniqueNeighbors = [...new Set([...col, ...row, ... square])]
                 .filter(num => num)
@@ -432,18 +437,29 @@ daily_sudoku.component = class extends Component{
     componentDidMount = () => {
         document.addEventListener("keydown", (e) => {
             if(this.#selectedCell){
-                let key = parseInt(e.key);
+                let key;
+
+                if(this.state.word) key = this.state.word.indexOf(e.key)+1;
+                if(parseInt(e.key)) key = parseInt(e.key);
+
                 if(key && key <= this.state.unSolvedGrid.length){
-                    const unSolvedGrid = this.#copyGrid(this.state.unSolvedGrid)
+                    const unSolvedGrid = this.#copyGrid(this.state.unSolvedGrid);
 
                     const x = this.#selectedCell.x;
                     const y = this.#selectedCell.y;
+
+                    const correctNumber = this.#solvedGrid[this.#selectedCell.x][this.#selectedCell.y].number;
+
+                    if(this.state.word){
+                        const correctLetter = this.state.word[correctNumber-1];
+                        if(correctLetter === this.state.word[key-1]) key = correctNumber;
+                    }
 
                     const newObjForSelectedCell = {
                         number: key,
                         builtIn: unSolvedGrid[x][y].builtIn,
                         shouldShow: unSolvedGrid[x][y].shouldShow,
-                        wrong: this.#solvedGrid[this.#selectedCell.x][this.#selectedCell.y].number !== key
+                        wrong: correctNumber !== key
                     }
 
                     unSolvedGrid[x][y] = newObjForSelectedCell;
@@ -519,6 +535,16 @@ daily_sudoku.component = class extends Component{
         return str;
     }
 
+    #generateWordSudoku = () => {
+        const word = prompt("please enter the word: ");
+
+        if(!word) return;
+
+        this.setState({word});
+        this.#generateAndSetDifficulty(word.length, Math.floor(.5 * word.length * word.length))();
+
+    }
+
     render(){
 
         const rand = getRand(this.#getDay());
@@ -527,7 +553,7 @@ daily_sudoku.component = class extends Component{
         const screenHeight = window.innerHeight; 
 
         let dimensionOfPuzzle = Math.min(screenWidth * .8, screenHeight * .8);
-        const showKeysUnder = screenWidth - 2 * dimensionOfPuzzle < 100;
+        const showKeysUnder = screenWidth - 2 * dimensionOfPuzzle < 100 || this.state.word;
 
         let leftMarginPuzzle;
         let topMarginPuzzle;
@@ -558,6 +584,7 @@ daily_sudoku.component = class extends Component{
                 <button onClick={this.#generateAndSetDifficulty(9, 30)} className="button-option">Easy</button>
                 <button onClick={this.#generateAndSetDifficulty(9, 40)} className="button-option">Medium</button>
                 <button onClick={this.#generateAndSetDifficulty(9, 60)} className="button-option">Hard</button>
+                <button onClick={this.#generateWordSudoku} className="button-option">Word</button>
             </div>}
             {this.state.difficulty && <div>
                 <table id="sudoku-puzzle" className={this.state.isComplete ? "completed": ""} style={{
@@ -569,6 +596,7 @@ daily_sudoku.component = class extends Component{
                     <tbody>
                         {this.state.unSolvedGrid.map((row, i) => {
                             const d = row.length;
+                            const isPerfectSquare = this.#isPerfectSquare(d);
                             const square = Math.floor(Math.pow(d, .5));
                             const percentageofTable = Math.round(10000 / d) / 100;
 
@@ -578,10 +606,10 @@ daily_sudoku.component = class extends Component{
                                 const color = listOfColors[Math.floor(rand() * listOfColors.length)]
 
                                 const shownClassname = cell.shouldShow ? "shown": `not-shown ${color}`;
-                                const leftSideofSquare = j % square === 0 ? " left-square": "";
-                                const rightSideofSquare = j % square === square-1 ? " right-square": "";
-                                const topofSquare = i % square === 0 ? " top-square": "";
-                                const bottomofSquare = i % square === square-1 ? " bottom-square": "";
+                                const leftSideofSquare = j % square === 0 && isPerfectSquare ? " left-square": "";
+                                const rightSideofSquare = j % square === square-1 && isPerfectSquare ? " right-square": "";
+                                const topofSquare = i % square === 0 && isPerfectSquare ? " top-square": "";
+                                const bottomofSquare = i % square === square-1 && isPerfectSquare ? " bottom-square": "";
                                 const typable = cell.builtIn || this.state.isComplete ? " not-typable": " typable";
                                 const wrong = cell.wrong && this.state.showWrongAnswers ? " wrong": "";
                                 const selected = this.#selectedCell?.x === i && this.#selectedCell?.y === j ? " selected": "";
@@ -590,12 +618,15 @@ daily_sudoku.component = class extends Component{
 
                                 const cn = `${shownClassname}${leftSideofSquare}${rightSideofSquare}${topofSquare}${bottomofSquare}${typable}${wrong}${selected}`;
 
+                                let cellContent = cell.shouldShow && cell.number > 0 ? cell.number: "";
+                                if(this.state.word && cellContent) cellContent = this.state.word[cell.number-1];
+
                                 return <td key={j} className={cn} style={{
                                     width: `${percentageofTable}%`, 
                                     height: `${percentageofTable}%`,
                                     fontSize: `${dimensionOfPuzzle/d/2}px`
                                 }} onClick={onclick}>
-                                    {cell.shouldShow && cell.number > 0 ? cell.number: ""}
+                                    {cellContent}
                                 </td>
                             })}</tr>
                         })}
@@ -631,7 +662,11 @@ daily_sudoku.component = class extends Component{
                         document.dispatchEvent(new KeyboardEvent('keydown', {key: `${num}`}));
                     }
 
-                    return <button onClick={onclick} key={i} style={{width, height, maxHeight, fontSize}}>{num}</button>
+                    const buttonContent = this.state.word ? this.state.word[num-1]: num;
+
+                    return <button onClick={onclick} key={i} style={{width, height, maxHeight, fontSize}}>
+                        {buttonContent}
+                    </button>
                 })}
             </div>}
             {this.state.isComplete && <div id="success-popup">
