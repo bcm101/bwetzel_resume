@@ -553,7 +553,7 @@ daily_sudoku.component = class extends Component{
         const screenHeight = window.innerHeight; 
 
         let dimensionOfPuzzle = Math.min(screenWidth * .8, screenHeight * .8);
-        const showKeysUnder = screenWidth - 2 * dimensionOfPuzzle < 100 || this.state.word;
+        const showKeysUnder = screenWidth - 2 * dimensionOfPuzzle < 100;
 
         let leftMarginPuzzle;
         let topMarginPuzzle;
@@ -580,10 +580,10 @@ daily_sudoku.component = class extends Component{
         return <div>
             {!this.state.difficulty &&<div>
                 <div className="header">Daily Sudoku Puzzles!</div>
-                <button onClick={this.#generateAndSetDifficulty(4, 12)} className="button-option">4x4</button>
+                <button onClick={this.#generateAndSetDifficulty(4, 13)} className="button-option">4x4</button>
                 <button onClick={this.#generateAndSetDifficulty(9, 30)} className="button-option">Easy</button>
-                <button onClick={this.#generateAndSetDifficulty(9, 40)} className="button-option">Medium</button>
-                <button onClick={this.#generateAndSetDifficulty(9, 60)} className="button-option">Hard</button>
+                <button onClick={this.#generateAndSetDifficulty(9, 41)} className="button-option">Medium</button>
+                <button onClick={this.#generateAndSetDifficulty(9, 61)} className="button-option">Hard</button>
                 <button onClick={this.#generateWordSudoku} className="button-option">Word</button>
             </div>}
             {this.state.difficulty && <div>
@@ -597,7 +597,7 @@ daily_sudoku.component = class extends Component{
                         {this.state.unSolvedGrid.map((row, i) => {
                             const d = row.length;
                             const isPerfectSquare = this.#isPerfectSquare(d);
-                            const square = Math.floor(Math.pow(d, .5));
+                            const square = Math.ceil(Math.pow(d, .5));
                             const percentageofTable = Math.round(10000 / d) / 100;
 
                             return <tr key={i} style={{width: "100%", height: `${percentageofTable}%`}}>{row.map((cell, j) => {
@@ -648,15 +648,21 @@ daily_sudoku.component = class extends Component{
                     if(i === d+2) return <button key={i} id="delete-cell-button" onClick={()=> {
                         document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Backspace'}));
                     }}>X</button>
+
                     let width;
 
-                    if(screenHeight - dimensionOfPuzzle - 20 > dimensionOfPuzzle || !showKeysUnder)
-                        width = keypadWidth / Math.pow(d, .5);
+                    const totalInRow = Math.ceil(Math.pow(d, .5));
+
+                    if(screenHeight - dimensionOfPuzzle - 20 > dimensionOfPuzzle || !showKeysUnder){
+                        width = keypadWidth / totalInRow;
+                        if(i >= d - d % totalInRow)
+                            width = keypadWidth / (d % totalInRow);
+                    }
                     else
                         width = keypadWidth / d;
 
                     const height = keypadHeight;
-                    const maxHeight = dimensionOfPuzzle / Math.pow(d, .5);
+                    const maxHeight = dimensionOfPuzzle / Math.ceil(d / totalInRow);
                     const fontSize = `${Math.min(width/8, height/8)}px`;
                     const onclick = () => {
                         document.dispatchEvent(new KeyboardEvent('keydown', {key: `${num}`}));
