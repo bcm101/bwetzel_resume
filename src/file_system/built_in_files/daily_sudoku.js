@@ -60,8 +60,7 @@ daily_sudoku.component = class extends Component{
         difficulty: null,
         unSolvedGrid: null,
         isComplete: false,
-        showWrongAnswers: false,
-        word: null
+        showWrongAnswers: false
     }
 
     #rand; // random function that enables daily puzzles that are the same for everyone
@@ -71,6 +70,7 @@ daily_sudoku.component = class extends Component{
     #timeStart;
     #gridVisible = false;
     #madeChangeToGrid = false;
+    #isUsingWord = null;
 
     #shuffle = (array) => {
         let currentIndex = array.length;
@@ -388,7 +388,7 @@ daily_sudoku.component = class extends Component{
     }
 
     #saveGrid = (identifier, grid) => {
-        if(this.#gridVisible){
+        if(this.#gridVisible && !this.#isUsingWord){
             const json = JSON.stringify({unSolvedGrid: grid, solvedGrid: this.#solvedGrid, date: this.#getDay(), timeGenerated: this.#timeStart});
             const key = `BWetzel-DailySudoku-${identifier}`;
             try{
@@ -439,7 +439,7 @@ daily_sudoku.component = class extends Component{
             if(this.#selectedCell){
                 let key;
 
-                if(this.state.word) key = this.state.word.indexOf(e.key)+1;
+                if(this.#isUsingWord) key = this.#isUsingWord.indexOf(e.key)+1;
                 if(parseInt(e.key)) key = parseInt(e.key);
 
                 if(key && key <= this.state.unSolvedGrid.length){
@@ -450,9 +450,9 @@ daily_sudoku.component = class extends Component{
 
                     const correctNumber = this.#solvedGrid[this.#selectedCell.x][this.#selectedCell.y].number;
 
-                    if(this.state.word){
-                        const correctLetter = this.state.word[correctNumber-1];
-                        if(correctLetter === this.state.word[key-1]) key = correctNumber;
+                    if(this.#isUsingWord){
+                        const correctLetter = this.#isUsingWord[correctNumber-1];
+                        if(correctLetter === this.#isUsingWord[key-1]) key = correctNumber;
                     }
 
                     const newObjForSelectedCell = {
@@ -528,7 +528,6 @@ daily_sudoku.component = class extends Component{
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
 
-
         const str = `${hours % 24}:${minutes % 60 < 10 ? '0': ''}${minutes % 60}:${seconds % 60 < 10 ? '0': ''}${seconds % 60}`;
         this.#timeStart = str;
 
@@ -540,7 +539,8 @@ daily_sudoku.component = class extends Component{
 
         if(!word) return;
 
-        this.setState({word});
+        this.#isUsingWord = word;
+
         this.#generateAndSetDifficulty(word.length, Math.floor(.5 * word.length * word.length))();
 
     }
@@ -619,7 +619,7 @@ daily_sudoku.component = class extends Component{
                                 const cn = `${shownClassname}${leftSideofSquare}${rightSideofSquare}${topofSquare}${bottomofSquare}${typable}${wrong}${selected}`;
 
                                 let cellContent = cell.shouldShow && cell.number > 0 ? cell.number: "";
-                                if(this.state.word && cellContent) cellContent = this.state.word[cell.number-1];
+                                if(this.#isUsingWord && cellContent) cellContent = this.#isUsingWord[cell.number-1];
 
                                 return <td key={j} className={cn} style={{
                                     width: `${percentageofTable}%`, 
@@ -668,7 +668,7 @@ daily_sudoku.component = class extends Component{
                         document.dispatchEvent(new KeyboardEvent('keydown', {key: `${num}`}));
                     }
 
-                    const buttonContent = this.state.word ? this.state.word[num-1]: num;
+                    const buttonContent = this.#isUsingWord ? this.#isUsingWord[num-1]: num;
 
                     return <button onClick={onclick} key={i} style={{width, height, maxHeight, fontSize}}>
                         {buttonContent}
@@ -682,7 +682,15 @@ daily_sudoku.component = class extends Component{
                 <p>Congratulations!</p>
                 <p>Come back tomorrow for a new sudoku or generate another here.</p>
                 <button className="button-option" onClick={this.#generateAnother}>Generate Random Puzzle</button>
-                <button className="button-option" onClick={() => {this.setState({showWrongAnswers: false, difficulty: null, isComplete: false, unSolvedGrid: null})}}>Home</button>
+                <button className="button-option" onClick={() => {
+                    this.setState({
+                        showWrongAnswers: false, 
+                        difficulty: null, 
+                        isComplete: false, 
+                        unSolvedGrid: null
+                    });
+                    this.#isUsingWord = null;
+                }}>Home</button>
             </div>}
             
         </div>
