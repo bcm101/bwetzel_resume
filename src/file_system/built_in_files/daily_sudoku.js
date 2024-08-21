@@ -399,9 +399,9 @@ daily_sudoku.component = class extends Component{
         }
     }
 
-    #generateAndSetDifficulty = (d, difficulty) => {
+    #generateAndSetDifficulty = (d, difficulty, rand = getRand(`${this.#getDay()}${difficulty}`)) => {
         return () => {
-            this.#rand = getRand(`${this.#getDay()}${difficulty}`);
+            this.#rand = rand;
             this.#loadGrid(d, difficulty);
         }
     }
@@ -541,7 +541,7 @@ daily_sudoku.component = class extends Component{
 
         this.#isUsingWord = word;
 
-        this.#generateAndSetDifficulty(word.length, Math.floor(.5 * word.length * word.length))();
+        this.#generateAndSetDifficulty(word.length, Math.floor(.5 * word.length * word.length), Math.random)();
 
     }
 
