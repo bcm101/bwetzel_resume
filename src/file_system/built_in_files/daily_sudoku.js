@@ -71,6 +71,9 @@ daily_sudoku.component = class extends Component{
     #gridVisible = false;
     #madeChangeToGrid = false;
     #isUsingWord = null;
+    #wordLetterFrequencies = {};
+    #wordContainsDuplicates = false;
+
 
     #shuffle = (array) => {
         let currentIndex = array.length;
@@ -85,6 +88,29 @@ daily_sudoku.component = class extends Component{
             // And swap it with the current element.
             [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
         }
+    }
+
+    #setUsedWord = (word) => {
+        if(!word){
+            this.#isUsingWord = null;
+            this.#wordLetterFrequencies = {};
+            this.#wordContainsDuplicates = false;
+        }
+
+        const count = (w) => {
+            const set = {};
+            const keys = [...new Set(w)];
+            for(let i = 0; i < keys.length; i++){
+                const key = keys[i];
+                set[key] = w.filter(e => e === key).length;
+                if(set[key] > 1) this.#wordContainsDuplicates = true;
+            }
+            return set;
+        }
+
+        this.#isUsingWord = word;
+        this.#wordLetterFrequencies = count(word);
+
     }
 
     #makeGrid(d) {        
@@ -126,6 +152,7 @@ daily_sudoku.component = class extends Component{
                 square[i*squares+j] = grid[xs][ys].number;
             }
         }
+
         return square;
     }
 
@@ -134,7 +161,7 @@ daily_sudoku.component = class extends Component{
     }
 
     #getCol(y, grid){
-        return grid.map(e => e[y].number);
+        return grid.map(e => e[y].number)
     }
 
     #isCorrectGrid(grid){
@@ -156,6 +183,7 @@ daily_sudoku.component = class extends Component{
             x = i % d;
             y = Math.floor(i/d);
             if(grid[x][y].number === 0){
+
                 const numberList = this.#numberList.slice(0);
 
                 this.#shuffle(numberList);
@@ -164,11 +192,13 @@ daily_sudoku.component = class extends Component{
                     const row = this.#getRow(x, grid);
 
                     if(row.includes(number)) continue;
-                    
+
                     const col = this.#getCol(y, grid);
+
                     if(col.includes(number)) continue;
 
                     const square = this.#getSquare(x, y, grid);
+
                     if(square && square.includes(number)) continue;
 
                     grid[x][y].number = number;
@@ -182,6 +212,7 @@ daily_sudoku.component = class extends Component{
                 break;
             }
         }
+
         grid[x][y].number = 0;
         return false;
     }
@@ -222,6 +253,25 @@ daily_sudoku.component = class extends Component{
 
         const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+        const possibleRemoveDuplicateLetters = (listOfNumbers) => {
+
+            if(!listOfNumbers) return null;
+
+            let duplicateList = [...listOfNumbers];
+            const letters = duplicateList.map(n => this.#isUsingWord[n-1]);
+
+            const uniqueLetters = [...new Set(letters)];
+            for(let i = 0; i < uniqueLetters.length; i++){
+                const uniqueLetter = uniqueLetters[i];
+                const total = letters.filter(e => e === uniqueLetter).length;
+                if(total < this.#wordLetterFrequencies[uniqueLetter]){
+                    duplicateList = duplicateList.filter(n => this.#isUsingWord[n-1] !== uniqueLetter);
+                }
+            }
+
+            return duplicateList;
+        }
+
         const countSolutions = grid => {
             const neighbors = this.#findNeighbors(grid);
 
@@ -235,16 +285,43 @@ daily_sudoku.component = class extends Component{
 
             for(let i = 0; i < d; i++){
                 
-                const number = numberList[i];
-                const row = grid[x].map(e => e.number);
+                let number = numberList[i];
 
-                if(row.includes(number)) continue;
+                if(!this.#isUsingWord || this.#wordContainsDuplicates){
+                    const row = grid[x].map(e => e.number);
+
+                    if(row.includes(number)) continue;
+                        
+                    const col = this.#getCol(y, grid);
+                    if(col.includes(number)) continue;
+
+                    const square = this.#getSquare(x, y, grid);
+                    if(square && square.includes(number)) continue;
+                }else {
+
+                    const row = grid[x].map(e => e.number);
+                    const col = this.#getCol(y, grid);
+                    const square = this.#getSquare(x, y, grid);
                     
-                const col = this.#getCol(y, grid);
-                if(col.includes(number)) continue;
+                    const rowWithoutDupes = possibleRemoveDuplicateLetters(row);
+                    const colWithoutDupes = possibleRemoveDuplicateLetters(col);
+                    const squareWithoutDupes = possibleRemoveDuplicateLetters(square);
 
-                const square = this.#getSquare(x, y, grid);
-                if(square && square.includes(number)) continue;
+                    const cannotBeNoDupes = square ? [...rowWithoutDupes, ...colWithoutDupes, ...squareWithoutDupes]: [...rowWithoutDupes, ...colWithoutDupes];
+
+                    if(cannotBeNoDupes.includes(number)) continue;
+
+                    const letter = this.#isUsingWord[number-1];
+
+                    // we must add this LETTER to the grid, but we aren't sure what number this may be quite yet.
+                    // to find this, we must find all the numbers the correspond to the letter and pick one of those
+                    // this should be the number from the solution grid if and only if the letter for the solution is the same as the letter for the current grid
+                    // otherwise, continue as normal
+
+                    if(this.#isUsingWord[number-1] === this.#isUsingWord[this.#solvedGrid[x][y].number])
+                        number = this.#solvedGrid[x][y].number;
+
+                }
 
                 grid[x][y].number = number;
 
@@ -535,13 +612,40 @@ daily_sudoku.component = class extends Component{
     }
 
     #generateWordSudoku = () => {
-        const word = prompt("please enter the word: ");
+        let word = prompt("please enter the word (to group letters put them in between < >.\nExample with 'll' grouped: 'he<ll>o'");
 
         if(!word) return;
 
-        this.#isUsingWord = word;
+        word = word.match(/[a-zA-Z0-9<>]+/g);
 
-        this.#generateAndSetDifficulty(word.length, Math.floor(.5 * word.length * word.length), Math.random)();
+        if(!word) return;
+
+        word = word[0];
+
+        if(!word) return;
+
+        word = word.match(/(?<=<)[^<>]+(?=>)|[^<>]/g);
+        
+        let removePercentage = prompt("please enter a percentage of squares to attempt to remove\nExample with 100 percent: '100'");
+
+        if(!removePercentage)
+            removePercentage = "50";
+
+        removePercentage = removePercentage.match(/[0-9]+/g);
+        if(!removePercentage)
+            removePercentage = ["50"];
+
+        removePercentage = removePercentage[0];
+        removePercentage = parseInt(removePercentage);
+
+        if(!removePercentage)
+            removePercentage = 50;
+
+        const toRemove = Math.floor((removePercentage/100) * word.length * word.length)
+
+        this.#setUsedWord(word);
+
+        this.#generateAndSetDifficulty(word.length, toRemove, Math.random)(); 
 
     }
 
@@ -689,7 +793,7 @@ daily_sudoku.component = class extends Component{
                         isComplete: false, 
                         unSolvedGrid: null
                     });
-                    this.#isUsingWord = null;
+                    this.#setUsedWord(null);
                 }}>Home</button>
             </div>}
             
