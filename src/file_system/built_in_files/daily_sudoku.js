@@ -1,5 +1,7 @@
 import { Component } from "react";
 import './daily_sudoku.css';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const daily_sudoku = function () {
     return [
@@ -60,7 +62,8 @@ daily_sudoku.component = class extends Component{
         difficulty: null,
         unSolvedGrid: null,
         isComplete: false,
-        showWrongAnswers: false
+        showWrongAnswers: false,
+        puzzleLoaded: false
     }
 
     #rand; // random function that enables daily puzzles that are the same for everyone
@@ -582,14 +585,36 @@ daily_sudoku.component = class extends Component{
 
     }
 
-    #print = (e) => {
-        e.target.parentElement.hidden = true;
-        document.getElementById("sudoku-puzzle").style.width = "70vw";
-        document.getElementById("sudoku-puzzle").style.height = "70vw";
-        document.getElementById("sudoku-puzzle").style.left = "15vw";
-        document.getElementById("sudoku-puzzle").style.top = "0";
-        window.print();
-        // window.location.reload();
+    #savePDF = () => {
+        const element = document.getElementById('sudoku-puzzle');
+
+        const animatedElements = document.querySelectorAll(".play-animation");
+        for(let i = 0; i < animatedElements.length; i++){
+            animatedElements[i].classList.remove("play-animation");
+        }
+
+        window.setTimeout(() => {
+            console.log("saving as PDF");
+            html2canvas(element).then(canvas => {
+                const image = canvas.toDataURL('image/jpeg', 1.0);
+                const doc = new jsPDF('p', 'px', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+
+                const widthRatio = pageWidth / canvas.width;
+                const heightRatio = pageHeight / canvas.height;
+                const ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
+
+                const canvasWidth = canvas.width * ratio;
+                const canvasHeight = canvas.height * ratio;
+
+                const marginX = (pageWidth - canvasWidth) / 2;
+                const marginY = (pageHeight - canvasHeight) / 2;
+
+                doc.addImage(image, 'JPEG', marginX, marginY, canvasWidth, canvasHeight);
+                doc.output('dataurlnewwindow');
+            });
+        }, 1000);
     }
 
     #generateAnother = () => {
@@ -694,8 +719,9 @@ daily_sudoku.component = class extends Component{
                 <table id="sudoku-puzzle" className={this.state.isComplete ? "completed": ""} style={{
                     width: `${dimensionOfPuzzle}px`, 
                     height: `${dimensionOfPuzzle}px`, 
-                    left: leftMarginPuzzle, 
-                    top: topMarginPuzzle
+                    marginLeft: leftMarginPuzzle, 
+                    marginTop: topMarginPuzzle,
+                    borderCollapse: "collapse"
                 }}>
                     <tbody>
                         {this.state.unSolvedGrid.map((row, i) => {
@@ -720,16 +746,19 @@ daily_sudoku.component = class extends Component{
 
                                 const onclick = cell.builtIn || this.state.isComplete ? () => {}: this.#selectCell(i, j);
 
-                                const cn = `${shownClassname}${leftSideofSquare}${rightSideofSquare}${topofSquare}${bottomofSquare}${typable}${wrong}${selected}`;
+                                const style = {
+                                    width: `${percentageofTable}%`, 
+                                    height: `${percentageofTable}%`,
+                                    fontSize: `${dimensionOfPuzzle/d/2}px`,
+                                    textAlign: "center"
+                                }
+
+                                const cn = `${shownClassname}${leftSideofSquare}${rightSideofSquare}${topofSquare}${bottomofSquare}${typable}${wrong}${selected} play-animation`;
 
                                 let cellContent = cell.shouldShow && cell.number > 0 ? cell.number: "";
                                 if(this.#isUsingWord && cellContent) cellContent = this.#isUsingWord[cell.number-1];
 
-                                return <td key={j} className={cn} style={{
-                                    width: `${percentageofTable}%`, 
-                                    height: `${percentageofTable}%`,
-                                    fontSize: `${dimensionOfPuzzle/d/2}px`
-                                }} onClick={onclick}>
+                                return <td key={j} className={cn} onClick={onclick} style={style}>
                                     {cellContent}
                                 </td>
                             })}</tr>
@@ -747,7 +776,7 @@ daily_sudoku.component = class extends Component{
                 
                     const d = this.state.unSolvedGrid.length;
 
-                    if(i === d) return <button key={i} id="print-sudoku" onClick={this.#print}>print</button>
+                    if(i === d) return <button key={i} id="print-sudoku" onClick={this.#savePDF}>PDF</button>
                     if(i === d+1) return <button key={i} id="show-wrong" onClick={()=> {this.setState({showWrongAnswers: !this.state.showWrongAnswers})}}>show wrong answers?</button>
                     if(i === d+2) return <button key={i} id="delete-cell-button" onClick={()=> {
                         document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Backspace'}));
@@ -796,7 +825,6 @@ daily_sudoku.component = class extends Component{
                     this.#setUsedWord(null);
                 }}>Home</button>
             </div>}
-            
         </div>
     }
 }
