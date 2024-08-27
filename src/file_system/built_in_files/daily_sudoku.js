@@ -656,7 +656,7 @@ daily_sudoku.component = class extends Component{
     }
 
     #generateWordSudoku = () => {
-        let word = prompt("please enter the word (to group letters put them in between < >.\nExample with 'll' grouped: 'he<ll>o'");
+        let word = prompt("Please enter a word. To group letters put them in between '<' and '>'.\nExample with 'll' grouped: 'he<ll>o'\nWords whose lengths are not a perfect square do not play by standard sudoku rules, and will only have to worry about filling the columns and rows.");
 
         if(!word) return;
 
@@ -670,7 +670,7 @@ daily_sudoku.component = class extends Component{
 
         word = word.match(/(?<=<)[^<>]+(?=>)|[^<>]/g);
         
-        let removePercentage = prompt("please enter a percentage of squares to attempt to remove\nExample with 100 percent: '100'");
+        let removePercentage = prompt("Please enter a percentage of squares to attempt to remove\nExample with 100 percent: '100'");
 
         if(!removePercentage)
             removePercentage = "50";
