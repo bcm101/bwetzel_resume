@@ -685,6 +685,9 @@ daily_sudoku.component = class extends Component{
         if(!removePercentage)
             removePercentage = 50;
 
+        removePercentage = Math.min(100, removePercentage);
+        removePercentage = Math.max(1, removePercentage);
+
         const toRemove = Math.floor((removePercentage/100) * word.length * word.length)
 
         this.#setUsedWord(word);
