@@ -2,6 +2,7 @@ import { Component } from "react";
 import './daily_sudoku.css';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { unstable_HistoryRouter } from "react-router-dom";
 
 const daily_sudoku = function () {
     return [
@@ -62,8 +63,7 @@ daily_sudoku.component = class extends Component{
         difficulty: null,
         unSolvedGrid: null,
         isComplete: false,
-        showWrongAnswers: false,
-        puzzleLoaded: false
+        showWrongAnswers: false
     }
 
     #rand; // random function that enables daily puzzles that are the same for everyone
@@ -254,44 +254,29 @@ daily_sudoku.component = class extends Component{
         let totalAttempts = 50;
         let totalRemoved = 0;
 
+        const needLetterDuplicateAlgo = (this.#isUsingWord && this.#wordContainsDuplicates);
+
         const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-        const possibleRemoveDuplicateLetters = (listOfNumbers) => {
-
-            if(!listOfNumbers) return null;
-
-            let duplicateList = [...listOfNumbers];
-            const letters = duplicateList.map(n => this.#isUsingWord[n-1]);
-
-            const uniqueLetters = [...new Set(letters)];
-            for(let i = 0; i < uniqueLetters.length; i++){
-                const uniqueLetter = uniqueLetters[i];
-                const total = letters.filter(e => e === uniqueLetter).length;
-                if(total < this.#wordLetterFrequencies[uniqueLetter]){
-                    duplicateList = duplicateList.filter(n => this.#isUsingWord[n-1] !== uniqueLetter);
-                }
-            }
-
-            return duplicateList;
-        }
-
         const countSolutions = grid => {
-            const neighbors = this.#findNeighbors(grid);
 
             if(solutionsFound > 1) return true;
- 
+            const neighbors = this.#findNeighbors(grid);
+
             const cellCoordinates = this.#selectNumberFromNeighbors(neighbors);
             if(!cellCoordinates) return false;
 
             const {x, y} = cellCoordinates;
             const numberList = this.#numberList.slice(0);
+            const totalLoops = needLetterDuplicateAlgo ? Object.keys(this.#wordLetterFrequencies).length: d;
+            const listOfLetters = needLetterDuplicateAlgo ? Object.keys(this.#wordLetterFrequencies): null;
 
-            for(let i = 0; i < d; i++){
+            for(let i = 0; i < totalLoops; i++){
                 
                 let number = numberList[i];
 
-                if(!this.#isUsingWord || this.#wordContainsDuplicates){
-                    const row = grid[x].map(e => e.number);
+                if(!needLetterDuplicateAlgo){
+                    const row = this.#getRow(x, grid);
 
                     if(row.includes(number)) continue;
                         
@@ -302,27 +287,21 @@ daily_sudoku.component = class extends Component{
                     if(square && square.includes(number)) continue;
                 }else {
 
-                    const row = grid[x].map(e => e.number);
-                    const col = this.#getCol(y, grid);
-                    const square = this.#getSquare(x, y, grid);
+                    const letter = listOfLetters[i];
+
+                    const row = this.#convertListOfNumbersToLetters(this.#getRow(x, grid));
+                    const col = this.#convertListOfNumbersToLetters(this.#getCol(y, grid));
+                    const square = this.#convertListOfNumbersToLetters(this.#getSquare(x, y, grid));
                     
-                    const rowWithoutDupes = possibleRemoveDuplicateLetters(row);
-                    const colWithoutDupes = possibleRemoveDuplicateLetters(col);
-                    const squareWithoutDupes = possibleRemoveDuplicateLetters(square);
+                    const rowWithoutDupes = this.#possibleRemoveDuplicateLettersFromList(row);
+                    const colWithoutDupes = this.#possibleRemoveDuplicateLettersFromList(col);
+                    const squareWithoutDupes = this.#possibleRemoveDuplicateLettersFromList(square);
 
                     const cannotBeNoDupes = square ? [...rowWithoutDupes, ...colWithoutDupes, ...squareWithoutDupes]: [...rowWithoutDupes, ...colWithoutDupes];
 
-                    if(cannotBeNoDupes.includes(number)) continue;
-
-                    const letter = this.#isUsingWord[number-1];
-
-                    // we must add this LETTER to the grid, but we aren't sure what number this may be quite yet.
-                    // to find this, we must find all the numbers the correspond to the letter and pick one of those
-                    // this should be the number from the solution grid if and only if the letter for the solution is the same as the letter for the current grid
-                    // otherwise, continue as normal
-
-                    if(this.#isUsingWord[number-1] === this.#isUsingWord[this.#solvedGrid[x][y].number])
-                        number = this.#solvedGrid[x][y].number;
+                    if(cannotBeNoDupes.includes(letter)) continue;
+                            
+                    number = this.#isUsingWord.indexOf(letter) + 1;
 
                 }
 
@@ -334,7 +313,7 @@ daily_sudoku.component = class extends Component{
                 }else if(countSolutions(grid))
                     return true;
             }
-            
+        
             grid[x][y].number = 0;
             return false;
         };
@@ -356,7 +335,6 @@ daily_sudoku.component = class extends Component{
             
             countSolutions(copyOfGrid);
 
-
             if(solutionsFound !== 1){
                 totalAttempts--;
                 unSolvedGrid[x][y].number = solvedGrid[x][y].number;
@@ -364,7 +342,7 @@ daily_sudoku.component = class extends Component{
                 unSolvedGrid[x][y].builtIn = solvedGrid[x][y].builtIn;
                 solutionsFound = 0;
 
-                if(totalAttempts === 0)
+                if(totalAttempts <= 0)
                     this.setState({difficulty: difficulty, unSolvedGrid: this.#showGrid(unSolvedGrid)});
 
                 continue;
@@ -401,6 +379,27 @@ daily_sudoku.component = class extends Component{
         return Math.ceil(Math.pow(number, .5)) === Math.floor(Math.pow(number, .5))
     }
 
+    #possibleRemoveDuplicateLettersFromList = (listOfLetters) => {
+        if(!listOfLetters) return null;
+
+        let duplicateList = [...listOfLetters];
+        const uniqueLetters = [...new Set(listOfLetters)];
+        for(let i = 0; i < uniqueLetters.length; i++){
+            const uniqueLetter = uniqueLetters[i];
+            const total = listOfLetters.filter(e => e === uniqueLetter).length;
+            if(total < this.#wordLetterFrequencies[uniqueLetter]){
+                duplicateList = duplicateList.filter(e => e !== uniqueLetter);
+            }
+        }
+
+        return duplicateList;
+    }
+
+    #convertListOfNumbersToLetters = (listOfNumbers) => {
+        if(!listOfNumbers) return null;
+        return listOfNumbers.map(n => this.#isUsingWord[n-1] || '');
+    }
+
     #findNeighbors(grid){
         const d = grid.length;
         const isPerfectSquare = this.#isPerfectSquare(d);
@@ -408,6 +407,8 @@ daily_sudoku.component = class extends Component{
         const neighbors = new Array(d)
         .fill(0)
         .map(_ => []);
+
+        const needLetterDuplicateAlgo = (this.#isUsingWord && this.#wordContainsDuplicates);
 
         for(let i = 0; i < d*d; i++){
             const x = i % d;
@@ -419,14 +420,32 @@ daily_sudoku.component = class extends Component{
             const row = this.#getRow(x, grid);
             const square = isPerfectSquare ? this.#getSquare(x, y, grid): [];
 
-            const uniqueNeighbors = [...new Set([...col, ...row, ... square])]
-                .filter(num => num)
-                .length;
+            if(!needLetterDuplicateAlgo){
+                const uniqueNeighbors = [...new Set([...col, ...row, ...square])]
+                    .filter(num => num)
+                    .length;
+                
+                if(uniqueNeighbors < d)
+                    neighbors[uniqueNeighbors].push({x, y});
+                else return false;
+            }else{
+                const rowLetters = this.#convertListOfNumbersToLetters(row);
+                const colLetters = this.#convertListOfNumbersToLetters(col);
+                const squareLetters = this.#convertListOfNumbersToLetters(square);
 
-            if(uniqueNeighbors < d)
-                neighbors[uniqueNeighbors].push({x, y});
-            else return false;
+                const rowNoDupes = this.#possibleRemoveDuplicateLettersFromList(rowLetters);
+                const colNoDupes = this.#possibleRemoveDuplicateLettersFromList(colLetters);
+                const squareNoDupes = this.#possibleRemoveDuplicateLettersFromList(squareLetters);
 
+                const uniqueNeighbors = [...new Set([...rowNoDupes, ...colNoDupes, ...squareNoDupes])]
+                    .filter(num => num)
+                    .length;
+
+                if(uniqueNeighbors < d)
+                    neighbors[uniqueNeighbors].push({x, y});
+                else return false;
+            }
+            
         }
 
         return neighbors;
