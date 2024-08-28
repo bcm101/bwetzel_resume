@@ -1,5 +1,6 @@
 import { Component } from "react";
 import './word_search_maker.css';
+import jsPDF from "jspdf";
 
 const word_search_maker = function () {
     return [
@@ -444,30 +445,52 @@ word_search_maker.component = class extends Component {
         }
     }
 
-    #print = (e) => {
+    #pdf = (e) => {
 
         const canvas = document.getElementById('word-search');
+
+        // const animatedElements = document.querySelectorAll(".play-animation");
+        // for(let i = 0; i < animatedElements.length; i++){
+        //     animatedElements[i].classList.remove("play-animation");
+        // }
+
         if(!canvas) return;
 
-        const noPrints = document.getElementsByClassName('no-print');
-        for(let i = 0; i < noPrints.length; i++) noPrints[i].hidden = true;
+        window.setTimeout(() => {
+            console.log("saving as PDF");
+            const image = canvas.toDataURL('image/jpeg', 1.0);
+            const doc = new jsPDF('p', 'px', 'a4');
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
 
-        const printScreen = document.getElementById('print');
-        printScreen.hidden = false;
+            const contentWidth = pageWidth * .8;
+            const contentHeight = pageHeight * .8;
 
-        canvas.style.height = '70vh';
-        canvas.style.width = '70vw';
+            const widthRatio = contentWidth / canvas.width;
+            const heightRatio = contentHeight / canvas.height;
+            const ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
 
-        if(this.#currentNameOfSearch){
-            const title = document.getElementById("title-of-wordsearch-print")
-            title.innerHTML = this.#currentNameOfSearch;
-            title.style.width = "100vw";
-            title.style.textAlign = "center";
-            title.style.fontWeight = "bold";
-        }
-            
+            const canvasWidth = canvas.width * ratio;
+            const canvasHeight = canvas.height * ratio;
 
-        window.print();
+            const marginX = (pageWidth - canvasWidth) / 2;
+            const marginY = (pageHeight * .1);
+
+            doc.addImage(image, 'JPEG', marginX, marginY, canvasWidth, canvasHeight);
+
+            if(this.#currentNameOfSearch){
+                doc.setFontSize(26);
+                doc.text(this.#currentNameOfSearch, pageWidth/2, marginY/2, {align: "center"});
+            }
+
+            doc.setFontSize(20);
+            doc.text("Word List: ", 10, canvasHeight + marginY + 20);
+            const wordListText = this.state.words.map(w => w.join('')).join(',   ');
+            doc.text(wordListText, 30, canvasHeight + marginY + 30, {maxWidth: pageWidth-20});
+
+            doc.output('dataurlnewwindow');
+        }, 1000);
+
     }
 
     render(){
@@ -524,20 +547,18 @@ word_search_maker.component = class extends Component {
                 </div>
                 <div className="generate no-print">
                         <div>{!this.#isMobile && "Generate: "}<button id="generate" onClick={this.#updateState}>G</button></div>
-                        <div>{!this.#isMobile && "Print: "}<button id="print-button" onClick={this.#print}>P</button></div>
+                        <div>{!this.#isMobile && "Make PDF: "}<button id="print-button" onClick={this.#pdf}>PDF</button></div>
                 </div>
                 {!this.state.characters.length && <div>
                     <br></br>
                     <p>Hi! This website is designed to help two teachers in my family to generate word searches to help teach kids. To make a word search, enter a list of words to be included in the word search. Then, enter the optional inputs of setting width/height ('w,h' input box) and setting a random seed. A random seed will determine whether the word search will be the same next time you generate with the same inputs. For example, if you generate a word search with the random seed of 'hello', and then you generate it again, the word search will not change as the seed is the exact same. But, if you remove the random seed and generate twice you will see two different word searches.</p>
                     <p>This word search also lets you customize with the way characters are handled more than traditional word search generators. If you aren't on mobile, you can see a character list in the top right of the screen when you hit generate. This list lets you remove individual characters from showing up in the word list. Moreover, the 'include a-z' checkbox (leftmost) and 'include A-Z' checkbox (second to the left) will include all the lowercase and uppercase letters in the character list respectively. If you wish to include a combination of characters as a single space in the word search, group letters when entering them in the word list using brackets, which is useful to include digraphs like 'th' or 'sh'.</p>
-                    <p>One can save word searches by hitting the save/load button (rightmost), and entering a name for to save it under. Hit save, and you should see it appear in the dropdown. If it does not appear, your browser does not allow data to be saved to its local storage, and you will have to save it externally. Printing word searches is possible through the print button, but it will automatically stretch the word search; so it works best with square-ish shaped word searches.</p>
+                    <p>One can save word searches by hitting the save/load button (rightmost), and entering a name for to save it under. Hit save, and you should see it appear in the dropdown. If it does not appear, your browser does not allow data to be saved to its local storage, and you will have to save it externally. Printing word searches is possible through the PDF button, but it will not work great for large word searches as that is a high resolution image. One can also simply copy and paste the word search image from the webpage!</p>
                     <p>Lastly, hard mode (second to last checkbox) is when words can go in all directions in the word search including in reverse (right to left). Not hard mode is restricted to only 3 directions: down, diagonal, and right.</p>
                     <p>-Brandon</p>
                 </div>}
             </div>
             
-            <div id="title-of-wordsearch-print" style={{width: "100%", textAlign: "center"}}></div>
-
             {this.state.w && this.state.h && this.state.characters.length && <canvas id="word-search"></canvas>}
 
             <div id="popup" className={this.state.showingPopup ? "show no-print": "no-print"}>
@@ -567,16 +588,6 @@ word_search_maker.component = class extends Component {
                         <div><button onClick={this.#loadSaved}>Load</button></div>
                         <div><button onClick={this.#deleteSaved}>Delete</button></div>
                         <div><button onClick={this.#togglePopup}>Exit</button></div>
-                    </div>
-                </div>
-            </div>
-            <div id="print" hidden>
-                <div className="word-list-print-ready">
-                    <div><b>Word List</b></div>
-                    <div className="word-list-print-block">
-                        {this.state.words.map((word, i) => {
-                            return <div key={i}> {word.join('')} </div>
-                        })}
                     </div>
                 </div>
             </div>
