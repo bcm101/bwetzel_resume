@@ -2,7 +2,6 @@ import { Component } from "react";
 import './daily_sudoku.css';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { unstable_HistoryRouter } from "react-router-dom";
 
 const daily_sudoku = function () {
     return [
