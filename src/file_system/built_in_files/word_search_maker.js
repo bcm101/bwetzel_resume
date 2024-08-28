@@ -486,7 +486,7 @@ word_search_maker.component = class extends Component {
             doc.setFontSize(20);
             doc.text("Word List: ", 10, canvasHeight + marginY + 20);
             const wordListText = this.state.words.map(w => w.join('')).join(',   ');
-            doc.text(wordListText, 30, canvasHeight + marginY + 30, {maxWidth: pageWidth-20});
+            doc.text(wordListText, 30, canvasHeight + marginY + 40, {maxWidth: pageWidth-20});
 
             doc.output('dataurlnewwindow');
         }, 1000);
