@@ -6,6 +6,7 @@
     border-radius: 10px;
     overflow: hidden;
     transform: translateY(5vh);
+    font-family: cons;
 }
 
 .terminal .terminal-top{
@@ -65,7 +66,6 @@
     height: calc(100% - 4.5vh);
     width: 100%;
     position: sticky;
-    font-family: Lucida Console;
     overflow-y: auto;
     overflow-wrap: break-word;
 }
@@ -78,7 +78,6 @@
     background-color: black;
     width: 60%;
     color: rgb(0, 164, 0);
-    font-family: Lucida Console;
     font-size: inherit;
     border: 0;
     height: 100%;
@@ -160,7 +159,6 @@
     background-color: black;
     width: 100%;
     color: rgb(0, 164, 0);
-    font-family: Lucida Console;
     font-size: inherit;
     height: calc(100% - 4ch);
     position: sticky;
@@ -210,4 +208,9 @@
 
 .main-terminal div{
     margin-left: 1ch;
+}
+
+@font-face {
+    font-family: cons;
+    src: local(Consolas), url(./Consolas.woff) format('woff');
 }
