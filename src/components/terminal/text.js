@@ -35,7 +35,7 @@ export default class Text extends Component{
         if(this.data.show_animation)
             window.setTimeout(() => {
                 if(this.state.numbers_shown < this.data.string.length && this.state.total_time >= this.data.time_before_typing) {
-                    let to_add = this.data.string[this.state.numbers_shown] === ' ' && !this.data.purge_multiple_spaces ? "\u00A0": this.data.string[this.state.numbers_shown]
+                    let to_add = this.data.string[this.state.numbers_shown]
                     this.setState({
                         total_time: this.state.total_time+this.data.speed,
                         numbers_shown: this.state.numbers_shown+1,
@@ -56,17 +56,17 @@ export default class Text extends Component{
                 }
             }, this.data.speed)
             
-            const isTypingClass = this.state.numbers_shown === this.data.string.length || !this.data.show_animation ? `is-not-typing `: `is-typing `;
-            const clickable = this.data.clickable ? `clickable-text `: '';
+        const isTypingClass = this.state.numbers_shown === this.data.string.length || !this.data.show_animation ? `is-not-typing `: `is-typing `;
+        const clickable = this.data.clickable ? `clickable-text `: '';
 
-            const className = `${isTypingClass}${clickable}${this.data.className}`
+        const className = `${isTypingClass}${clickable}${this.data.className}`
 
-            if(this.state.numbers_shown === this.data.string.length && this.data.time_after_typing <= 0){
-                this.callback();
-            }
+        if(this.state.numbers_shown === this.data.string.length && this.data.time_after_typing <= 0){
+            this.callback();
+        }
 
         return (
-            <div className={className} onClick={this.data.clickable ? this.data.clickable: () => {}}>
+            <div className={className} onClick={this.data.clickable ? this.data.clickable: () => {}} style={{'whiteSpace': 'pre-wrap'}}>
                 {this.props.link && <a href={this.props.link} className={`${className} terminal-link`}>
                     {this.props.before_string}
                     {this.data.show_animation && this.state.current_string}

@@ -342,7 +342,7 @@ export default class Commands {
                 output = await this.#FS.getFile(pathOfFile);
 
                 if(output.length) output = [...output];
-                else if(output.file || output.file === "") output = output.file.split('\n').map(line => {return {line, className: 'opened-file', remove_spaces: true}});
+                else if(output.file || output.file === "") output = output.file.split('\n').map(line => {return {line, className: 'opened-file', remove_spaces: false}});
                 else if(typeof output === "function") output = output();
 
                 if(displayLineNumber) output = output.map((li, i) => {
