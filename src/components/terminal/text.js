@@ -70,13 +70,13 @@ export default class Text extends Component{
                 {this.props.link && <a href={this.props.link} className={`${className} terminal-link`}>
                     {this.props.before_string}
                     {this.data.show_animation && this.state.current_string}
-                    {!this.data.show_animation && (this.data.purge_multiple_spaces ? this.data.string: this.data.string.replace(/ /g, "\u00A0"))}
+                    {!this.data.show_animation && this.data.string}
                     {this.state.toggle_cursor && this.data.show_cursor && '|'}
                 </a>}
                 {!this.props.link && <>
                     {this.props.before_string}
                     {this.data.show_animation && this.state.current_string}
-                    {!this.data.show_animation && (this.data.purge_multiple_spaces ? this.data.string: this.data.string.replace(/ /g, "\u00A0"))}
+                    {!this.data.show_animation && this.data.string}
                     {this.state.toggle_cursor && this.data.show_cursor && '|'}
                 </>}
             </div>
