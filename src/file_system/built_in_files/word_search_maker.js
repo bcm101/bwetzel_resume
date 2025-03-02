@@ -449,11 +449,6 @@ word_search_maker.component = class extends Component {
 
         const canvas = document.getElementById('word-search');
 
-        // const animatedElements = document.querySelectorAll(".play-animation");
-        // for(let i = 0; i < animatedElements.length; i++){
-        //     animatedElements[i].classList.remove("play-animation");
-        // }
-
         if(!canvas) return;
 
         window.setTimeout(() => {

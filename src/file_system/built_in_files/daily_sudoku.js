@@ -525,6 +525,63 @@ daily_sudoku.component = class extends Component{
         this.setState({unSolvedGrid: this.#copyGrid(this.#solvedGrid), isComplete: false});
     }
 
+    #inputNumber = key => {
+        if(this.#isUsingWord) key = this.#isUsingWord.indexOf(key)+1;
+        if(parseInt(key)) key = parseInt(key);
+
+        if(key && key <= this.state.unSolvedGrid.length){
+            const unSolvedGrid = this.#copyGrid(this.state.unSolvedGrid);
+
+            const x = this.#selectedCell.x;
+            const y = this.#selectedCell.y;
+
+            const correctNumber = this.#solvedGrid[this.#selectedCell.x][this.#selectedCell.y].number;
+
+            if(this.#isUsingWord){
+                const correctLetter = this.#isUsingWord[correctNumber-1];
+                if(correctLetter === this.#isUsingWord[key-1]) key = correctNumber;
+            }
+
+            const newObjForSelectedCell = {
+                number: key,
+                builtIn: unSolvedGrid[x][y].builtIn,
+                shouldShow: unSolvedGrid[x][y].shouldShow,
+                wrong: correctNumber !== key
+            }
+
+            unSolvedGrid[x][y] = newObjForSelectedCell;
+
+            this.#madeChangeToGrid = true;
+
+            if(this.#isCorrectGrid(unSolvedGrid)){
+                this.#selectedCell = null;
+                this.setState({unSolvedGrid: unSolvedGrid, isComplete: true});
+            }else
+                this.setState({unSolvedGrid: unSolvedGrid});
+            
+        }
+            
+        if(key === "Backspace" || key === "Delete"){
+            const unSolvedGrid = this.#copyGrid(this.state.unSolvedGrid)
+
+            const x = this.#selectedCell.x;
+            const y = this.#selectedCell.y;
+
+            const newObjForSelectedCell = {
+                number: 0,
+                builtIn: unSolvedGrid[x][y].builtIn,
+                shouldShow: unSolvedGrid[x][y].shouldShow,
+                wrong: false
+            }
+            
+            unSolvedGrid[x][y] = newObjForSelectedCell;
+
+            this.#madeChangeToGrid = true;
+
+            this.setState({unSolvedGrid: unSolvedGrid});
+        }
+    }
+
     componentDidUpdate = () => {
         if(this.#madeChangeToGrid){
             this.#madeChangeToGrid = false;
@@ -535,63 +592,7 @@ daily_sudoku.component = class extends Component{
     componentDidMount = () => {
         document.addEventListener("keydown", (e) => {
             if(this.#selectedCell){
-                let key;
-
-                if(this.#isUsingWord) key = this.#isUsingWord.indexOf(e.key)+1;
-                if(parseInt(e.key)) key = parseInt(e.key);
-
-                if(key && key <= this.state.unSolvedGrid.length){
-                    const unSolvedGrid = this.#copyGrid(this.state.unSolvedGrid);
-
-                    const x = this.#selectedCell.x;
-                    const y = this.#selectedCell.y;
-
-                    const correctNumber = this.#solvedGrid[this.#selectedCell.x][this.#selectedCell.y].number;
-
-                    if(this.#isUsingWord){
-                        const correctLetter = this.#isUsingWord[correctNumber-1];
-                        if(correctLetter === this.#isUsingWord[key-1]) key = correctNumber;
-                    }
-
-                    const newObjForSelectedCell = {
-                        number: key,
-                        builtIn: unSolvedGrid[x][y].builtIn,
-                        shouldShow: unSolvedGrid[x][y].shouldShow,
-                        wrong: correctNumber !== key
-                    }
-
-                    unSolvedGrid[x][y] = newObjForSelectedCell;
-
-                    this.#madeChangeToGrid = true;
-
-                    if(this.#isCorrectGrid(unSolvedGrid)){
-                        this.#selectedCell = null;
-                        this.setState({unSolvedGrid: unSolvedGrid, isComplete: true});
-                    }else
-                        this.setState({unSolvedGrid: unSolvedGrid});
-                    
-                }
-                    
-                if(e.key === "Backspace" || e.key === "Delete"){
-                    const unSolvedGrid = this.#copyGrid(this.state.unSolvedGrid)
-
-                    const x = this.#selectedCell.x;
-                    const y = this.#selectedCell.y;
-
-                    const newObjForSelectedCell = {
-                        number: 0,
-                        builtIn: unSolvedGrid[x][y].builtIn,
-                        shouldShow: unSolvedGrid[x][y].shouldShow,
-                        wrong: false
-                    }
-                    
-                    unSolvedGrid[x][y] = newObjForSelectedCell;
-
-                    this.#madeChangeToGrid = true;
-
-                    this.setState({unSolvedGrid: unSolvedGrid});
-                }
-                    
+                this.#inputNumber(e.key);
             }
         });
 
@@ -819,7 +820,7 @@ daily_sudoku.component = class extends Component{
                     const maxHeight = dimensionOfPuzzle / Math.ceil(d / totalInRow);
                     const fontSize = `${Math.min(width/8, height/8)}px`;
                     const onclick = () => {
-                        document.dispatchEvent(new KeyboardEvent('keydown', {key: `${num}`}));
+                        this.#inputNumber(num);
                     }
 
                     const buttonContent = this.#isUsingWord ? this.#isUsingWord[num-1]: num;
